@@ -10,14 +10,14 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Liberacao;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class LiberacaoDao {
 	private Transaction transaction;
 	private Session session;
-	
+
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 
 	public void salvarLiberacao(Liberacao liberacao) {
@@ -29,9 +29,11 @@ public class LiberacaoDao {
 		} catch (Exception ex) {
 			transaction.rollback();
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
-	
+
 	public void excluirLiberacao(Liberacao liberacao) {
 		session = getSession();
 		try {
@@ -41,6 +43,8 @@ public class LiberacaoDao {
 		} catch (Exception ex) {
 			transaction.rollback();
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -68,6 +72,8 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -95,7 +101,9 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
@@ -122,7 +130,9 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,6 +147,8 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -164,7 +176,9 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -179,6 +193,8 @@ public class LiberacaoDao {
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -198,9 +214,11 @@ public class LiberacaoDao {
 			}
 		} catch (Exception ex) {
 			throw ex;
-		} 
+		} finally {
+			session.close();
+		}
 	}
-	
+
 	public Liberacao consultaPorId(Long id) {
 		session = getSession();
 		Liberacao lib = new Liberacao();
@@ -212,6 +230,8 @@ public class LiberacaoDao {
 			return lib;
 		} catch (Exception ex) {
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -235,7 +255,9 @@ public class LiberacaoDao {
 			return lib;
 		} catch (Exception ex) {
 			throw ex;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	public Liberacao consultarPorIdDoRegistroDeEntrada(Long id) {
@@ -249,6 +271,8 @@ public class LiberacaoDao {
 			return lib;
 		} catch (Exception ex) {
 			throw ex;
+		} finally {
+			session.close();
 		}
 	}
 }

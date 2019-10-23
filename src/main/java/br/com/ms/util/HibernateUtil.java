@@ -32,6 +32,7 @@ public class HibernateUtil {
 	 * Classe de comunica��o com hibernate.
 	 */
 	private static SessionFactory criarFabricaDeSessoes() {
+		System.out.println("Criei a fabrica");
 		try {
 			// Busca a configura��o XML do Hibernate
 			Configuration configuracao = new Configuration().configure();

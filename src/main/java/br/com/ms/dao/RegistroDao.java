@@ -103,9 +103,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("empresa", "e").createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.like("e.nome", "%" + nome + "%", MatchMode.ANYWHERE), Restrictions.eq("tipo", "ENTRADA"), Restrictions.eq("status", "ABERTO"), Restrictions.eq("v.tipo", "PRESTADOR"))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -130,9 +135,14 @@ public class RegistroDao {
 			consulta.add(Restrictions.ge("data", dataInicial));
 			consulta.add(Restrictions.le("data", dFim));
 			lista = (List<Registro>) consulta.list();
+			for (Registro registro : lista) {
+				registro.getNotas().size();
+			}
 			return lista;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -142,6 +152,9 @@ public class RegistroDao {
 		try {
 			List<Registro> list = new ArrayList<>();
 			list = (List<Registro>) session.createSQLQuery("select * from registro where registro.tipo ='ENTRADA' and registro.status = 'INICIADO' or registro.status = 'ABERTO' or registro.tipo = 'LIBERADO'").addEntity(Registro.class).list();
+			for (Registro registro : list) {
+				registro.getNotas().size();
+			}	
 			return list;
 		} catch (Exception e) {
 			throw (e);
@@ -169,9 +182,14 @@ public class RegistroDao {
 			consulta.add(Restrictions.ge("data", dataInicial));
 			consulta.add(Restrictions.le("data", dFim));
 			lista = (List<Registro>) consulta.list();
+			for (Registro registro : lista) {
+				registro.getNotas().size();
+			}
 			return lista;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -196,9 +214,14 @@ public class RegistroDao {
 			consulta.add(Restrictions.ge("data", dataInicial));
 			consulta.add(Restrictions.le("data", dFim));
 			lista = (List<Registro>) consulta.list();
+			for (Registro registro : lista) {
+				registro.getNotas().size();
+			}
 			return lista;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -210,6 +233,9 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.like("v.nome", "%" + nome + "%", MatchMode.ANYWHERE), Restrictions.eq("status", "ABERTO"), Restrictions.eq("v.tipo", "PRESTADOR"))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
@@ -224,9 +250,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.eq("tipo", "ENTRADA"), Restrictions.eq("v.cpf", cpf), Restrictions.eq("status", "ABERTO"), Restrictions.eq("v.tipo", "PRESTADOR"))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -236,9 +267,12 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.eq("tipo", "ENTRADA"), Restrictions.eq("v.cpf", cpf), Restrictions.eq("status", "ABERTO"), Restrictions.eq("v.tipo", "PRESTADOR"))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registro = (Registro) consulta.uniqueResult();
+			registro.getNotas().size();
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -248,9 +282,12 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(Registro.class);
 			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registro = (Registro) consulta.uniqueResult();
+			registro.getNotas().size();
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -263,6 +300,8 @@ public class RegistroDao {
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -280,9 +319,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.eq("tipo", tipo), Restrictions.eq("status", "ABERTO"), Restrictions.eq("v.tipo", "PRESTADOR"))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -294,9 +338,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(registro.getClass()).createAlias("nota", "nota").createAlias("visitante", "v");
 			consulta.add(Restrictions.and(Restrictions.eq("tipo", "ENTRADA"), Restrictions.like("nota.numeroNfe", nfe), Restrictions.eq("v.tipo", "PRESTADOR")));
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -308,9 +357,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(this.registro.getClass()).createAlias("visitante", "v");
 			consulta.add(Restrictions.eq("v.tipo", "VISITANTE"));
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -322,9 +376,14 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria((this.registro.getClass())).setMaxResults(90).addOrder(Order.desc("data"));
 			consulta.add(Restrictions.or(Restrictions.eq("tipo", "ENTRADA"), Restrictions.eq("tipo", "SAIDA")));
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -336,10 +395,15 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria((this.registro.getClass())).addOrder(Order.asc("data"));
 			consulta.add(Restrictions.eq("tipo", "LIBERADO"));
 			registros = consulta.list();
+			for (Registro registro : registros) {
+				registro.getNotas().size();
+			}
 			return registros;
 		} catch (Exception e) {
 			throw e;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -354,6 +418,8 @@ public class RegistroDao {
 			return notas;
 		} catch (RuntimeException erro) {
 			throw erro;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 }

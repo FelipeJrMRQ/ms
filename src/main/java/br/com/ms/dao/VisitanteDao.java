@@ -11,7 +11,6 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
-import br.com.ms.util.DAO;
 import br.com.ms.util.HibernateUtil;
 
 public class VisitanteDao {

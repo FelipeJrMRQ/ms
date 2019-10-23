@@ -10,7 +10,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Usuario;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class UsuarioDao implements Serializable {
 
@@ -20,7 +20,7 @@ public class UsuarioDao implements Serializable {
 	private Session session;
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 
 	public void salvarUsuario(Usuario u) {
@@ -32,6 +32,8 @@ public class UsuarioDao implements Serializable {
 		} catch (Exception er) {
 			transaction.rollback();
 			throw er;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -44,7 +46,9 @@ public class UsuarioDao implements Serializable {
 		} catch (Exception er) {
 			transaction.rollback();
 			throw er;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	public void excluirUsuario(Usuario u) {
@@ -59,6 +63,8 @@ public class UsuarioDao implements Serializable {
 			return consulta.add(Restrictions.like("nome", "%" + nome + "%", MatchMode.ANYWHERE)).list();
 		} catch (Exception err) {
 			throw err;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -71,6 +77,8 @@ public class UsuarioDao implements Serializable {
 			return resultado;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 }

@@ -11,14 +11,20 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Atendimento;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class AtendimentoDao {
 	private Transaction transaction;
 	private Session session;
-	
+
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
+	}
+
+	private void getSize(List<Atendimento> lista) {
+		for (Atendimento atendimento : lista) {
+			atendimento.getRegistro().getNotas().size();
+		}
 	}
 
 	public AtendimentoDao() {
@@ -34,6 +40,8 @@ public class AtendimentoDao {
 		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -48,6 +56,8 @@ public class AtendimentoDao {
 		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -60,6 +70,8 @@ public class AtendimentoDao {
 		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -72,6 +84,8 @@ public class AtendimentoDao {
 		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -84,9 +98,12 @@ public class AtendimentoDao {
 			Criteria consulta = session.createCriteria(atendimento.getClass());
 			consulta.add(Restrictions.eq("status", status));
 			atendimentos = consulta.list();
+			getSize(atendimentos);
 			return atendimentos;
 		} catch (Exception erro) {
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -98,9 +115,11 @@ public class AtendimentoDao {
 			consulta.setMaxResults(1).addOrder(Order.desc("id"));
 			at = (Atendimento) consulta.uniqueResult();
 			at.getRegistro().getNotas().size();
-			return at; 
+			return at;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -111,9 +130,12 @@ public class AtendimentoDao {
 			Criteria consulta = session.createCriteria(Atendimento.class);
 			consulta.add(Restrictions.eq("id", id));
 			at = (Atendimento) consulta.uniqueResult();
+			at.getRegistro().getNotas().size();
 			return at;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -129,12 +151,12 @@ public class AtendimentoDao {
 	@SuppressWarnings("unchecked")
 	public void consultarAtendimentoPorRegistro(long id) throws Exception {
 		session = getSession();
-			Criteria consulta = session.createCriteria(Atendimento.class);
-			consulta.add(Restrictions.eq("registro.id", id));
-			List<Atendimento> ls = consulta.list();
-			if (!ls.isEmpty()) {
-				throw new Exception("Este atendimento já foi iniciado");
-			}
+		Criteria consulta = session.createCriteria(Atendimento.class);
+		consulta.add(Restrictions.eq("registro.id", id));
+		List<Atendimento> ls = consulta.list();
+		if (!ls.isEmpty()) {
+			throw new Exception("Este atendimento já foi iniciado");
+		}
 
 	}
 
@@ -154,6 +176,7 @@ public class AtendimentoDao {
 			Criteria consulta = session.createCriteria(atendimento.getClass());
 			consulta.add(Restrictions.and(Restrictions.eq("status", status), Restrictions.ge("data_inicio", data), Restrictions.le("data_inicio", dFim)));
 			atendimentos = consulta.list();
+			getSize(atendimentos);
 			return atendimentos;
 		} catch (Exception erro) {
 			throw erro;
@@ -172,6 +195,7 @@ public class AtendimentoDao {
 			Criteria consulta = session.createCriteria(atendimento.getClass());
 			consulta.add(Restrictions.and(Restrictions.eq("status", status), Restrictions.ge("data_inicio", data), Restrictions.le("data_inicio", dFim))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			atendimentos = consulta.list();
+			getSize(atendimentos);
 			return atendimentos;
 		} catch (Exception erro) {
 			throw erro;
