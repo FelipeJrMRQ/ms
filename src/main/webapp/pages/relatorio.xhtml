@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/template/template2.xhtml">
+	<style type="text/css">
+.ui-paginator a {
+	margin-right: 5px;
+}
+</style>
+	<ui:define name="conteudo">
+		<p:growl id="mensagem" life="8000" />
+
+		<h:form>
+			<h:panelGrid columns="4">
+				<p:column>
+					<p:outputLabel value="TIPO DE CONSULTA: " />
+					<p:selectOneMenu value="#{liberacaoBean.tipoConsulta}">
+						<f:selectItem itemLabel="Entradas e saídas por nome" itemValue="PRESTADOR" />
+						<f:selectItem itemLabel="Entradas e saídas por empresa" itemValue="EMPRESA" />
+						<f:selectItem itemLabel="Entradas e saídas por nota" itemValue="NOTA" />
+						<f:selectItem itemLabel="Entradas e saídas por categoria" itemValue="CATEGORIA" />
+						<f:selectItem itemLabel="Entradas e Saídas Visitantes" itemValue="VISITANTE" />
+						<f:selectItem itemLabel="Entradas e Saídas por Placa" itemValue="PLACA" />
+						<p:ajax listener="#{liberacaoBean.consultaUpdate}" update=":frmConsultaPorNota :frmConsultaEntradaSaidaPrestador :frmConsultaEntradaSaidaCategoria :frmConsultaEntradaSaidaEmpresa :frmConsultaEntradaSaidaVisitante :frmConsultaPorPlaca :frmPanelPrestador:tbRegistros :frmPanelPrestador :frmPanelVisitante" />
+					</p:selectOneMenu>
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaPorNota">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'NOTA'}" columns="25">
+				<p:column>
+					<hr />
+					<p:outputLabel value=" Nota: " />
+					<p:inputText value="#{liberacaoBean.consulta}" styleClass="upper-case" required="true" requiredMessage="Digite o número da nota." />
+					<p:outputLabel value="  TIPO: ">
+						<p:selectOneMenu value="#{liberacaoBean.flag}">
+							<f:selectItem itemLabel="ENTRADA" itemValue="true" />
+							<f:selectItem itemLabel="SAÍDA" itemValue="false" />
+						</p:selectOneMenu>
+					</p:outputLabel>
+					<p:commandButton icon="ui-icon-search" action="#{liberacaoBean.consultaPorNf}" update=":frmPanelPrestador:tbRegistros :mensagem" styleClass="btn_consulta_nfe_liberacao" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaPorPlaca">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'PLACA'}" columns="25">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{liberacaoBean.dataInicial}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{liberacaoBean.dataFinal}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value="  Placa Veículo: " />
+					<p:inputMask mask="aaa-9*99" value="#{liberacaoBean.consulta}" styleClass="upper-case" requiredMessage="Digite a placa do veículo!" required="true" size="7" />
+					<p:commandButton icon="ui-icon-search" action="#{liberacaoBean.consultaPelaPlacaVeiculo}" update=":frmPanelPrestador:tbRegistros :mensagem :frmConsultaPorPlaca" styleClass="btn_consulta_nfe_liberacao" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaEntradaSaidaPrestador">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'PRESTADOR'}">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{liberacaoBean.dataInicial}" size="11" pattern="dd/MM/yyyy" mask="99/99/9999" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{liberacaoBean.dataFinal}" size="11" pattern="dd/MM/yyyy" mask="99/99/9999" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value=" NOME: " />
+					<p:inputText value="#{liberacaoBean.consulta}" size="35" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
+					<p:commandButton icon="ui-icon-search" action="#{liberacaoBean.consultaPorNome}" styleClass="btn_consulta_nfe_liberacao" update=":frmPanelPrestador:tbRegistros :frmConsultaEntradaSaidaPrestador :mensagem" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaEntradaSaidaEmpresa">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'EMPRESA'}">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{liberacaoBean.dataInicial}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{liberacaoBean.dataFinal}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value=" EMPRESA: " />
+					<p:inputText value="#{liberacaoBean.consulta}" size="35" styleClass="upper-case" />
+					<p:commandButton icon="ui-icon-search" actionListener="#{liberacaoBean.consultaPorEmpresa}" update=":frmPanelPrestador:tbRegistros :mensagem :frmConsultaEntradaSaidaEmpresa" styleClass="btn_consulta_nfe_liberacao" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaEntradaSaidaCategoria">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'CATEGORIA'}" columns="1">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{liberacaoBean.dataInicial}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{liberacaoBean.dataFinal}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value="CATEGORIA: " />
+					<p:selectOneMenu value="#{liberacaoBean.consulta}" required="true" requiredMessage="Selecione ao menos uma categoria!">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+						<f:selectItem itemLabel="CLIENTE" itemValue="1" />
+						<f:selectItem itemLabel="CLIENTE / FORNECEDOR" itemValue="2" />
+						<f:selectItem itemLabel="FORNECEDOR" itemValue="3" />
+					</p:selectOneMenu>
+					<p:commandButton icon="ui-icon-search" actionListener="#{liberacaoBean.consultaPorCategoria}" update=":frmPanelPrestador:tbRegistros :mensagem frmConsultaEntradaSaidaCategoria" styleClass="btn_consulta_nfe_liberacao" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmConsultaEntradaSaidaVisitante">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'VISITANTE'}" columns="9">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{liberacaoVisitanteBean.dataInicial}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{liberacaoVisitanteBean.dataFinal}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value=" NOME: " />
+					<p:inputText value="#{liberacaoVisitanteBean.nome }" size="35" styleClass="upper-case" />
+					<p:commandButton icon="ui-icon-search" action="#{liberacaoVisitanteBean.consultarLibercaoes}" styleClass="btn_consulta_nfe_liberacao" update=":frmPanelVisitante:tblRegistros :frmConsultaEntradaSaidaVisitante :mensagem" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
+
+
+		<h:form id="frmPanelPrestador">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'PRESTADOR' or liberacaoBean.tipoConsulta eq 'NOTA' or liberacaoBean.tipoConsulta eq 'EMPRESA' or liberacaoBean.tipoConsulta eq 'CATEGORIA' or liberacaoBean.tipoConsulta eq 'PLACA'}">
+				<p:dataTable value="#{liberacaoBean.liberacoes}" var="registro" id="tbRegistros" paginator="true" rows="10" emptyMessage="Não há resgistros">
+					<f:facet name="header">
+						<p:outputLabel value="REGISTRO DE LIBERAÇÃO:  " />
+					</f:facet>
+					<p:column headerText="ID" width="50" styleClass="align">
+						<p:outputLabel value="#{registro.id}" />
+					</p:column>
+					<p:column headerText="NOME">
+						<p:outputLabel value="#{registro.entrada.prestadorDeServico.nome}" />
+					</p:column>
+					<p:column headerText="EMPRESA">
+						<p:outputLabel value="#{registro.entrada.empresa.nome}" />
+					</p:column>
+					<p:column headerText="PLACA VEÍCULO" width="70">
+						<p:outputLabel value="#{registro.entrada.placaVeiculo}" />
+					</p:column>
+					<p:column headerText="ENTRADA" width="100">
+						<h:outputLabel value="#{registro.entrada.data}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="SAÍDA" width="100">
+						<h:outputLabel value="#{registro.saida.data}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</h:outputLabel>
+					</p:column>
+					<p:column width="30">
+						<p:commandButton icon="ui-icon-document" oncomplete="PF('dlgLiberacao').show()" actionListener="#{liberacaoBean.liberacaoSelecionada}" update=":dlgLib">
+							<f:attribute name="liberacaoSelecionada" value="#{registro}" />
+						</p:commandButton>
+					</p:column>
+					<f:facet name="footer">
+
+						<div style="float: left; margin-top: 5px">
+							<p:outputLabel value="REGISTROS: " />
+							<p:outputLabel value="#{liberacaoBean.quantidadeRegistros()}" />
+						</div>
+						<div style="float: right; margin-top: 1px">
+							<h:commandLink id="exportar">
+								<p:graphicImage url="../img/Logo_Excel-pt.png" width="20" style="text-align:right" />
+								<p:dataExporter type="xls" target="tbRegistros" fileName="Liberacoes" />
+								<p:tooltip for="exportar" value="Exportar dados para excel" position="left" />
+							</h:commandLink>
+						</div>
+						<div style="clear: both"></div>
+					</f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+		</h:form>
+
+		<h:form id="frmPanelVisitante">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'VISITANTE'}">
+				<p:dataTable value="#{liberacaoVisitanteBean.liberacoes}" var="registro" id="tblRegistros" paginator="true" rows="10">
+					<f:facet name="header">
+						<p:outputLabel value="REGISTRO DE LIBERAÇÃO" />
+					</f:facet>
+					<p:column headerText="ID" width="20">
+						<p:outputLabel value="#{registro.id}" />
+					</p:column>
+					<p:column headerText="NOME">
+						<p:outputLabel value="#{registro.entrada.prestadorDeServico.nome}" />
+					</p:column>
+					<p:column headerText="PLACA VEÍCULO" width="70">
+						<p:outputLabel value="#{registro.entrada.placaVeiculo}" />
+					</p:column>
+					<p:column headerText="ENTRADA" width="100">
+						<h:outputLabel value="#{registro.entrada.data}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="SAIDA" width="100">
+						<h:outputLabel value="#{registro.saida.data}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</h:outputLabel>
+					</p:column>
+					<p:column headerText="PERMANÊNCIA" width="100" styleClass="align">
+						<p:outputLabel value="#{liberacaoVisitanteBean.tempoDePermanencia(registro.entrada.data,registro.saida.data)}" />
+					</p:column>
+					<f:facet name="footer">
+						<p:outputLabel value="Registros: " />
+						<p:outputLabel value="#{liberacaoVisitanteBean.quantidadeDeRegistros()}" />
+					</f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+		</h:form>
+
+		<p:dialog widgetVar="dlgLiberacao" id="dlgLib" width="900" modal="true" appendTo="@(body)" resizable="false" header="DADOS DA LIBERAÇÃO">
+			<h:form>
+				<div id="container_lib">
+					<div id="dados">
+						<div id="entrada">
+							<div class="header header-entrada negrito">ENTRADA</div>
+							<div class="conteudo_lib">
+								<h:panelGrid columns="2">
+									<p:column>
+										<p:outputLabel value="ID"/>
+										<p:separator />
+									</p:column>
+									<p:column headerText="ID">
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.id}" />
+										<p:separator />
+									</p:column>
+									<p:column style="text-align:right;">
+										<p:outputLabel value="NOME: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.prestadorDeServico.nome}" />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="EMP: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.empresa.nome}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.prestadorDeServico.rg != '' and liberacaoBean.liberacao.saida.prestadorDeServico.rg != null}">
+										<p:outputLabel value="RG: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.prestadorDeServico.rg != '' and liberacaoBean.liberacao.saida.prestadorDeServico.rg != null}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.prestadorDeServico.rg}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.prestadorDeServico.cpf != ''}">
+										<p:outputLabel value="CPF: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.prestadorDeServico.cpf != ''}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.prestadorDeServico.cpf}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.placaVeiculo != ''}">
+										<p:outputLabel value="PLACA: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.entrada.placaVeiculo != ''}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.placaVeiculo}" />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="RESP: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.entrada.usuario.nome}" />
+										<p:separator />
+									</p:column>
+								</h:panelGrid>
+							</div>
+							<div class="tb_liberacao_notas">
+								<p:dataTable var="nota" value="#{liberacaoBean.liberacao.entrada.notas}" emptyMessage="Não há notas" scrollable="true" scrollHeight="120">
+									<p:column headerText="NOTAS" width="70">
+										<p:outputLabel value="#{nota.numeroNfe}" />
+									</p:column>
+									<p:column headerText="VALOR">
+										<p:outputLabel value="#{nota.valor}">
+											<f:convertNumber currencySymbol="R$" type="currency" />
+										</p:outputLabel>
+									</p:column>
+									<p:column styleClass="align" width="40">
+										<p:commandButton oncomplete="PF('dlgViewNfeEntrada').show()" icon="far fa-eye" update="dlgViewNfEntrada" />
+									</p:column>
+								</p:dataTable>
+							</div>
+							<div class="footer header-entrada negrito">
+								<em class="p"> <p:outputLabel value="#{liberacaoBean.liberacao.entrada.data}">
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+									</p:outputLabel>
+								</em> <em class="tempo negrito"> <p:outputLabel value="#{liberacaoBean.liberacao.entrada.data}">
+										<f:convertDateTime pattern="HH:mm:ss" />
+									</p:outputLabel>
+								</em>
+							</div>
+						</div>
+
+						<div id="saida">
+							<div class="header header-saida negrito">SAÍDA</div>
+							<div class="conteudo_lib">
+								<h:panelGrid columns="2">
+									<p:column>
+										<p:outputLabel value="ID"/>
+										<p:separator />
+									</p:column>
+									<p:column headerText="ID">
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.id}" />
+										<p:separator />
+									</p:column>
+									<p:column style="text-align:right;">
+										<p:outputLabel value="NOME: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.prestadorDeServico.nome}" />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="EMP: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.empresa.nome}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.prestadorDeServico.rg != '' and liberacaoBean.liberacao.saida.prestadorDeServico.rg != null }">
+										<p:outputLabel value="RG: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.prestadorDeServico.rg != '' and liberacaoBean.liberacao.saida.prestadorDeServico.rg != null}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.prestadorDeServico.rg}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.prestadorDeServico.cpf != ''}">
+										<p:outputLabel value="CPF: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.prestadorDeServico.cpf != ''}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.prestadorDeServico.cpf}" />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.placaVeiculo != ''}">
+										<p:outputLabel value="PLACA: " />
+										<p:separator />
+									</p:column>
+									<p:column rendered="#{liberacaoBean.liberacao.saida.placaVeiculo != ''}">
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.placaVeiculo}" />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="RESP: " />
+										<p:separator />
+									</p:column>
+									<p:column>
+										<p:outputLabel value="#{liberacaoBean.liberacao.saida.usuario.nome}" />
+										<p:separator />
+									</p:column>
+								</h:panelGrid>
+							</div>
+							<div class="tb_liberacao_notas">
+								<p:dataTable var="nota" value="#{liberacaoBean.liberacao.saida.notas}" emptyMessage="Não há notas" scrollable="true" scrollHeight="120">
+									<p:column headerText="NOTAS" width="70">
+										<p:commandLink actionListener="#{liberacaoBean.abrirArquivodeNF(nota.numeroNfe)}" target="_blank" ajax="false" styleClass="link_lib">
+											<h:outputText value="#{nota.numeroNfe}" />
+										</p:commandLink>
+									</p:column>
+									<p:column headerText="VALOR">
+										<p:outputLabel value="#{nota.valor}">
+											<f:convertNumber currencySymbol="R$" type="currency" />
+										</p:outputLabel>
+									</p:column>
+									<p:column styleClass="align" width="40">
+										<p:commandButton oncomplete="PF('dlgViewNfeSaida').show()" icon="far fa-eye" update="dlgViewNfSaida" />
+									</p:column>
+								</p:dataTable>
+							</div>
+							<div class="footer header-saida">
+								<em class="p negrito"> <p:outputLabel value="#{liberacaoBean.liberacao.saida.data}">
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+									</p:outputLabel>
+								</em> <em class="tempo negrito"> <p:outputLabel value="#{liberacaoBean.liberacao.saida.data}">
+										<f:convertDateTime pattern="HH:mm:ss" />
+									</p:outputLabel>
+								</em>
+							</div>
+						</div>
+
+						<div id="atendimento" class="negrito">
+							<div id="lib_flex">
+								<div id="lib_text_tempo">
+									<em>Tempo de atendimento</em>
+								</div>
+								<div id="lib_text_inicio">
+									<em> <p:outputLabel value="#{liberacaoBean.liberacao.atendimento.data_inicio}" styleClass="negrito">
+											<f:convertDateTime pattern="HH:mm" />
+										</p:outputLabel> as <p:outputLabel value="#{liberacaoBean.liberacao.atendimento.data_fim}" styleClass="negrito">
+											<f:convertDateTime pattern="HH:mm" />
+										</p:outputLabel>
+									</em>
+								</div>
+								<div id="lib_text_fim">
+									<em><p:outputLabel value="#{liberacaoBean.tempoAtendimento}" styleClass="negrito"></p:outputLabel> </em>
+								</div>
+							</div>
+						</div>
+
+						<div id="liberador" class="negrito">
+							<em class="p"> Responsável pelo atendimento: </em> <em class="tempo"> <p:outputLabel value="#{liberacaoBean.liberacao.usuario.nome}" />
+							</em>
+							<div style="clear: both;"></div>
+						</div>
+
+						<div id="permanencia" class="negrito">
+							<em class="p"> Tempo de permanência total: </em> <em class="tempo"> <p:outputLabel value="#{liberacaoBean.tempo}" />
+							</em>
+							<div style="clear: both;"></div>
+						</div>
+
+
+
+					</div>
+				</div>
+				<div id="limpar"></div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="dlgViewNfeEntrada" id="dlgViewNfEntrada" header="NOTAS FISCAIS" modal="true" appendTo="@(body)" width="850" resizable="false">
+			<p:dataTable value="#{liberacaoBean.liberacao.entrada.notas}" var="nota" paginator="true" rows="5" paginatorAlwaysVisible="false">
+				<p:column headerText="NÚMERO" width="100">
+					<p:outputLabel value="#{nota.numeroNfe}" />
+				</p:column>
+				<p:column headerText="EMPRESA">
+					<p:outputLabel value="#{nota.nome}" />
+				</p:column>
+				<p:column headerText="EMISSÃO" width="140" styleClass="align">
+					<p:outputLabel value="#{nota.emissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</p:outputLabel>
+				</p:column>
+				<p:column headerText="VALOR" width="100">
+					<p:outputLabel value="#{nota.valor}">
+						<f:convertNumber currencySymbol="R$" type="currency" />
+					</p:outputLabel>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+
+
+		<p:dialog widgetVar="dlgViewNfeSaida" id="dlgViewNfSaida" header="NOTAS FISCAIS" modal="true" appendTo="@(body)" width="850" resizable="false">
+			<p:dataTable value="#{liberacaoBean.liberacao.saida.notas}" var="nota" paginator="true" rows="5" paginatorAlwaysVisible="false">
+				<p:column headerText="NÚMERO" width="100">
+					<p:outputLabel value="#{nota.numeroNfe}" />
+				</p:column>
+				<p:column headerText="EMPRESA">
+					<p:outputLabel value="#{nota.nome}" />
+				</p:column>
+				<p:column headerText="EMISSÃO" width="140" styleClass="align">
+					<p:outputLabel value="#{nota.emissao}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</p:outputLabel>
+				</p:column>
+				<p:column headerText="VALOR" width="100">
+					<p:outputLabel value="#{nota.valor}">
+						<f:convertNumber currencySymbol="R$" type="currency" />
+					</p:outputLabel>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

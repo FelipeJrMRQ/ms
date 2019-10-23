@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+<h:head>
+	<h:outputScript library="js" name="jquery.maskedinput" />
+</h:head>
+<h:body>
+
+	<p:dialog widgetVar="dlgEditRegistroEntrada" id="dlgEditRegistro" header="VISUALIZAR REGISTRO" modal="true" appendTo="@(body)" resizable="false" hideEffect="fade" showEffect="fade">
+		<h:form id="frmEditRegistro">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="CÓDIGO: " />
+				<p:inputText value="#{atendimentoBean.registro.id}" readonly="true" size="10" />
+				<p:outputLabel value="TIPO: " />
+				<p:inputText value="#{atendimentoBean.registro.tipo}" size="60" maxlength="60"/>
+				<p:outputLabel value="PRESTADOR: " />
+				<p:inputText value="#{atendimentoBean.registro.prestadorDeServico.nome}" size="60" maxlength="60"/>
+				<p:outputLabel value="CPF: " />
+				<p:inputMask mask="999.999.999-99" value="#{atendimentoBean.registro.prestadorDeServico.cpf}" size="60" maxlength="14" />
+				<p:outputLabel value="EMPRESA: " />
+				<p:inputText value="#{atendimentoBean.registro.empresa.nome}" size="60" maxlength="60" />
+				<p:outputLabel value="DATA: " />
+				<p:inputText value="#{atendimentoBean.registro.data}" size="60">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+				</p:inputText>
+				<p:outputLabel value="VEÍCULO: " />
+				<p:inputMask mask="aaa-9*99" value="#{atendimentoBean.registro.placaVeiculo}" size="60" maxlength="9"/>
+				<p:outputLabel value="NOTAS: " />
+				<p:dataTable value="#{atendimentoBean.registro.notas}" var="nota" style="width:450px;" paginator="true" rows="5">
+					<p:column headerText="Notas ficais">
+						<p:outputLabel value="#{nota.numeroNfe}" />
+					</p:column>
+<!-- 					<f:facet name="footer"> -->
+<!-- 						<p:outputLabel value="QUANTIDADE: " /><p:outputLabel  value="#{consultaRegistroBean.qtdNotas}"/> -->
+<!-- 					</f:facet> -->
+				</p:dataTable>
+			</h:panelGrid>
+			<p:separator />
+			<p:commandButton value="INICIAR ATENDIMENTO" process="@this" rendered="#{atendimentoBean.registro.tipo == 'ENTRADA'}" actionListener="#{atendimentoBean.inicioAtendimento(atendimentoBean.registro, 'INICIADO')}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgEditRegistroEntrada').hide()" />
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

@@ -1,0 +1,439 @@
+.template {
+	min-width: 1020px;
+	max-width: 1020px;
+	min-height: 600px
+}
+
+.upper-case {
+	text-transform: uppercase;
+}
+
+.lower-case {
+	text-transform: lowercase;
+}
+
+.position {
+	float: left;
+}
+
+
+#dialog{
+	height: 610px;
+	background-image: url("./../img/fundo_login.jpg");
+	background-repeat:no-repeat;
+}
+
+#content-panel-login{
+	
+}
+
+body {
+	background-color: #eeeeee;
+	font-size: 12px
+	
+}
+
+inputtext {
+	text-transform: uppercase;
+}
+
+.align {
+	text-align: center;
+}
+
+.color-text {
+	background: #FFFF00 !important;
+}
+
+.negrito {
+	font-weight: bold;
+}
+
+.ui-layout-north {
+	z-index: 20 !important;
+	overflow: visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+	overflow: visible !important;
+}
+
+.botao {
+	font-size: 20px;
+}
+
+#area1 {
+	padding: 10px;
+	width: auto;
+	float: left;
+	border: 1px solid black;
+	margin-right: 10px;
+	margin-bottom: 15px;
+}
+
+.area2 {
+	width: 700px;
+	float: left;
+	margin-bottom: 35px;
+}
+
+.icon_saida {
+	color: red;
+	float: right;
+	margin-right: 5px;
+}
+
+.icon_entrada {
+	color: green;
+	float: right;
+	transform: scalex(-1);
+	margin-right: 5px;
+}
+
+.icon_espera {
+	color: #c68409;
+	float: right;
+	margin-right: 5px;
+	font-size: 15px;
+}
+
+.icon_atendimento {
+	color: #f4bf42;
+	float: right;
+	transform: scalex(-1);
+	margin-right: 5px;
+	font-size: 20px;
+}
+
+.icon_conclusao {
+	color: green;
+	text-align: center;
+}
+
+.dashboard_entrada {
+	color: green;
+	size: 40px;
+}
+
+.container {
+	font-family: Calibri;
+	font-weight: bold;
+	float: left;
+	border: 1px solid red;
+	display: flex;
+	flex-direction:
+}
+
+/* #############  Cartoes ############### */
+
+#conteudo-dashboard{
+    display: flex;
+    /* 
+        row | row-reverse | column | column-reverse
+        utizado para posicionameto de elementos
+        semelhante a propriedade float
+    */
+    flex-direction:row;
+    /* 
+        Propriedade wrap esta propriedade permite quebrar
+        o fluxo do container ou não
+        nowrap | wrap | wrap-reverse
+    */
+    flex-wrap: wrap;
+    
+    /* 
+        Este propriedade permite alinhar e distribuir
+         os componentes
+        flex-start | flex-end | center 
+        space-between | space-around
+    */
+    justify-content: flex-start;
+
+    align-items: center;
+
+    flex-shrink: 1;
+}
+
+.item{
+	margin: 5px;
+    height: 90px;
+    width:288px;
+    flex-shrink: 1;
+    border-radius: 5px;
+}
+
+.header-card{
+    height: 30px;
+    margin-left: 15px;
+}
+
+.entrada{
+    background-color:#1679db; 
+}
+
+.content-header{
+    float: left;
+    color: white;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.presentes{
+    background-color: #00c0ef;
+}
+
+.item:hover .zoom{
+    transform: scale(1.2);
+    opacity: 0.6;
+}
+
+.entradas{
+    background-color: #00a65a;
+}
+
+.atendimento{
+    background-color: #f39c12;
+}
+
+.saidas{
+   background-color:  #dd4b39
+}
+
+.icon{
+    float: right;
+    font-size: 50px;
+    margin-right: 15px;
+    opacity: 0.3;
+}
+
+.zoom {
+    overflow: hidden;
+    max-width: 100%;
+    transition: all 0.5s;
+}
+
+
+/* Fim cartoes*/
+
+#cad_visi_princical {
+	float: left;
+}
+
+#painel_empresa {
+	float: left;
+}
+
+#panel_dados_cadastrais {
+	float: left;
+}
+
+#panel_notas_fiscais {
+	float: left;
+	width: 300px;
+	margin-left: 20px;
+}
+
+/* DIALLOGO DE LIBERACAO */
+
+#container_lib {
+	position: relative;
+	margin: auto;
+}
+
+#entrada {
+	position: relative;
+	border: 1px solid #29bc55;
+	float: left;
+	width: 420px;
+	height: 420px;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+.conteudo_lib{
+	margin: 30px 0 2px 5px;
+	position:relative;
+}
+
+#saida {
+	position: relative;
+	border: 1px solid #e5463d;
+	float: right;
+	width: 420px;
+	height: 420px;
+	margin-bottom: 10px;
+}
+
+.header {
+	position: absolute;
+	color: white;
+	width: 100%;
+	display: block;
+	text-align: center;
+	padding: 5px 0 5px 0;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	color: white;
+	width: 100%;
+	display: block;
+	text-align: center;
+	padding: 5px 0 5px 0;
+}
+
+.header-saida {
+	background-color: #e5463d;
+}
+
+.header-entrada {
+	background-color: #29bc55;
+}
+
+.tb_liberacao_notas{
+	position: relative;
+	width: 300px;
+	margin-left: 7px;
+}
+
+#permanencia {
+	margin: 10px 0 5px 0;
+	clear: both;
+	background-color: #32c7db;
+	padding: 5px 0 5px 0;
+	color:black;
+}
+
+#liberador{
+	margin: 10px 0 5px 0;
+	clear: both;
+	background-color: #3818ad;
+	padding: 5px 0 5px 0;
+	color:white;
+}
+
+#atendimento {
+	padding: 5px 0 5px 0;
+	clear: both;
+	background-color: #dbdb32;
+	color:black;
+}
+
+#lib_flex{
+    height: 100%;
+    min-height: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    margin: 0 10px 0 10px;
+}
+
+#lib_text_tempo{
+    width: 200px;
+}
+#lib_text_inicio{
+    width: 200px;
+    text-align: center;
+}
+#lib_text_fim{
+    width: 200px;
+    text-align: right;
+}
+
+.p {
+	float: left;
+	margin-left: 10px;
+}
+
+.tempo {
+	margin-right: 10px;
+	float: right;
+}
+
+.link_lib{
+	text-decoration: none;
+}
+
+.link_lib:hover{
+	color: red;
+	font-weight: bold;
+}
+
+#limpar {
+	clear: both;
+}
+
+/* CONTAINER DE LOGIN */
+
+#developer {
+	float: left;
+}
+
+#version {
+	float: right;
+}
+
+#content-atendimentos{
+	margin: 0px;
+	font-size: 12px;
+	position: relative;
+}
+
+#aguardando-atendimento{
+	width : 550px;
+	border: 1px solida red;
+	float: left;
+	margin: 5px;
+}
+
+#atendimentos-iniciados{
+	width : 550px;
+	float: left;
+	margin: 5px;
+}
+
+.text-success{
+	color: #28a745;
+}
+
+.text-primary{
+	color:#007bff;
+}
+
+/* Tela e configurações */
+
+.config-panel{
+	float: left;
+	margin: 5px;
+	width: 400px;
+}
+
+.edit-entrada{
+    height: 5px;
+    background-color: #0acf48;
+    position: relative;   
+}
+
+.edit-saida{
+	height: 5px;
+    background-color: #e5463d;
+    position: relative;   
+}
+
+.edit-liberado{
+	height: 5px;
+	background-color: #c68409;
+	position: relative;
+}
+
+
+.fadeIn{
+	animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn{
+    0% { opacity: 0;  }
+    100% { opacity:1;}
+    
+}

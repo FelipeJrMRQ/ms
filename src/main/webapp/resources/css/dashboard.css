@@ -1,0 +1,51 @@
+/**
+.container{
+    font-family: Calibri;
+    font-weight: bold;
+}
+
+
+.cartoes{
+    width: 160px;
+    margin: 10px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 15px; 
+    box-shadow: 5px 10px 6px gray;
+    float: left;
+}
+
+.headercard{
+    padding: 10px;
+    margin: 0;
+    border-radius: 13px 13px 0 0;
+    color: white;
+}
+
+h1 a {
+    text-decoration: none;
+    font-size: 45px;
+    color: black;
+}
+
+h1 a:after{
+    color: #14cde5;
+}
+
+.entrada{
+    background:#03a59d;
+}
+
+.saida{
+    background: #b52805;
+}
+
+.atendimento{
+    background: #d8c40a;
+}
+
+.bt{
+    clear: both;
+}
+*/
+

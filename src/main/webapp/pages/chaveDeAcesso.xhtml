@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>MS</title>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body style="font-size:12px">
+	<p:growl id="msgErro"/>
+	<div id="content" title="Login">
+		<p:dialog header="LIBERAÇÃO DE USO" id="dialog" minWidth="550" width="550" modal="true" closable="false" position="center" showEffect="slide" draggable="true" resizable="false" visible="true" style="font-size:13px">
+			<div>
+				<div class="container_login_frm">
+					<h:form>
+						<h:panelGrid columns="1">
+							<p:column>
+								<p>Seu tempo de utilização gratuita do software expirou!</p>
+								<p>Entre em contato com o administrador do sistema para regularização.</p>
+								<p><a href="mailto:felipe_marquesjr@hotmail.com"><span>felipe_marquesjr@hotmail.com</span></a></p>
+							</p:column>
+							<p:column>
+								<div class="ui-g-12 ui-md-4">
+									<div class="ui-inputgroup">
+										<span class="ui-inputgroup-addon"><i class="fa fa-key"></i></span>
+										<p:password value="#{loginBean.chaveLiberacao}" required="true" requiredMessage="Digite a chave de liberação" />
+									</div>
+								</div>
+							</p:column>
+							<p:column>
+								<p:commandButton value="VALIDAR" update="msgErro" actionListener="#{loginBean.salvarChaveDeAcesso}" style="width:210px;margin-left:7px;" />
+							</p:column>
+						</h:panelGrid>
+					</h:form>
+				</div>
+				<div class="container_login_img">
+					<p:graphicImage value="favicon.ico" />
+				</div>
+			</div>
+			<f:facet name="footer">
+				<div>
+					<div id="developer">
+						<p:outputLabel value="By Felipe Marques " />
+					</div>
+					<div id="version">
+						<p:outputLabel value="Versão 1.1.0" />
+					</div>
+				</div>
+				<div style="clear: both">
+				</div>
+			</f:facet>
+		</p:dialog>
+	</div>
+</h:body>
+</html>

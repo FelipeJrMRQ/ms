@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+		<p:growl id="mensagem" />
+
+		<f:facet name="header">
+			<p:outputLabel value="Cadastro de visitantes" />
+		</f:facet>
+
+		<div>
+			<div id="cad_visi_princical">
+				<fieldset style="width: 450px;">
+					<legend>Dados cadastrais</legend>
+					<h:form id="frmTipoDeCadastro">
+						<fieldset style="width: 368px">
+							<legend>Tipo</legend>
+							<h:panelGrid>
+								<p:selectOneRadio value="#{visitanteBean.tipo}">
+									<f:selectItem itemLabel="VISITANTE" itemValue="VISITANTE" />
+									<f:selectItem itemLabel="PRESTADOR DE SERVIÇO" itemValue="PRESTADOR" />
+									<p:ajax listener="#{visitanteBean.prestadorTp}" update=":frmCadastroEmpresaPrestador :frmTipoDeCadastro :frmCadastroPrestador  :mensagem" />
+								</p:selectOneRadio>
+							</h:panelGrid>
+						</fieldset>
+					</h:form>
+
+					<h:form id="frmCadastroPrestador">
+						<h:panelGrid>
+							<p:outputLabel value="NOME:" />
+							<p:inputText size="50" value="#{visitanteBean.visitante.nome}" styleClass="upper-case" required="true" requiredMessage="O nome é obrigatótio." />
+							<p:column>
+								<p:outputLabel value="CPF  " />
+								<br />
+								<p:inputMask mask="999.999.999-99" size="11" value="#{visitanteBean.visitante.cpf}" />
+							</p:column>
+							<p:column>
+								<p:outputLabel value="   RG " />
+								<br />
+								<p:inputText size="9" value="#{visitanteBean.visitante.rg}" styleClass="upper-case" />
+								<p:selectBooleanCheckbox value="#{visitanteBean.visitante.naoMonitorado}" itemLabel="NÃO MONITORAR" style="margin-left:80px;" rendered="#{visitanteBean.tipo eq 'PRESTADOR'}" />
+							</p:column>
+							<p:commandButton value="Salvar" update=":mensagem :frmCadastroEmpresaPrestador:msgTbEmpresa :frmCadastroPrestador :frmCadastroEmpresaPrestador" action="#{visitanteBean.salvar}" />
+						</h:panelGrid>
+					</h:form>
+
+				</fieldset>
+			</div>
+
+			<div id="painel_empresa">
+				<h:form id="frmCadastroEmpresaPrestador">
+					<h:panelGrid rendered="#{visitanteBean.tipo eq 'PRESTADOR'}">
+						<div class="ui-g">
+							<p:column>
+								<div class="ui-g-12">
+									<p:outputLabel value="EMPRESA:" />
+									<br />
+									<p:inputText size="76" placeholder="Buscar empresa cadastrada" value="#{visitanteBean.consulta}" styleClass="upper-case" />
+									<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" oncomplete="PF('dlgCadastroEmpresa').show()" update=":dlgCadEmpresa :mensagem" />
+								</div>
+							</p:column>
+							<p:column>
+								<div class="ui-g-12">
+									<p:dataTable id="tbEscolhido" value="#{visitanteBean.empresasEscolhidas}" var="empresa" style="width:602px;" emptyMessage="Não há empresas selecionadas">
+										<p:column headerText="EMPRESA">
+											<p:outputLabel value="#{empresa.nome}" />
+										</p:column>
+										<p:column headerText="Remover" width="80" styleClass="align">
+											<p:commandButton icon="ui-icon-trash" actionListener="#{visitanteBean.removeEmpresa}" update=":frmCadastroEmpresaPrestador:tbEscolhido">
+												<f:attribute name="empresaSelecionada" value="#{empresa}" />
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+									<p:messages id="msgTbEmpresa" />
+								</div>
+							</p:column>
+						</div>
+					</h:panelGrid>
+				</h:form>
+			</div>
+		</div>
+		<div style="clear: both;"></div>
+		<!-- CONSULTA DE PRESTADOR DE SERVIÇO -->
+		<div>
+			<h:form>
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<p:inputText size="50" placeholder="Consultar visitante" value="#{visitanteBean.consultaVisitante}" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
+						<p:commandButton icon="ui-icon-search" update=":tbCadastroPrestador :mensagem" action="#{visitanteBean.consultarVisitante}" />
+					</div>
+				</div>
+			</h:form>
+			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="2" emptyMessage="Não há registros a serem exibidos.">
+				<p:column headerText="NOME">
+					<p:outputLabel value="#{prestador.nome}" />
+				</p:column>
+				<p:column headerText="CPF" priority="3" width="240">
+					<p:outputLabel value="#{prestador.cpf}" />
+				</p:column>
+				<p:column headerText="RG" priority="3" width="240">
+					<p:outputLabel value="#{prestador.rg}" />
+				</p:column>
+				<p:column headerText="Opções" priority="2" width="120">
+					<p:commandButton icon="ui-icon-pencil" oncomplete="PF('dlgConsultaPrestador').show()" update=":dlgSelEmpresa :mensagem" actionListener="#{visitanteBean.prestadorSelecionado}">
+						<f:attribute name="prestadorSelecionado" value="#{prestador}" />
+					</p:commandButton>
+					<p:commandButton icon="ui-icon-trash" actionListener="#{visitanteBean.exluir}" update=":mensagem :tbCadastroPrestador">
+						<f:attribute name="prestadorSelecionado" value="#{prestador}" />
+						<p:confirm message="Deseja realmente excluir este visitante?" icon="ui-icon-alert" header="Exclusão de cadastro" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</div>
+
+		<!-- DIALOGO DE CONSULTA DE EMPRESA -->
+		<p:dialog widgetVar="dlgCadastroEmpresa" id="dlgCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas Cadastradas" width="600">
+			<p:dataTable value="#{visitanteBean.empresas}" var="empresa" paginator="true" rows="10">
+				<p:column headerText="NOME">
+					<p:outputLabel value="#{empresa.nome}" />
+				</p:column>
+				<p:column headerText="Opção" width="70">
+					<p:commandButton icon="ui-icon-check" oncomplete="PF('dlgCadastroEmpresa').hide()" update=":frmCadastroEmpresaPrestador:tbEscolhido :mensagem" actionListener="#{visitanteBean.adicionarEmpresa}" styleClass="align">
+						<f:attribute name="empresaSelecionada" value="#{empresa}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+
+		<!-- DIALOGO DE CONSULTA DE EMPRESA PARA EDICAO DE PRESTADOR -->
+		<p:dialog widgetVar="dlgEditCadEmpresa" id="dlgEdCadCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas" width="600">
+			<p:dataTable value="#{visitanteBean.empresas}" var="empresa" emptyMessage="Não foram encontrados registros" paginator="true" rows="10">
+				<p:column headerText="NOME">
+					<p:outputLabel value="#{empresa.nome}" />
+				</p:column>
+				<p:column headerText="Opção" width="70">
+					<p:commandButton icon="ui-icon-check" oncomplete="PF('dlgEditCadEmpresa').hide()" actionListener="#{visitanteBean.adicionarEmpresa}" update=":frmEdicaoPrestador:tbgdb :mensagem">
+						<f:attribute name="empresaSelecionada" value="#{empresa}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+
+		<!-- DIALOGO DE EDIÇÃO DE PRESTADOR DE SERVIÇO -->
+		<p:dialog widgetVar="dlgConsultaPrestador" id="dlgSelEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Edição de cadastro" width="600" closable="false">
+			<h:form id="frmEdicaoPrestador">
+				<h:panelGrid columns="2">
+					<p:outputLabel value="NOME" />
+					<p:inputText value="#{visitanteBean.visitante.nome}" size="50" styleClass="upper-case" />
+					<p:outputLabel value="CPF" />
+					<p:inputMask mask="999.999.999-99" value="#{visitanteBean.visitante.cpf}" />
+					<p:outputLabel value="RG: " />
+					<p:inputText value="#{visitanteBean.visitante.rg}" />
+					<p:outputLabel value="STATUS" />
+					<p:selectBooleanButton value="#{visitanteBean.visitante.status}" onLabel="ATIVO" offLabel="INATIVO" onIcon="ui-icon-check" offIcon="ui-icon-close" />
+				</h:panelGrid>
+				<br />
+				<p:inputText size="50" value="#{visitanteBean.consulta}" styleClass="upper-case" />
+				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" oncomplete="PF('dlgEditCadEmpresa').show()" update=":dlgEdCadCadEmpresa" />
+					<p:selectOneRadio value="#{visitanteBean.tipo}">
+						<f:selectItem itemLabel="VISITANTE" itemValue="VISITANTE" />
+						<f:selectItem itemLabel="PRESTADOR" itemValue="PRESTADOR" />
+						<p:ajax listener="#{visitanteBean.prestadorTp}" update=":frmEdicaoPrestador" />
+					</p:selectOneRadio>
+					
+				<p:dataTable id="tbgdb" value="#{visitanteBean.visitante.empresas}" var="empresa" paginator="true" rows="6" rendered="#{visitanteBean.tipo eq 'PRESTADOR'}">
+					<p:column headerText="Empresas Cadastradas">
+						<p:outputLabel value="#{empresa.nome}" />
+					</p:column>
+					<p:column width="80" headerText="Remover" styleClass="align">
+						<p:commandButton icon="ui-icon-trash" actionListener="#{visitanteBean.removeEmpresa}" update="frmEdicaoPrestador:tbgdb">
+							<f:attribute name="empresaSelecionada" value="#{empresa}" />
+							<p:confirm message="Deseja realmente desvincular esta empresa deste usuário" icon="ui-icon-alert" header="Remover empresa" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<br/>
+				<p:selectBooleanCheckbox value="#{visitanteBean.visitante.naoMonitorado}" itemLabel="NÃO MONITORADO" />
+				<p:messages id="msg" />
+				<p:separator />
+				<p:commandButton value="Salvar" actionListener="#{visitanteBean.alterar}" update=":frmEdicaoPrestador:msg" />
+				<p:commandButton value="Fechar" actionListener="#{visitanteBean.limpar()}" oncomplete="PF('dlgConsultaPrestador').hide()" update=":tbCadastroPrestador :dlgSelEmpresa" />
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="align">
+			<p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="NÃO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,161 @@
+package br.com.ms.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+
+import br.com.ms.model.Registro;
+import br.com.ms.model.Visitante;
+import br.com.ms.util.DAO;
+
+public class VisitanteDao {
+
+	private Transaction transaction;
+	private Visitante visitante;
+	private Session session;
+	
+	public VisitanteDao() {
+		visitante = new Visitante();
+	}
+	
+	private Session getSession() {
+		return DAO.getSession();
+	}
+	
+	public void salvarPrestadorDeServico(Visitante p) {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			session.merge(p);
+			transaction.commit();
+		} catch (Exception erro) {
+			transaction.rollback();
+			throw erro;
+		}
+	}
+
+	public void excluirPrestadorDeServico(Visitante p) {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			// DAO.getSession().delete(p);
+			session.createQuery("delete from Visitante where id = " + p.getId() + "").executeUpdate();
+			transaction.commit();
+		} catch (Exception er) {
+			transaction.rollback();
+			throw er;
+		}
+	}
+
+	public Visitante consultaPrestadorPeloCpf(String cpf) {
+		Visitante visitante = new Visitante();
+		try {
+			Criteria consulta = session.createCriteria(visitante.getClass());
+			consulta.add(Restrictions.eq("cpf", cpf));
+			visitante = (Visitante) consulta.uniqueResult();
+			return visitante;
+		} catch (Exception erro) {
+			throw erro;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Visitante> consultaPrestadorPeloRg(String rg) {
+		List<Visitante> prestadores = new ArrayList<>();
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Visitante.class);
+			consulta.add(Restrictions.like("rg", "%" + rg + "%", MatchMode.ANYWHERE));
+			prestadores = consulta.list();
+			return prestadores;
+		} catch (Exception erro) {
+			throw erro;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Visitante> consultaPrestadorDeServicoPeloNome(String nome) {
+		List<Visitante> prestadores = new ArrayList<>();
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Visitante.class);
+			consulta.add(Restrictions.like("nome", "%" + nome + "%", MatchMode.ANYWHERE));
+			consulta.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			prestadores = consulta.list();
+//			//A utilização desta função evita o Lazyloading
+//			for (Visitante visitante : prestadores) {
+//				visitante.getEmpresas().size();
+//			}
+			return prestadores;
+		} catch (Exception erro) {
+			throw erro;
+		}
+	}
+
+	public Visitante consultaVisitantePorId(long id) {
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Visitante.class);
+			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			this.visitante = (Visitante) consulta.uniqueResult();
+			return visitante;
+		} catch (RuntimeException erro) {
+			throw erro;
+		}
+	}
+
+	public Registro consultaRegistroVisitantePorId(long id) {
+		Registro r = new Registro();
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Registro.class);
+			consulta.createAlias("visitante", "v");
+			consulta.add(Restrictions.eq("v.id", id)).setMaxResults(1);
+			r = (Registro) consulta.uniqueResult();
+			return r;
+		} catch (RuntimeException erro) {
+			throw erro;
+		}
+	}
+
+	/**
+	 * Verifica a existencia do Rg no cadastro e true quando existe e false quando
+	 * não existe
+	 * 
+	 * @param v
+	 * @return
+	 */
+	public Visitante validaExistenciaRg(Visitante v) {
+		try {
+			Criteria consulta = session.createCriteria(Visitante.class);
+			consulta.add(Restrictions.eq("rg", v.getRg())).setMaxResults(1);
+			return (Visitante) consulta.uniqueResult() ;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * Verifica a existencia do CPF no cadastro e true quando existe e false quando
+	 * não existe
+	 * 
+	 * @param v
+	 * @return
+	 */
+	public Visitante validaExistenciaCpf(Visitante v) {
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Visitante.class);
+			consulta.add(Restrictions.eq("cpf", v.getCpf())).setMaxResults(1);
+			return (Visitante) consulta.uniqueResult();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+}

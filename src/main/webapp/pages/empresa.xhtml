@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+		<p:growl id="mensagem" />
+
+		<f:facet name="header">
+			<p:outputLabel value="Cadastro de Empresa" />
+		</f:facet>
+
+		<h:form id="frmCadastroEmpresa">
+			<fieldset style="width: 450px">
+			<legend>Dados cadastrais</legend>
+				<h:panelGrid>
+					<p:column>
+						<p:outputLabel value="NOME:" />
+					</p:column>
+					<p:column>
+						<p:inputText value="#{empresaBean.empresa.nome}" size="50" maxlength="50" styleClass="upper-case"  required="true" requiredMessage="Digite o nome!"/>
+					</p:column>
+					<p:column>
+						<p:outputLabel value="CNPJ:" />
+					</p:column>
+					<p:column>
+						<p:inputMask value="#{empresaBean.cnpj}" mask="99.999.999.9999-99" size="16" required="true" requiredMessage="Digite o CNPJ" />
+					</p:column>
+					<p:column>
+						<p:outputLabel value="CATEGORIA:" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu value="#{empresaBean.empresa.categoria}" required="true" requiredMessage="Escolha uma categoria!">
+							<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+							<f:selectItem itemLabel="CLIENTE" itemValue="1" />
+							<f:selectItem itemLabel="CLIENTE / FORNECEDOR" itemValue="2" />
+							<f:selectItem itemLabel="FORNECEDOR" itemValue="3" />
+						</p:selectOneMenu>
+					</p:column>
+
+
+					<p:column>
+						<p:outputLabel value="STATUS:" />
+					</p:column>
+
+					<p:column>
+						<p:selectOneMenu value="#{empresaBean.empresa.status}" required="true" requiredMessage="Selecione o status!">
+							<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+							<f:selectItem itemLabel="ATIVO" itemValue="ATIVO" />
+							<f:selectItem itemLabel="INATIVO" itemValue="INATIVO" />
+						</p:selectOneMenu>
+					</p:column>
+
+
+					<br />
+					<p:commandButton value="Salvar" action="#{empresaBean.salvarEmpresa}" update=":mensagem :frmCadastroEmpresa" />
+				</h:panelGrid>
+			</fieldset>
+		</h:form>
+
+		<h:form>
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<p:inputText size="50" value="#{empresaBean.consulta}" styleClass="upper-case" placeholder="Consultar empresas cadastradas" required="true" requiredMessage="Digite o nome da empresa!" />
+					<p:commandButton icon="ui-icon-search" action="#{empresaBean.consultaEmpresaPeloNome}" update=":tbEmpresaCadastrada :mensagem" />
+				</div>
+			</div>
+		</h:form>
+		<br />
+
+		<p:dataTable paginator="true" id="tbEmpresaCadastrada" value="#{empresaBean.empresas}" var="empresa" rows="9">
+			<p:column headerText="ID" width="30">
+				<p:outputLabel value="#{empresa.id}"/>
+			</p:column>
+			<p:column headerText="Nome">
+				<p:outputLabel value="#{empresa.nome}" />
+			</p:column>
+			<p:column headerText="CNPJ">
+				<p:outputLabel value="#{empresa.cnpj}" />
+			</p:column>
+			<p:column headerText="Opções" priority="2" width="70" styleClass="align">
+				<p:commandButton icon="ui-icon-pencil" actionListener="#{empresaBean.selectEmpresa}" oncomplete="PF('dlgAlteracaoEmpresa').show()" update="dlgAltEmpresa">
+					<f:attribute name="empresaSelecionada" value="#{empresa}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" actionListener="#{empresaBean.excluirEmpresa}" update=":mensagem :tbEmpresaCadastrada">
+					<p:confirm header="Exclusão de empresa" message="Deseja realmente excluir esta empresa?" icon="ui-icon-alert"/>
+					<f:attribute name="empresaSelecionada" value="#{empresa}"/>
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog header="Alteração de Empresa" id="dlgAltEmpresa" widgetVar="dlgAlteracaoEmpresa" width="600" modal="true" appendTo="@(body)" resizable="false">
+			<h:form>
+				<h:panelGrid columns="2">
+					<p:outputLabel value="NOME:" />
+					<p:inputText value="#{empresaBean.empresa.nome}" size="50" maxlength="50" />
+					<p:outputLabel value="CNPJ" />
+					<p:inputMask mask="99.999.999.9999-99" size="19" value="#{empresaBean.cnpj}" />
+					<p:outputLabel value="CATEGORIA:" />
+					<p:selectOneMenu value="#{empresaBean.empresa.categoria}">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+						<f:selectItem itemLabel="CLIENTE" itemValue="1" />
+							<f:selectItem itemLabel="CLIENTE / FORNECEDOR" itemValue="2" />
+							<f:selectItem itemLabel="FORNECEDOR" itemValue="3" />
+					</p:selectOneMenu>
+					<p:outputLabel value="STATUS:" />
+					<p:selectOneMenu value="#{empresaBean.empresa.status}">
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
+						<f:selectItem itemLabel="ATIVO" itemValue="ATIVO" />
+						<f:selectItem itemLabel="INATIVO" itemValue="INATIVO" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:separator />
+				<p:commandButton value="Salvar" actionListener="#{empresaBean.alterarEmpresa}" update=":mensagem :tbEmpresaCadastrada" oncomplete="PF('dlgAlteracaoEmpresa').hide()" />
+			</h:form>
+		</p:dialog>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="align">
+			<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+
+	</ui:define>
+</ui:composition>
+</html>

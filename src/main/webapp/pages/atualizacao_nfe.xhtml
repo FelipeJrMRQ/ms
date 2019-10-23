@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+
+		<p:growl id="mensagem" />
+
+
+		<h:form id="frm">
+			<p:calendar value="#{atualizaNfeBean.data}" pattern="dd/MM/yyyy" />
+			<p:selectOneMenu value="#{atualizaNfeBean.tipo}">
+				<f:selectItem  itemLabel="ENTRADA" itemValue="ENTRADA"/>
+				<f:selectItem  itemLabel="SAIDA" itemValue="SAIDA"/>
+				<p:ajax update=":frm :tbNf" listener="#{atualizaNfeBean.limpar()}" />
+			</p:selectOneMenu>
+			<p:commandButton value="Buscar notas não sincronizadas" actionListener="#{atualizaNfeBean.consultaNotasDesatualizadas()}" update=":tbNf :mensagem" />
+			<p:ajaxStatus onstart="PF('dlgStatus').show()" onsuccess="PF('dlgStatus').hide()">
+				<p:commandButton value="Atualizar em Massa" actionListener="#{atualizaNfeBean.atualizarEmMass()}" update=":tbNf :mensagem" rendered="#{atualizaNfeBean.tipo eq 'ENTRADA'}"/>
+				<p:commandButton value="Atualizar em Massa" actionListener="#{atualizaNfeBean.atualizaInterno()}" update=":tbNf :mensagem" rendered="#{atualizaNfeBean.tipo eq 'SAIDA'}"/>
+			</p:ajaxStatus>
+		</h:form>
+
+		<p:dialog widgetVar="dlgStatus" id="statusAjax" modal="true" appendTo="@(body)" resizable="false" closable="false">
+			<p:graphicImage url="https://media0.giphy.com/media/17mNCcKU1mJlrbXodo/giphy.gif" style="width:100px; height:100px" />
+		</p:dialog>
+
+		<p:dataTable value="#{atualizaNfeBean.notas}" var="nota" id="tbNf" paginator="true" paginatorAlwaysVisible="false" rows="15">
+			<p:column headerText="Chave de acesso">
+				<p:outputLabel value="#{nota.chave}" />
+			</p:column>
+			<p:column headerText="Empresa">
+				<p:outputLabel value="#{nota.nome}" />
+			</p:column>
+			<p:column headerText="Emissão" width="80">
+				<p:outputLabel value="#{nota.emissao}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:outputLabel>
+			</p:column>
+			<p:column headerText="valor" width="100">
+				<p:outputLabel value="#{nota.valor}">
+					<f:convertNumber currencySymbol="R$" type="currency" />
+				</p:outputLabel>
+			</p:column>
+		</p:dataTable>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

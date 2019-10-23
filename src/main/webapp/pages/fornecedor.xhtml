@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+<h:body>
+
+	<!-- DIALOGO DE CADASTRO DE FORNECEDOR -->
+	<p:dialog widgetVar="dlgCadastroFornecedor" id="dlgCadFornecedor" header="Cadastro de Fornecedor" width="600" modal="true" resizable="false" appendTo="@(body)">
+		<h:form id="frmCadastroFornecedor">
+			<p:outputLabel value=" Dados do Fornecedor" />
+			<p:fieldset>
+				<h:panelGrid columns="2">
+					<p:outputLabel value="Nome Fantasia" />
+					<p:inputText size="50" maxlength="45" value="#{fornecedorBean.fornecedor.nomeFantasia}" />
+					<p:outputLabel value="Razão Social" />
+					<p:inputText size="50" maxlength="45" value="#{fornecedorBean.fornecedor.razaoSocial}" />
+					<p:outputLabel value="CNPJ" />
+					<p:inputText size="16" maxlength="18" value="#{fornecedorBean.fornecedor.cnpj}" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:outputLabel value=" Endereço" />
+			<p:fieldset>
+				<h:panelGrid columns="2">
+					<p:outputLabel value="Rua" />
+					<p:inputText size="50" maxlength="45" value="#{fornecedorBean.fornecedor.largadouro}" />
+					<p:outputLabel value="Numero" />
+					<p:inputText size="6" maxlength="6" value="#{fornecedorBean.fornecedor.numero}" />
+					<p:outputLabel value="Telefone" />
+					<p:inputText size="11" maxlength="11" value="#{fornecedorBean.fornecedor.fone}" />
+				</h:panelGrid>
+			</p:fieldset>
+			<p:separator />
+			<p:commandButton value="Salvar" action="#{fornecedorBean.salvarFornecedor}" update=":mensagem :frmCadastroFornecedor" />
+		</h:form>
+	</p:dialog>
+
+	<!-- DIALOGO DE BUSCA DE FORNECEDOR -->
+	<p:dialog widgetVar="dlgConsultaFornecedor" id="dlgConsFornecedor" modal="true" appendTo="@(body)" width="600" header="Consulta de Fornecedor">
+		<h:form>
+			<h:panelGrid columns="2">
+				<p:inputText value="#{fornecedorBean.nome}" size="35" maxlength="35" />
+				<p:commandButton value="Buscar" action="#{fornecedorBean.buscarFornecedor}" update="tbFornecedor" />
+			</h:panelGrid>
+		</h:form>
+		<p:dataTable id="tbFornecedor" value="#{fornecedorBean.fornecedores}" var="fornecedor">
+			<f:facet name="header">
+				<p:outputLabel value="Fornecedores Cadastrados" />
+			</f:facet>
+			<p:column headerText="Código" width="15">
+				<p:outputLabel value="#{fornecedor.codigo}" />
+			</p:column>
+			<p:column headerText="Nome" width="200">
+				<p:outputLabel value="#{fornecedor.nomeFantasia}" />
+			</p:column>
+			<p:column headerText="Opções" width="30">
+				<p:commandButton icon="ui-icon-pencil" actionListener="#{fornecedorBean.fornecedorSelecionado}" id="btnEditarFornecedor" oncomplete="PF('dlgCadastroFornecedor').show()" update=":dlgCadFornecedor">
+					<p:tooltip for="btnEditarFornecedor" value="Alterar fornecedor" position="left"/>
+					<f:attribute value="#{fornecedor}" name="fornecedorSelecionado"/>
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" id="btnExcluirFornecedor" actionListener="#{fornecedorBean.excluirFornecedor}" update=":mensagem :tbFornecedor">
+					<p:confirm header="Excluir fornecedor" message="Deseja realmente excluir o fornecedor?" icon="ui-icon-alert" />
+					<f:attribute value="#{fornecedor}" name="fornecedorSelecionado" />
+					<p:tooltip for="btnExcluirFornecedor" value="Excluir fornecedor" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+	</p:dialog>
+
+</h:body>
+
+</html>

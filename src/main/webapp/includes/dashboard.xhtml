@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+
+<!-- DASHBOARD PARA A TELA DE ENTRADA -->
+<h:form id="frmDashboardInformations">
+	<div id="conteudo-dashboard">
+
+		<p:commandLink actionListener="#{registroBean.calculaPessoasPresentes()}" oncomplete="PF('dlgVisitantePresentes').show()" update=":tbView:dlgVisPresente :tbView:frmDashboardInformations">
+			<div class="item presentes">
+				<div class="header-card">
+					<div class="content-header">
+						<h1>
+							<h:outputText value="#{registroBean.quantidadePresentes.size()}" id="qtdPesoas" />
+						</h1>
+						<h3>Pessoas presentes</h3>
+					</div>
+				</div>
+				<div class="icon zoom">
+					<i class="fas fa-users "></i>
+				</div>
+			</div>
+		</p:commandLink>
+
+		<p:commandLink actionListener="#{registroBean.calculaPessoasPresentes()}" oncomplete="PF('dlgEntradasDia').show()" update=":tbView:dlgEntDia :tbView:frmDashboardInformations">
+			<div class="item entradas">
+				<div class="header-card">
+					<div class="content-header">
+						<h1>
+							<h:outputText value="#{registroBean.quantidadeEntradas.size()}" id="qtdEntradas" />
+						</h1>
+						<h3>Entradas</h3>
+					</div>
+				</div>
+				<div class="icon zoom">
+					<i class="fas fa-sign-in-alt " style="transform: scalex(-1);"></i>
+				</div>
+			</div>
+		</p:commandLink>
+
+		<p:commandLink actionListener="#{registroBean.calculaPessoasPresentes()}" oncomplete="PF('dlgAtendimentoDia').show()" update=":tbView:dlgAtendDia :tbView:frmDashboardInformations">
+			<div class="item atendimento">
+				<div class="header-card">
+					<div class="content-header">
+						<h1>
+							<h:outputText value="#{registroBean.quantidadeAtentimentos.size()}" id="qtdAtendimentos" />
+						</h1>
+						<h3>Atendimentos</h3>
+					</div>
+				</div>
+				<div class="icon zoom">
+					<i class="far fa-clock "></i>
+				</div>
+			</div>
+		</p:commandLink>
+
+		<p:commandLink actionListener="#{registroBean.calculaPessoasPresentes()}" oncomplete="PF('dlgSaidaDia').show()" update=":tbView:dlgSaidDia :tbView:frmDashboardInformations">
+			<div class="item saidas">
+				<div class="header-card">
+					<div class="content-header">
+						<h1>
+							<h:outputText value="#{registroBean.quantidadeSaidas.size()}" id="qtdSaidas" />
+						</h1>
+						<h3>Saídas</h3>
+					</div>
+				</div>
+				<div class="icon zoom">
+					<i class="fas fa-sign-out-alt"></i>
+				</div>
+			</div>
+		</p:commandLink>
+
+	</div>
+</h:form>
+
+<p:dialog widgetVar="dlgVisitantePresentes" id="dlgVisPresente" header="Pessoas Presentes" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+	<p:dataTable var="presentes" value="#{registroBean.quantidadePresentes}" paginator="true" rows="15">
+		<p:column headerText="ID" width="70">
+			<p:outputLabel value="#{presentes.id}" />
+		</p:column>
+		<p:column headerText="Nome">
+			<p:outputLabel value="#{presentes.prestadorDeServico.nome}" />
+		</p:column>
+		<p:column>
+			<p:outputLabel value="#{presentes.empresa.nome}"/>
+		</p:column>
+	</p:dataTable>
+</p:dialog>
+
+<p:dialog widgetVar="dlgEntradasDia" id="dlgEntDia" header="Entradas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+	<p:dataTable var="entrada" value="#{registroBean.quantidadeEntradas}" paginator="true" rows="15">
+		<p:column headerText="ID" width="70">
+			<p:outputLabel value="#{entrada.id}" />
+		</p:column>
+		<p:column headerText="Nome">
+			<p:outputLabel value="#{entrada.prestadorDeServico.nome}" />
+		</p:column>
+		<p:column headerText="Empresa">
+			<p:outputLabel value="#{entrada.empresa.nome}" />
+		</p:column>
+	</p:dataTable>
+</p:dialog>
+
+<p:dialog widgetVar="dlgAtendimentoDia" id="dlgAtendDia" header="Atendimentos em andamento" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+	<p:dataTable var="atendimento" value="#{registroBean.quantidadeAtentimentos}" paginator="true" rows="15">
+		<p:column headerText="ID" width="70">
+			<p:outputLabel value="#{atendimento.id}" />
+		</p:column>
+		<p:column headerText="Nome">
+			<p:outputLabel value="#{atendimento.prestadorDeServico.nome}" />
+		</p:column>
+		<p:column headerText="Empresa">
+			<p:outputLabel value="#{atendimento.empresa.nome}" />
+		</p:column>
+	</p:dataTable>
+</p:dialog>
+
+<p:dialog widgetVar="dlgSaidaDia" id="dlgSaidDia" header="Saídas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+	<p:dataTable var="saida" value="#{registroBean.quantidadeSaidas}" paginator="true" rows="15">
+		<p:column headerText="ID" width="70">
+			<p:outputLabel value="#{saida.id}" />
+		</p:column>
+		<p:column headerText="Nome">
+			<p:outputLabel value="#{saida.prestadorDeServico.nome}" />
+		</p:column>
+		<p:column headerText="Empresa" >
+			<p:outputLabel value="#{saida.empresa.nome}" />
+		</p:column>
+	</p:dataTable>
+</p:dialog>
+
+</html>

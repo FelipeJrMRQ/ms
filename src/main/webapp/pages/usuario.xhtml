@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+		<p:growl id="mensagem" />
+
+		<h:form id="frmCadastroUsuario">
+			<p:fieldset>
+				<h:panelGrid columns="1">
+					<p:outputLabel value="Nome:" />
+					<p:inputText value="#{usuarioBean.usuario.nome}" required="true" requiredMessage="Digite o nome do usuário" id="iptxNomeUsuario"  styleClass="upper-case" maxlength="12">
+						<p:message for="iptxNomeUsuario" />
+					</p:inputText>
+					<p:outputLabel value="Senha: " />
+					<p:password id="iptxSenhaUsuario" value="#{usuarioBean.usuario.senha}" required="true" requiredMessage="Digite a senha do usuário" maxlength="12">
+						<p:message for="iptxSenhaUsuario" />
+					</p:password>
+					<p:outputLabel value="Confirmar senha: " />
+					<p:password id="iptxRepetirSenha" value="#{usuarioBean.usuario.confirmaSenha}" required="true" requiredMessage="Digite a senha do usuário" maxlength="70">
+						<p:message for="iptxRepetirSenha" />
+					</p:password>
+				</h:panelGrid>
+				<p:panel header="Permissões do usuário">
+					<h:panelGrid columns="2">
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoAtendimento}" itemLabel="Manutenção Atendimento" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoEmpresa}" itemLabel="Manutenção Empresa" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoNotasFiscais}" itemLabel="Manutencão Notas" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoUsuario}" itemLabel="Manutencão Usuário" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoVisitante}" itemLabel="Manutenão Visitante" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.manutencaoRegistroEntrada}" itemLabel="Manutencão Entrada-Saída" />
+						<p:selectBooleanCheckbox value="#{usuarioBean.permissao.edicaoRegistro}" itemLabel="Edição de registros" />
+					</h:panelGrid>
+				</p:panel>
+				
+				<br />
+				<p:commandButton value="Salvar" actionListener="#{usuarioBean.salvarUsuario}" update=":mensagem :frmCadastroUsuario" />
+			</p:fieldset>
+		</h:form>
+		<br />
+		<f:facet name="header">
+			<p:outputLabel value="Cadastro de Usuário" />
+		</f:facet>
+		<h:form>
+			<h:panelGrid columns="3">
+				<p:inputText value="#{usuarioBean.consultaUsuario}" placeholder="Buscar Usuário" required="true" requiredMessage="Digite o nome do usuário" maxlength="25" size="30" styleClass="upper-case" />
+				<p:commandButton value="Buscar" update=":mensagem :tbCadUsuario" action="#{usuarioBean.buscarUsuarioPorNome}" id="btnBuscarUsuario">
+					<p:tooltip for="btnBuscarUsuario" value="Buscar usuário cadastrado" />
+				</p:commandButton>
+			</h:panelGrid>
+		</h:form>
+
+		<p:dataTable id="tbCadUsuario" var="usuario" value="#{usuarioBean.usuarios}" rows="10" paginator="true">
+			<p:column headerText="Código" width="20">
+				<p:outputLabel value="#{usuario.codigo}" />
+			</p:column>
+			<p:column headerText="Nome" width="120">
+				<p:outputLabel value="#{usuario.nome}" />
+			</p:column>
+			<p:column headerText="Opções" width="40" styleClass="align">
+				<p:commandButton icon="ui-icon-pencil" id="btnEditar" actionListener="#{usuarioBean.usuarioSelecionado}"  oncomplete="PF('dlgEdicaoUsuario').show()" update="dlgEditUsuario">
+					<p:tooltip for="btnEditar" value="Editar usuário" position="left" />
+					<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-trash" id="btnExcluir" actionListener="#{usuarioBean.usuarioSelecionado}" rendered="false">
+					<p:tooltip for="btnExcluir" value="Excluir usuário" position="left" />
+					<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog widgetVar="dlgEdicaoUsuario" id="dlgEditUsuario" header="Edição de usuário" closable="false">
+			<h:form id="frmUsuarioSelecionado">
+				<p:fieldset>
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Nome:" />
+						<p:inputText value="#{usuarioBean.usuario.nome}" required="true" requiredMessage="Digite o nome do usuário" id="iptxNomeUsuario"/>
+					</h:panelGrid>
+					<p:panel header="Permissões do usuário">
+						<h:panelGrid columns="2">
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoAtendimento}" itemLabel="Manutenção Atendimento" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoEmpresa}" itemLabel="Manutenção Empresa" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoNotasFiscais}" itemLabel="Manutencão Notas" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoUsuario}" itemLabel="Manutencão Usuário" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoVisitante}" itemLabel="Manutenão Visitante" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.manutencaoRegistroEntrada}" itemLabel="Manutencão Entrada-Saída" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.usuario.permissoes.edicaoRegistro}" itemLabel="Edição de registros" />
+						</h:panelGrid>
+					</p:panel>
+				</p:fieldset>
+				<br />
+				<p:commandButton value="Salvar" actionListener="#{usuarioBean.alterarUsuario}" update=":mensagem :tbCadUsuario" oncomplete="PF('dlgEdicaoUsuario').hide()"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dlgEdicaoUsuario').hide()" action="#{usuarioBean.novo}" style="margin-left:10px;"/>
+				<p:commandButton value="Redefinir Senha" oncomplete="PF('dlgEdicaoUsuario').hide()" actionListener="#{usuarioBean.redefinirSenha}" update=":mensagem" style="margin-left:10px;"/>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+</html>

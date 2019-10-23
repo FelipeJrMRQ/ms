@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Meu Sistema</title>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputScript library="js" name="javascript.js" />
+	<style>
+.ui-layout-north {
+	z-index: 20 !important;
+	overflow: visible !important;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+	overflow: visible !important;
+}
+</style>
+</h:head>
+<h:body style="font-size: 12px">
+	<div align="center">
+		<p:layout style="min-width:90%;max-width:90%;min-height:660px">
+			<p:layoutUnit position="north" size="95" style="text-align:center;">
+				<h:graphicImage value="logo.png" width="300" height="60" style="padding-top: 10px;" />
+				<!-- MENU BAR DA PÁGINA -->
+				
+			</p:layoutUnit>
+
+
+
+			<p:layoutUnit position="west" size="220" rendered="false">
+				<ui:insert name="menu">
+					<h:form>
+						<p:panelMenu style="width: 200px">
+							<p:submenu label="CADASTROS" style="text-align:left">
+								<p:menuitem value="Setor" outcome="setor.xhtml" />
+								<p:menuitem value="Categoria" outcome="categoria.xhtml" />
+								<p:menuitem value="Usuário" outcome="usuario.xhtml" />
+								<p:menuitem value="Material" outcome="material.xhtml" />
+							</p:submenu>
+						</p:panelMenu>
+					</h:form>
+				</ui:insert>
+			</p:layoutUnit>
+			
+			<div align="left">
+				<p:layoutUnit position="center">
+				<h:form>
+					<p:menubar rendered="false">
+						<p:submenu label="Cadastros">
+							<p:menuitem value="Empresa" oncomplete="PF('dlgCadastroEmpresa').show()" />
+							<p:menuitem value="Visitante" oncomplete="PF('dlgCadastroEntradaVisitante').show()" />
+							<p:menuitem value="Prestador de serv" oncomplete="PF('dlgCadastroPrestadorServico').show()" />
+						</p:submenu>
+						<p:submenu label="Consultas">
+							<p:menuitem value="Empresa" oncomplete="PF('dlgCadastroEmpresa').show()" />
+							<p:menuitem value="Visitante" oncomplete="PF('dlgCadastroEntradaVisitante').show()" />
+						</p:submenu>
+						<p:submenu label="Opções">
+							<p:menuitem value="Empresa" />
+							<p:menuitem value="Visitante" outcome="visitante.xhtml" />
+							<p:menuitem value="Prestador de serv" />
+						</p:submenu>
+					</p:menubar>
+				</h:form>
+					<ui:insert name="conteudo">
+
+					</ui:insert>
+				</p:layoutUnit>
+			</div>
+		</p:layout>
+	</div>
+</h:body>
+</html>

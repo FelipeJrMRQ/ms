@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>MS</title>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body style="font-size:12px">
+	<p:growl id="msgErro" />
+	<div id="content" title="Login">
+		<p:dialog header="Atenção!" id="dialog1" minWidth="350" width="350" modal="true" closable="false" position="center" showEffect="slide" draggable="true" resizable="false" visible="true" style="font-size:13px">
+			<h:form>
+				<p>Digite sua nova senha nos dois campos abaixo e clique no botão Alterar.</p>
+				<h:commandLink action="#{usuarioBean.cancelar}" value="Cancelar e voltar" style="color:red"/>
+			</h:form>
+			<p:separator></p:separator>
+			<div>
+				<div class="container_login_frm">
+					<h:form id="frmSenha">
+						<h:panelGrid columns="1">
+							<p:column>
+								<div class="ui-g-12 ui-md-4">
+									<div class="ui-inputgroup">
+										<span class="ui-inputgroup-addon"><i class="fa fa-key"></i></span>
+										<p:password value="#{usuarioBean.senha}" required="true" requiredMessage="Digite sua senha" placeholder="Senha" maxlength="12"/>
+									</div>
+								</div>
+							</p:column>
+							<p:column>
+								<div class="ui-g-12 ui-md-4">
+									<div class="ui-inputgroup">
+										<span class="ui-inputgroup-addon"><i class="fa fa-key"></i></span>
+										<p:password value="#{usuarioBean.confirmaSenha}" required="true" requiredMessage="Confirme sua senha" placeholder="Confirmação" maxlength="12" />
+									</div>
+								</div>
+							</p:column>
+							<p:column>
+								<p:commandButton value="Alterar" update=":msgErro :frmSenha" actionListener="#{usuarioBean.alterarSenha}" style="width:100px;margin-left:7px;" />
+							</p:column>
+						</h:panelGrid>
+					</h:form>
+				</div>
+				<div class="container_login_img">
+					<p:graphicImage url="../img/alerta.jpg" width="40" />
+				</div>
+			</div>
+			<f:facet name="footer">
+				<div>
+					<div id="developer">
+						<p:outputLabel value="By Felipe Marques " />
+					</div>
+					<div id="version">
+						<p:outputLabel value="Versão 1.1.5" />
+					</div>
+				</div>
+				<div style="clear: both"></div>
+			</f:facet>
+		</p:dialog>
+	</div>
+</h:body>
+</html>
