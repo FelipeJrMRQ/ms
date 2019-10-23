@@ -28,7 +28,6 @@ public class UsuarioDao implements Serializable {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(u);
-			session.flush();
 			transaction.commit();
 		} catch (Exception er) {
 			transaction.rollback();
@@ -41,7 +40,6 @@ public class UsuarioDao implements Serializable {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(u);
-			session.flush();
 			transaction.commit();
 		} catch (Exception er) {
 			transaction.rollback();

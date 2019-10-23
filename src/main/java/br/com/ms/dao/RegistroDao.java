@@ -15,15 +15,15 @@ import org.hibernate.criterion.Restrictions;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class RegistroDao {
 	private Transaction transaction;
 	private Registro registro;
-	private Session session;
+	private Session session = null;
 
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	public RegistroDao() {
 		registro = new Registro();
@@ -42,6 +42,8 @@ public class RegistroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -56,6 +58,8 @@ public class RegistroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -64,11 +68,12 @@ public class RegistroDao {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(r);
-			session.flush();
 			transaction.commit();
 		} catch (RuntimeException e) {
 			transaction.rollback();
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -81,11 +86,12 @@ public class RegistroDao {
 		try {
 			transaction = session.beginTransaction();
 			session.update(r);
-			session.flush();
 			transaction.commit();
 		} catch (RuntimeException e) {
 			transaction.rollback();
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 

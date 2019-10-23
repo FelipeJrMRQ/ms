@@ -43,7 +43,6 @@ public class AtendimentoDao {
 		try {
 			transaction = session.beginTransaction();
 			at = (Atendimento) session.merge(atendimento);
-			session.flush();
 			transaction.commit();
 			return at;
 		} catch (Exception erro) {
@@ -57,7 +56,6 @@ public class AtendimentoDao {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(atendimento);
-			session.flush();
 			transaction.commit();
 		} catch (Exception erro) {
 			transaction.rollback();
@@ -70,7 +68,6 @@ public class AtendimentoDao {
 		try {
 			transaction = session.beginTransaction();
 			session.delete(atendimento);
-			session.flush();
 			transaction.commit();
 		} catch (Exception erro) {
 			transaction.rollback();

@@ -26,7 +26,6 @@ public class EmpresaDao {
 		try {
 			transaction = session.beginTransaction();
 			session.save(empresa);
-			session.flush();
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;
@@ -38,7 +37,6 @@ public class EmpresaDao {
 		try {
 			transaction = session.beginTransaction();
 			session.createQuery("delete from Empresa where id = " + e.getId() + "").executeUpdate();
-			session.flush();
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;
@@ -52,7 +50,6 @@ public class EmpresaDao {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(empresa);
-			session.flush();
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;

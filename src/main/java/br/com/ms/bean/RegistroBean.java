@@ -91,7 +91,9 @@ public class RegistroBean implements Serializable {
 	@PostConstruct
 	private void iniciar() {
 		tipoDeConsulta = "NOME";
-		atualizaTela();
+		consultaUtimosRegistros();
+		consultaLiberadosSaida();
+		calculaPessoasPresentes();
 	}
 
 	/**
@@ -260,7 +262,7 @@ public class RegistroBean implements Serializable {
 		String nf = ConverteChaveDeAcesso.getNumeroNfe(nfe);
 		if (!numeroNotas.contains(nf) && !nf.isEmpty()) {
 			try {
-				//listNfe.add(MontaRegistroNfe.getNfe(nfe, registro));
+				// listNfe.add(MontaRegistroNfe.getNfe(nfe, registro));
 				NotaRegistro n = new NotaRegistro();
 				n.setChave(nfe);
 				n.setRegistro(registro);
@@ -277,7 +279,7 @@ public class RegistroBean implements Serializable {
 			nfe = "";
 		}
 	}
-	
+
 	/**
 	 * Método temporario no futuro substituir pelo addNotas
 	 */

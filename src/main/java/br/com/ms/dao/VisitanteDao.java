@@ -12,6 +12,7 @@ import org.hibernate.criterion.Restrictions;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
 import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class VisitanteDao {
 
@@ -24,7 +25,7 @@ public class VisitanteDao {
 	}
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	
 	public void salvarPrestadorDeServico(Visitante p) {
@@ -54,6 +55,7 @@ public class VisitanteDao {
 
 	public Visitante consultaPrestadorPeloCpf(String cpf) {
 		Visitante visitante = new Visitante();
+		session = getSession();
 		try {
 			Criteria consulta = session.createCriteria(visitante.getClass());
 			consulta.add(Restrictions.eq("cpf", cpf));
@@ -87,13 +89,14 @@ public class VisitanteDao {
 			consulta.add(Restrictions.like("nome", "%" + nome + "%", MatchMode.ANYWHERE));
 			consulta.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			prestadores = consulta.list();
-//			//A utilização desta função evita o Lazyloading
-//			for (Visitante visitante : prestadores) {
-//				visitante.getEmpresas().size();
-//			}
+			for (Visitante visitante : prestadores) {
+				visitante.getEmpresas().size();
+			}
 			return prestadores;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -131,6 +134,7 @@ public class VisitanteDao {
 	 * @return
 	 */
 	public Visitante validaExistenciaRg(Visitante v) {
+		session = getSession();
 		try {
 			Criteria consulta = session.createCriteria(Visitante.class);
 			consulta.add(Restrictions.eq("rg", v.getRg())).setMaxResults(1);

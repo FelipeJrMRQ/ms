@@ -96,7 +96,6 @@ public class LiberacaoVisitanteDao {
 			session.delete(lb);
 			session.delete(entrada);
 			session.delete(saida);
-			session.flush();
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();

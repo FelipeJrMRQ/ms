@@ -25,7 +25,6 @@ public class LiberacaoDao {
 		try {
 			transaction = session.beginTransaction();
 			session.merge(liberacao);
-			session.flush();
 			transaction.commit();
 		} catch (Exception ex) {
 			transaction.rollback();
@@ -38,7 +37,6 @@ public class LiberacaoDao {
 		try {
 			transaction = session.beginTransaction();
 			session.delete(liberacao);
-			session.flush();
 			transaction.commit();
 		} catch (Exception ex) {
 			transaction.rollback();
