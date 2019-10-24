@@ -134,7 +134,7 @@ public class RegistroBean implements Serializable {
 					visitante = new Visitante();
 				}
 			} else {
-				Messages.addGlobalWarn("Numero de CPF não encontrado!");
+				Messages.addGlobalError("Numero de CPF não encontrado!");
 			}
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());

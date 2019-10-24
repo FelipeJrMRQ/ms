@@ -11,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.LiberacaoVisitante;
 import br.com.ms.model.Registro;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class LiberacaoVisitanteDao {
 	private Transaction transaction;
@@ -19,7 +19,7 @@ public class LiberacaoVisitanteDao {
 	private Session session;
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	public LiberacaoVisitanteDao() {
 		liberacaoVisitante = new LiberacaoVisitante();
@@ -35,6 +35,8 @@ public class LiberacaoVisitanteDao {
 		} catch (Exception e) {
 			transaction.rollback();
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -62,6 +64,8 @@ public class LiberacaoVisitanteDao {
 			return lista;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -74,7 +78,9 @@ public class LiberacaoVisitanteDao {
 			return liberacaoVisitante;
 		} catch (Exception e) {
 			throw e;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	public LiberacaoVisitante consultarLiberacaoPorIdEntrada(long id) {
@@ -86,7 +92,9 @@ public class LiberacaoVisitanteDao {
 			return liberacaoVisitante;
 		} catch (Exception e) {
 			throw e;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	public void excluirLiberacaoVisitante(LiberacaoVisitante lb, Registro entrada, Registro saida) {
@@ -100,6 +108,8 @@ public class LiberacaoVisitanteDao {
 		} catch (Exception e) {
 			transaction.rollback();
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 }

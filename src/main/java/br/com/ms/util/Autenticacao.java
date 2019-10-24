@@ -21,15 +21,14 @@ public class Autenticacao implements PhaseListener {
 
 		if (!paginaDeLogin) {
 			LoginBean loginBean = Faces.getSessionAttribute("loginBean");
-
-			if (loginBean == null) {
-				try {
-					FacesContext.getCurrentInstance().getExternalContext().redirect("/ms/login/login.xhtml");
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (loginBean == null) {
+					try {
+						FacesContext.getCurrentInstance().getExternalContext().redirect("/ms/login/login.xhtml");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
 				}
-				return;
-			}
 			if (PermissoesUsuarios.getUsuario() == null) {
 				try {
 					FacesContext.getCurrentInstance().getExternalContext().redirect("/ms/login/login.xhtml");
@@ -43,7 +42,7 @@ public class Autenticacao implements PhaseListener {
 
 	@Override
 	public void beforePhase(PhaseEvent arg0) {
-	
+
 	}
 
 	@Override

@@ -158,6 +158,8 @@ public class RegistroDao {
 			return list;
 		} catch (Exception e) {
 			throw (e);
+		}finally {
+			session.close();
 		}
 	}
 
@@ -239,6 +241,8 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 

@@ -33,6 +33,7 @@ public class LiberacaoDao {
 			session.close();
 		}
 	}
+	
 
 	public void excluirLiberacao(Liberacao liberacao) {
 		session = getSession();
@@ -47,7 +48,17 @@ public class LiberacaoDao {
 			session.close();
 		}
 	}
-
+	
+	/**
+	 * Este metodo evita o Lazyloading do hibernate
+	 */
+	private void getSize(List<Liberacao> lista) {
+		for (Liberacao liberacao : lista) {
+			liberacao.getEntrada().getNotas().size();
+			liberacao.getSaida().getNotas().size();
+		}
+	}
+	
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<Liberacao> consultarPeloNomeDoPrestador(Date dataInicial, Date DataFinal, String nome) {
 		session = getSession();
@@ -69,6 +80,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.like("e.nome", "%" + nome + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -98,6 +110,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.like("e.nome", "%" + nome + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -127,6 +140,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.eq("e.categoria", Integer.parseInt(nome))).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -144,6 +158,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.like("nota.numeroNfe", "%" + nf + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -173,6 +188,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.like("e.placaVeiculo", "%" + placa + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -190,6 +206,7 @@ public class LiberacaoDao {
 			consulta.add(Restrictions.like("nota.numeroNfe", "%" + nf + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			List<Liberacao> lista = new ArrayList<>();
 			lista = consulta.list();
+			getSize(lista);
 			return lista;
 		} catch (Exception ex) {
 			throw ex;
@@ -227,6 +244,8 @@ public class LiberacaoDao {
 			consulta.createAlias("atendimento", "a");
 			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			lib = (Liberacao) consulta.uniqueResult();
+			lib.getEntrada().getNotas().size();
+			lib.getSaida().getNotas().size();
 			return lib;
 		} catch (Exception ex) {
 			throw ex;
@@ -252,6 +271,8 @@ public class LiberacaoDao {
 			consulta.createAlias("saida", "s");
 			consulta.add(Restrictions.eq("s.id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			lib = (Liberacao) consulta.uniqueResult();
+			lib.getEntrada().getNotas().size();
+			lib.getSaida().getNotas().size();
 			return lib;
 		} catch (Exception ex) {
 			throw ex;
@@ -268,6 +289,8 @@ public class LiberacaoDao {
 			consulta.createAlias("entrada", "e");
 			consulta.add(Restrictions.eq("e.id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			lib = (Liberacao) consulta.uniqueResult();
+			lib.getEntrada().getNotas().size();
+			lib.getSaida().getNotas().size();
 			return lib;
 		} catch (Exception ex) {
 			throw ex;

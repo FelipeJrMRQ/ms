@@ -8,14 +8,14 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.LiberacaoDeUso;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class LiberacaoDeUsoDao {
 	private Transaction transaction;
 	private Session session;
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	public void salvarLiberacao(LiberacaoDeUso lb) {
 		session = getSession();
@@ -26,6 +26,8 @@ public class LiberacaoDeUsoDao {
 		} catch (Exception e) {
 			transaction.rollback();
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 	
@@ -38,6 +40,8 @@ public class LiberacaoDeUsoDao {
 			return consulta.list();
 		}catch(Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 }

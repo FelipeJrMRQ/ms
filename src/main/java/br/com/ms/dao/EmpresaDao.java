@@ -11,14 +11,14 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Empresa;
 import br.com.ms.model.Registro;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class EmpresaDao {
 	private Transaction transaction;
 	private Session session;
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 
 	public void salvarEmpresa(Empresa empresa) {
@@ -29,6 +29,8 @@ public class EmpresaDao {
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -42,6 +44,8 @@ public class EmpresaDao {
 			throw erro;
 		} catch (Error ex) {
 			throw ex;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -53,6 +57,8 @@ public class EmpresaDao {
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -68,6 +74,8 @@ public class EmpresaDao {
 			return empresas;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -81,6 +89,8 @@ public class EmpresaDao {
 			return empresa;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 	
@@ -95,6 +105,8 @@ public class EmpresaDao {
 			return r;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 }

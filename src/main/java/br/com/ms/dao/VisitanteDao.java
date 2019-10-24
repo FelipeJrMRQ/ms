@@ -36,6 +36,8 @@ public class VisitanteDao {
 		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -49,6 +51,8 @@ public class VisitanteDao {
 		} catch (Exception er) {
 			transaction.rollback();
 			throw er;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -59,9 +63,14 @@ public class VisitanteDao {
 			Criteria consulta = session.createCriteria(visitante.getClass());
 			consulta.add(Restrictions.eq("cpf", cpf));
 			visitante = (Visitante) consulta.uniqueResult();
+			if(visitante != null) {
+				visitante.getEmpresas().size();
+			}
 			return visitante;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -73,9 +82,14 @@ public class VisitanteDao {
 			Criteria consulta = session.createCriteria(Visitante.class);
 			consulta.add(Restrictions.like("rg", "%" + rg + "%", MatchMode.ANYWHERE));
 			prestadores = consulta.list();
+			for (Visitante visitante : prestadores) {
+				visitante.getEmpresas().size();
+			}
 			return prestadores;
 		} catch (Exception erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -105,9 +119,12 @@ public class VisitanteDao {
 			Criteria consulta = session.createCriteria(Visitante.class);
 			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			this.visitante = (Visitante) consulta.uniqueResult();
+			visitante.getEmpresas().size();
 			return visitante;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -119,9 +136,12 @@ public class VisitanteDao {
 			consulta.createAlias("visitante", "v");
 			consulta.add(Restrictions.eq("v.id", id)).setMaxResults(1);
 			r = (Registro) consulta.uniqueResult();
+			r.getNotas().size();
 			return r;
 		} catch (RuntimeException erro) {
 			throw erro;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -140,6 +160,8 @@ public class VisitanteDao {
 			return (Visitante) consulta.uniqueResult() ;
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 
@@ -158,6 +180,8 @@ public class VisitanteDao {
 			return (Visitante) consulta.uniqueResult();
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			session.close();
 		}
 	}
 

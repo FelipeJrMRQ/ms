@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
-import br.com.ms.util.DAO;
+import br.com.ms.util.HibernateUtil;
 
 public class NotaResgitroDao {
 
@@ -18,7 +18,7 @@ public class NotaResgitroDao {
 	private Session session;
 	
 	private Session getSession() {
-		return DAO.getSession();
+		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	public void salvarNotas(NotaRegistro notas) {
 		session = getSession();
@@ -29,7 +29,9 @@ public class NotaResgitroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -43,7 +45,9 @@ public class NotaResgitroDao {
 			return notas;
 		} catch (RuntimeException erro) {
 			throw erro;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	public void excluirNotasEntrada(NotaRegistro nota) {
@@ -55,7 +59,9 @@ public class NotaResgitroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -67,6 +73,8 @@ public class NotaResgitroDao {
 			return lista;
 		} catch (Exception e) {
 			throw e;
-		} 
+		} finally {
+			session.close();
+		}
 	}
 }
