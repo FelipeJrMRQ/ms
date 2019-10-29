@@ -3,6 +3,8 @@ package br.com.ms.util;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.faces.bean.ApplicationScoped;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -10,7 +12,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.service.ServiceRegistry;
 
-public class HibernateUtil {
+@ApplicationScoped
+public abstract class HibernateUtil {
 	private static final SessionFactory fabricaDeSessoes = criarFabricaDeSessoes();
 
 	public static Connection getConexao() {
@@ -32,7 +35,6 @@ public class HibernateUtil {
 	 * Classe de comunica��o com hibernate.
 	 */
 	private static SessionFactory criarFabricaDeSessoes() {
-		System.out.println("Criei a fabrica");
 		try {
 			// Busca a configura��o XML do Hibernate
 			Configuration configuracao = new Configuration().configure();

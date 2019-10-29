@@ -20,7 +20,7 @@ import br.com.ms.util.HibernateUtil;
 public class RegistroDao {
 	private Transaction transaction;
 	private Registro registro;
-	private Session session = null;
+	private Session session;
 
 	private Session getSession() {
 		return HibernateUtil.getFrabricadeSessoes().openSession();
@@ -48,11 +48,11 @@ public class RegistroDao {
 	}
 
 	public void excluir(Registro r) {
+		Registro rg = new Registro();
+		rg = consultaRegistroPeloId(r.getId());
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			Registro rg = new Registro();
-			rg = consultaRegistroPeloId(r.getId());
 			session.delete(rg);
 			transaction.commit();
 		} catch (RuntimeException erro) {
@@ -67,7 +67,7 @@ public class RegistroDao {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			session.merge(r);
+			session.update(r);
 			transaction.commit();
 		} catch (RuntimeException e) {
 			transaction.rollback();

@@ -48,7 +48,8 @@ public class EdicaoRegistroBean implements Serializable {
 	private String numeroNf;
 	private List<Empresa> empresas;
 	private Registro rAuxiliar;
-	//private LiberacaoVisitanteDao libVisDao;
+	List<String> nfList;
+	// private LiberacaoVisitanteDao libVisDao;
 
 	private boolean viewPanel;
 
@@ -67,7 +68,8 @@ public class EdicaoRegistroBean implements Serializable {
 		visitante = new Visitante();
 		visitantes = new ArrayList<>();
 		empresas = new ArrayList<>();
-		//libVisDao = new LiberacaoVisitanteDao();
+		nfList = new ArrayList<>();
+		// libVisDao = new LiberacaoVisitanteDao();
 	}
 
 	public void consultaRegistroPorId() {
@@ -94,13 +96,13 @@ public class EdicaoRegistroBean implements Serializable {
 
 	private void verificaPrestador(Registro registro) {
 		try {
-			if (registro.getTipo().equals("SAIDA")  && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
+			if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
 				rAuxiliar = consultarLiberacao(registro.getId(), "SAIDA").getEntrada();
-			} else if(registro.getTipo().equals("ENTRADA")  && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")){
+			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
 				rAuxiliar = consultarLiberacao(registro.getId(), "ENTRADA").getSaida();
-			} else if(registro.getTipo().equals("SAIDA")  && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")){
+			} else if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
 				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "SAIDA").getSaida();
-			} else if(registro.getTipo().equals("ENTRADA")  && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")){
+			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
 				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "ENTRADA").getSaida();
 			}
 		} catch (Exception e) {
@@ -111,12 +113,17 @@ public class EdicaoRegistroBean implements Serializable {
 	public void addNF() {
 		NotaRegistro nota = new NotaRegistro();
 		nota.setNumeroNfe(ConverteChaveDeAcesso.getNumeroNfe(numeroNf));
-		nota.setRegistro(registro);
-		try {
-			registro.getNotas().add(nota);
+		if(!nfList.contains(nota.getNumeroNfe())) {
+			nota.setRegistro(registro);
+			try {
+				registro.getNotas().add(nota);
+				nfList.add(nota.getNumeroNfe());
+				numeroNf = "";
+			} catch (Exception e) {
+				throw e;
+			}
+		}else {
 			numeroNf = "";
-		} catch (Exception e) {
-			throw e;
 		}
 	}
 
@@ -134,11 +141,11 @@ public class EdicaoRegistroBean implements Serializable {
 				if (rAuxiliar.getId() > 0) {
 					verificaIntervalo(registro, rAuxiliar);
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
-				}else if(registro.getId() > 0) {
+				} else if (registro.getId() > 0) {
 					registroDao.salvar(registro);
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
 				}
-				
+
 			} catch (Exception e) {
 				Messages.addGlobalFatal(e.getMessage());
 			}
@@ -152,7 +159,7 @@ public class EdicaoRegistroBean implements Serializable {
 			throw new Exception("A data da entrada não pode ser  maior que a data de saida");
 		} else if (registro.getData().getTime() <= auxiliar.getData().getTime() && registro.getTipo().equals("SAIDA")) {
 			throw new Exception("A data de saída não pode ser menor que a data de entrada");
-		}else {
+		} else {
 			registroDao.salvar(registro);
 			registroDao.salvar(auxiliar);
 		}
@@ -169,9 +176,9 @@ public class EdicaoRegistroBean implements Serializable {
 
 	private LiberacaoVisitante consultaLibareacaoVisitante(long id, String tipo) {
 		LiberacaoVisitanteDao libDao = new LiberacaoVisitanteDao();
-		if(tipo.equals("SAIDA")) {
+		if (tipo.equals("SAIDA")) {
 			return libDao.consultarLiberacaoPorIdSaida(id);
-		}else {
+		} else {
 			return libDao.consultarLiberacaoPorIdEntrada(id);
 		}
 	}

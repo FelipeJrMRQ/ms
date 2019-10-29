@@ -74,33 +74,37 @@ public class AtualizaNfeBean implements Serializable {
 
 	public void atualizaInterno() {
 		for (NotaRegistro notaRegistro : notas) {
-			try {
-				MontaRegistroNfe montaReg = new MontaRegistroNfe();
-				novaNota = montaReg.getNfe(notaRegistro.getRegistro(), notaRegistro.getChave());
-				notaRegistro.setNome(novaNota.getNome());
-				notaRegistro.setNumeroNfe(novaNota.getNumeroNfe());
-				notaRegistro.setCnpj(novaNota.getCnpj());
-				notaRegistro.setEmissao(novaNota.getEmissao());
-				notaRegistro.setValor(novaNota.getValor());
-				rDao.alterarRegistro(notaRegistro.getRegistro());
-				limpar();
-				consultaNotasDesatualizadas();
-			} catch (FileNotFoundException e) {
-				
-				Messages.addGlobalFatal("Não atualizado tente novamente");
-			} catch (IOException e) {
-				
-				Messages.addGlobalFatal("Não atualizado tente novamente");
-			} catch (NfeException e) {
-				
-				Messages.addGlobalFatal("Não atualizado tente novamente");
-			} catch (CertificadoException e) {
-				
-				Messages.addGlobalFatal("Não atualizado tente novamente");
-			} catch (ParseException e) {
-				Messages.addGlobalFatal("Não atualizado tente novamente");
-			} catch (Exception e) {
-				Messages.addGlobalFatal(e.getMessage());
+			Registro registro = new Registro();
+			registro = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
+			for (NotaRegistro nr : registro.getNotas()) {
+				try {
+					MontaRegistroNfe montaReg = new MontaRegistroNfe();
+					novaNota = montaReg.getNfe(notaRegistro.getRegistro(), notaRegistro.getChave());
+					nr.setNome(novaNota.getNome());
+					nr.setNumeroNfe(novaNota.getNumeroNfe());
+					nr.setCnpj(novaNota.getCnpj());
+					nr.setEmissao(novaNota.getEmissao());
+					nr.setValor(novaNota.getValor());
+					rDao.alterarRegistro(registro);
+					limpar();
+					// consultaNotasDesatualizadas();
+				} catch (FileNotFoundException e) {
+
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (IOException e) {
+
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (NfeException e) {
+
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (CertificadoException e) {
+
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (ParseException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (Exception e) {
+					Messages.addGlobalFatal(e.getMessage());
+				}
 			}
 		}
 	}
@@ -108,37 +112,38 @@ public class AtualizaNfeBean implements Serializable {
 	public void atualizarEmMass() {
 		try {
 			for (NotaRegistro notaRegistro : notas) {
-				try {
+				Registro r = new Registro();
+				r = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
+				for (NotaRegistro nr : r.getNotas()) {
 					novaNota = MontaRegistroNfe.getNfe(notaRegistro.getChave(), notaRegistro.getRegistro());
-					notaRegistro.setNome(novaNota.getNome());
-					notaRegistro.setNumeroNfe(novaNota.getNumeroNfe());
-					notaRegistro.setCnpj(novaNota.getCnpj());
-					notaRegistro.setEmissao(novaNota.getEmissao());
-					notaRegistro.setValor(novaNota.getValor());
-					rDao.alterarRegistro(notaRegistro.getRegistro());
-					limpar();
-					consultaNotasDesatualizadas();
-				} catch (FileNotFoundException e) {
-					
-					Messages.addGlobalFatal("Não atualizado tente novamente");
-				} catch (IOException e) {
-					
-					Messages.addGlobalFatal("Não atualizado tente novamente");
-				} catch (NfeException e) {
-					
-					Messages.addGlobalFatal("Não atualizado tente novamente");
-				} catch (CertificadoException e) {
-
-					Messages.addGlobalFatal("Não atualizado tente novamente");
-				} catch (ParseException e) {
-				
-					Messages.addGlobalFatal("Não atualizado tente novamente");
+					nr.setNome(novaNota.getNome());
+					nr.setNumeroNfe(novaNota.getNumeroNfe());
+					nr.setCnpj(novaNota.getCnpj());
+					nr.setEmissao(novaNota.getEmissao());
+					nr.setValor(novaNota.getValor());
+					rDao.alterarRegistro(r);
 				}
 			}
-			Messages.addGlobalInfo("Atualizado com sucesso!");
-		} catch (Exception e) {
+			limpar();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			notas = dao.consultaNotasNaoSincrozizadas(sdf.format(data), tipo);
+		} catch (FileNotFoundException e) {
+
+			Messages.addGlobalFatal("Não atualizado tente novamente");
+		} catch (IOException e) {
+
+			Messages.addGlobalFatal("Não atualizado tente novamente");
+		} catch (NfeException e) {
+
+			Messages.addGlobalFatal("Não atualizado tente novamente");
+		} catch (CertificadoException e) {
+
+			Messages.addGlobalFatal("Não atualizado tente novamente");
+		} catch (ParseException e) {
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		}
+
 	}
 
 	public void limpar() {
@@ -150,32 +155,36 @@ public class AtualizaNfeBean implements Serializable {
 	}
 
 	public void notaSelecionada(ActionEvent event) {
-		notaRegistro = (NotaRegistro) event.getComponent().getAttributes().get("notaSelecionada");
 		try {
-			novaNota = MontaRegistroNfe.getNfe(notaRegistro.getChave(), registro);
-			notaRegistro.setNome(novaNota.getNome());
-			notaRegistro.setNumeroNfe(novaNota.getNumeroNfe());
-			notaRegistro.setCnpj(novaNota.getCnpj());
-			notaRegistro.setEmissao(novaNota.getEmissao());
-			notaRegistro.setValor(novaNota.getValor());
-			rDao.alterarRegistro(notaRegistro.getRegistro());
+			notaRegistro = (NotaRegistro) event.getComponent().getAttributes().get("notaSelecionada");
+			Registro r = new Registro();
+			r = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
+			for (NotaRegistro notaRegistro : r.getNotas()) {
+				novaNota = MontaRegistroNfe.getNfe(notaRegistro.getChave(), notaRegistro.getRegistro());
+				notaRegistro.setNome(novaNota.getNome());
+				notaRegistro.setNumeroNfe(novaNota.getNumeroNfe());
+				notaRegistro.setCnpj(novaNota.getCnpj());
+				notaRegistro.setEmissao(novaNota.getEmissao());
+				notaRegistro.setValor(novaNota.getValor());
+				rDao.alterarRegistro(r);
+			}
 			limpar();
-			consultaNotasDesatualizadas();
-			Messages.addGlobalInfo("Atualizado com sucesso!");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			notas = dao.consultaNotasSincrozizadas(sdf.format(data), tipo);
 		} catch (FileNotFoundException e) {
-			
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		} catch (IOException e) {
-			
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		} catch (NfeException e) {
-			
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		} catch (CertificadoException e) {
-			
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		} catch (ParseException e) {
-			
+
 			Messages.addGlobalFatal("Não atualizado tente novamente");
 		}
 	}

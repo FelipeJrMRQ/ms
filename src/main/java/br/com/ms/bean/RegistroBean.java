@@ -44,25 +44,25 @@ public class RegistroBean implements Serializable {
 	private RegistroDao registroDao;
 	private Visitante visitante;
 	private VisitanteDao visitanteDao;
-	private List<Empresa> empresas;
-	private List<Registro> registros;
-	private List<Registro> liberados;
-	private List<Visitante> visitantesNome;
-	List<NotaRegistro> listNfe;
 	private NotaRegistro notaRegistro;
 	private String nfe;
 	private String tipoDeConsulta;
 	private LiberacaoVisitanteDao libVisiDao;
 	private LiberacaoDao libDao;
 	private LiberacaoVisitante liberacaoVisitante;
-	List<String> numeroNotas;
 	private String placa;
 	private String qtdNotas;
 	private AtendimentoDao atendimentoDao;
+	private List<Empresa> empresas;
+	private List<Registro> registros;
+	private List<Registro> liberados;
+	private List<Visitante> visitantesNome;
+	private List<NotaRegistro> listNfe;
 	private List<Registro> quantidadeEntradas;
 	private List<Registro> quantidadeAtentimentos;
 	private List<Registro> quantidadeSaidas;
 	private List<Registro> quantidadePresentes;
+	private List<String> numeroNotas;
 	private boolean monitorado;
 	private static final String ABERTO = "ABERTO", LIBERADO = "LIBERADO", FINALIZADO = "FINALIZADO", ENTRADA = "ENTRADA", SAIDA = "SAIDA";
 
@@ -102,7 +102,6 @@ public class RegistroBean implements Serializable {
 	 * em questão
 	 */
 	public void atualizaTela() {
-		consultaUtimosRegistros();
 		consultaLiberadosSaida();
 		calculaPessoasPresentes();
 	}
@@ -123,6 +122,10 @@ public class RegistroBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Realiza a consulta do prestador de serviço ou visitante pelo seu numero de
+	 * cpf
+	 */
 	public void consultarPrestadorPeloCpf() {
 		try {
 			visitante = visitanteDao.consultaPrestadorPeloCpf(cpf);
