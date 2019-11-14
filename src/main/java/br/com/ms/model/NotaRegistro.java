@@ -1,8 +1,10 @@
 package br.com.ms.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,7 +20,8 @@ public class NotaRegistro implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String numeroNfe;
-	private double valor;
+	@Column(scale = 4)
+	private BigDecimal valor;
 	private String cnpj;
 	private String nome;
 	private Date emissao;
@@ -60,11 +63,11 @@ public class NotaRegistro implements Serializable {
 		this.numeroNfe = numeroNfe;
 	}
 
-	public double getValor() {
+	public BigDecimal getValor() {
 		return valor;
 	}
 
-	public void setValor(double valor) {
+	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
 

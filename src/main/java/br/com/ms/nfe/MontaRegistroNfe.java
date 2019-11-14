@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,7 +64,8 @@ public class MontaRegistroNfe {
 			nota.setNome(nome);
 			nota.setNumeroNfe(ConverteChaveDeAcesso.getNumeroNfe(chaveDeAcesso));
 			nota.setRegistro(registro);
-			nota.setValor(Double.parseDouble(valor));
+			BigDecimal big = new BigDecimal(valor);
+			nota.setValor(big);
 			return nota;
 		} else {
 			nota.setNumeroNfe(ConverteChaveDeAcesso.getNumeroNfe(chaveDeAcesso));
@@ -93,7 +95,8 @@ public class MontaRegistroNfe {
 			nf.setEmissao(format.parse(strData.substring(0,10)+" "+strData.substring(11,19)));
 			nf.setNumeroNfe((leitor.localizaTg(SERIE, xml)+"-"+leitor.localizaTg(NFNUMERO, xml)));
 			nf.setRegistro(registro);
-			nf.setValor(Double.parseDouble(leitor.localizaTg(VALOR, xml)));
+			BigDecimal big = new BigDecimal(leitor.localizaTg(VALOR, xml));
+			nf.setValor(big);
 			return nf;
 		}catch(Exception e) {
 			throw e;

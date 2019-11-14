@@ -44,6 +44,8 @@ public class JsfExcepttionHandler extends ExceptionHandlerWrapper {
 					handled = true;
 					redirect("/login/login.xhtml");
 				}
+			}catch(Exception e) {
+				
 			} finally {
 				if (handled) {
 					events.remove();

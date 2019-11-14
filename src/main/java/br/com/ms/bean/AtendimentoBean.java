@@ -14,13 +14,13 @@ import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
 
 import br.com.ms.dao.AtendimentoDao;
-import br.com.ms.dao.LiberacaoDao;
 import br.com.ms.dao.RegistroDao;
 import br.com.ms.model.Atendimento;
 import br.com.ms.model.Liberacao;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Usuario;
+import br.com.ms.repository.LiberacaoRepository;
 import br.com.ms.util.CalculaIntervadoDatas;
 import br.com.ms.util.ConverteChaveDeAcesso;
 import br.com.ms.util.HoraDaInternet;
@@ -45,7 +45,6 @@ public class AtendimentoBean implements Serializable {
 	private Usuario usuario;
 	private List<NotaRegistro> notas;
 	private String numeroNf;
-	private LiberacaoDao liberacaoDao;
 	Liberacao liberacao = new Liberacao();
 	private Registro registro;
 	private String duracao;
@@ -60,7 +59,6 @@ public class AtendimentoBean implements Serializable {
 		atendimento = new Atendimento();
 		atendimentos = new ArrayList<>();
 		registroDao = new RegistroDao();
-		liberacaoDao = new LiberacaoDao();
 		notas = new ArrayList<>();
 		registro = new Registro();
 		data = Calendar.getInstance().getTime();
@@ -152,11 +150,11 @@ public class AtendimentoBean implements Serializable {
 		at = (Atendimento) event.getComponent().getAttributes().get("atendimentoSelecionado");
 		atendimento = atendimentoDao.consultarAtentimentoPorId(at.getId());
 		registro = atendimento.getRegistro();
-		if(atendimentoDao.consultarAtentimentoPorId(atendimento.getId()) == null) {
+		if (atendimentoDao.consultarAtentimentoPorId(atendimento.getId()) == null) {
 			consultaAtendimentosIni();
 			consultaRegistrosAguadando();
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
-		}else {
+		} else {
 			try {
 				atendimentoDao.excluirAtendimento(atendimento);
 				alterarStatusRegistro(registro.getId(), ABERTO);
@@ -168,7 +166,7 @@ public class AtendimentoBean implements Serializable {
 				Messages.addGlobalError("Erro ao desfazer atendimento! " + e.getMessage());
 			}
 		}
-		
+
 	}
 
 	/**
@@ -230,7 +228,7 @@ public class AtendimentoBean implements Serializable {
 		try {
 			if (atendimento != null) {
 				try {
-					if (!atendimento.getStatus().equals(FINALIZADO)){
+					if (!atendimento.getStatus().equals(FINALIZADO)) {
 						fimAtendimento(atendimento);
 					}
 				} catch (Exception e) {
@@ -276,6 +274,7 @@ public class AtendimentoBean implements Serializable {
 	 * @param atendimento
 	 * @throws Exception
 	 */
+
 	private synchronized boolean gerarRegistroSaida(Atendimento atendimento) throws Exception {
 		Atendimento at = new Atendimento();
 		at = atendimentoDao.consultarAtentimentoPorId(atendimento.getId());
@@ -301,21 +300,34 @@ public class AtendimentoBean implements Serializable {
 		}
 	}
 
+//	private synchronized boolean gerarRegistroSaida(Atendimento atendimento) throws Exception {
+//		Atendimento at = new Atendimento();
+//		at = atendimentoDao.consultarAtentimentoPorId(atendimento.getId());
+//		Registro rgt = registroDao.consultaRegistroPeloId(at.getRegistro().getId());
+//		try {
+//			Registro rgL = new Registro();
+//			rgL = new RegistroRepository(HoraDaInternet.getHora(), rgt.getEmpresa(), notas, rgt.getPlacaVeiculo(), rgt.getPrestadorDeServico(), FINALIZADO, LIBERADO, PermissoesUsuarios.getUsuario()).save();
+//			if (gerarLiberacao(at, rgL)) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} catch (Exception ex) {
+//			throw new Exception("Erro ao tentar gerar registro de saída!");
+//		}
+//	}
+
 	/**
-	 * Gera uma liberação de saida para que seja feita uma saida definitiva
+	 * Gera uma liberação de saida para que posteriormente seja realizada um
+	 * conferencia e saida definitiva
 	 * 
 	 * @param a
 	 * @param r
 	 * @throws Exception
 	 */
-	private synchronized boolean gerarLiberacao(Atendimento a, Registro r) throws Exception {
+	private synchronized boolean gerarLiberacao(Atendimento atendimento, Registro saida) throws Exception {
 		try {
-			liberacao.setAtendimento(a);
-			liberacao.setDataLiberacao(HoraDaInternet.getHora());
-			liberacao.setEntrada(a.getRegistro());
-			liberacao.setSaida(r);
-			liberacao.setUsuario(PermissoesUsuarios.getUsuario());
-			liberacaoDao.salvarLiberacao(liberacao);
+			new LiberacaoRepository(atendimento.getRegistro(), saida, atendimento, PermissoesUsuarios.getUsuario());
 			notas = new ArrayList<>();
 			return true;
 		} catch (Exception ex) {

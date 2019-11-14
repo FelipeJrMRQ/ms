@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 public class LeitorXmlNfe {
 	
 	public String localizaTg(String tag, File xml) throws Exception {
-
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

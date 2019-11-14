@@ -63,12 +63,14 @@ public class RegistroDao {
 		}
 	}
 
-	public void alterarRegistro(Registro r) {
+	public Registro alterarRegistro(Registro r) {
 		session = getSession();
+		Registro reg = new Registro();
 		try {
 			transaction = session.beginTransaction();
-			session.update(r);
+			reg = (Registro) session.merge(r);
 			transaction.commit();
+			return reg;
 		} catch (RuntimeException e) {
 			transaction.rollback();
 			throw e;

@@ -85,8 +85,8 @@ public class NotaResgitroDao {
 		session = getSession();
 		try {
 			List<NotaRegistro> lista = new ArrayList<>();
-			//lista = (List<NotaRegistro>) session.createSQLQuery("select * from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.data > '" + data + "' and !isnull(notas_registro.chave) and  isnull(notas_registro.cnpj) and registro.tipo = '" + tipo + "' and length(notas_registro.chave) = 44").addEntity(NotaRegistro.class).list();
-			lista = (List<NotaRegistro>) session.createSQLQuery("select notas_registro.id , registro_id ,numeroNfe , chave, nome, cnpj, valor, emissao from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.tipo ='ENTRADA' and !isnull(chave) and length(chave) = 44 and isnull(cnpj);").addEntity(NotaRegistro.class).list();
+			lista = (List<NotaRegistro>) session.createSQLQuery("select * from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.data > '" + data + "' and !isnull(notas_registro.chave) and  isnull(notas_registro.cnpj) and registro.tipo = '" + tipo + "' and length(notas_registro.chave) = 44").addEntity(NotaRegistro.class).list();
+			//lista = (List<NotaRegistro>) session.createSQLQuery("select notas_registro.id , registro_id ,numeroNfe , chave, nome, cnpj, valor, emissao from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.tipo ='ENTRADA' and !isnull(chave) and length(chave) = 44 and isnull(cnpj);").addEntity(NotaRegistro.class).list();
 			return lista;
 		} catch (Exception e) {
 			throw e;

@@ -36,7 +36,7 @@ public class AtualizaNfeBean implements Serializable {
 	private Date data;
 	private NotaRegistro notaRegistro;
 	private NotaRegistro novaNota;
-	private Registro registro;
+	//private Registro registro;
 	private RegistroDao rDao;
 	private List<NotaRegistro> auxiliar;
 	private String tipo;
@@ -45,7 +45,7 @@ public class AtualizaNfeBean implements Serializable {
 		notas = new ArrayList<NotaRegistro>();
 		dao = new NotaResgitroDao();
 		data = Calendar.getInstance().getTime();
-		registro = new Registro();
+		//registro = new Registro();
 		notaRegistro = new NotaRegistro();
 		rDao = new RegistroDao();
 		auxiliar = new ArrayList<>();
@@ -58,7 +58,7 @@ public class AtualizaNfeBean implements Serializable {
 			auxiliar = dao.consultaNotasNaoSincrozizadas(format.format(data), tipo);
 			if (!auxiliar.isEmpty()) {
 				for (NotaRegistro notaRegistro : auxiliar) {
-					if (notaRegistro.getValor() == 0 && notaRegistro.getChave() != null) {
+					if (notaRegistro.getValor() == null && notaRegistro.getChave() != null) {
 						if (notaRegistro.getChave().length() == 44 && !notas.contains(notaRegistro)) {
 							notas.add(notaRegistro);
 						}
@@ -89,16 +89,12 @@ public class AtualizaNfeBean implements Serializable {
 					limpar();
 					// consultaNotasDesatualizadas();
 				} catch (FileNotFoundException e) {
-
 					Messages.addGlobalFatal("Não atualizado tente novamente");
 				} catch (IOException e) {
-
 					Messages.addGlobalFatal("Não atualizado tente novamente");
 				} catch (NfeException e) {
-
 					Messages.addGlobalFatal("Não atualizado tente novamente");
 				} catch (CertificadoException e) {
-
 					Messages.addGlobalFatal("Não atualizado tente novamente");
 				} catch (ParseException e) {
 					Messages.addGlobalFatal("Não atualizado tente novamente");
@@ -148,7 +144,7 @@ public class AtualizaNfeBean implements Serializable {
 
 	public void limpar() {
 		notaRegistro = new NotaRegistro();
-		registro = new Registro();
+		//registro = new Registro();
 		novaNota = new NotaRegistro();
 		auxiliar = new ArrayList<>();
 		notas = new ArrayList<>();

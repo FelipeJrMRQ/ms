@@ -27,14 +27,14 @@ public class LiberacaoRepository {
 	 * @param ate
 	 * @param user
 	 */
-	public LiberacaoRepository(Registro entrada, Registro saida, Atendimento ate, Usuario user) {
+	public LiberacaoRepository(Registro entrada, Registro saida, Atendimento atendimento, Usuario usuario) {
 		lib = new Liberacao();
 		dao = new LiberacaoDao();
 		lib.setDataLiberacao(Calendar.getInstance().getTime());
 		lib.setEntrada(entrada);
 		lib.setSaida(saida);
-		lib.setAtendimento(ate);
-		lib.setUsuario(user);
+		lib.setAtendimento(atendimento);
+		lib.setUsuario(usuario);
 		save();
 	}
 	
