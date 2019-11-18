@@ -6,6 +6,8 @@
 
 		<p:growl id="mensagem" />
 
+		<h1>Edição de registro</h1>
+		<p:separator />
 		<h:form>
 			<h:panelGrid columns="5">
 				<h:outputLabel value="Código do Registro" />
@@ -26,7 +28,7 @@
 						<p:outputLabel value="Registro de saída" rendered="#{edicaoRegistroBean.registro.tipo eq 'SAIDA'}">
 							<div class="edit-saida"></div>
 						</p:outputLabel>
-						<p:outputLabel value="Registro de liberação"  rendered="#{edicaoRegistroBean.registro.tipo eq 'LIBERADO'}">
+						<p:outputLabel value="Registro de liberação" rendered="#{edicaoRegistroBean.registro.tipo eq 'LIBERADO'}">
 							<div class="edit-liberado"></div>
 						</p:outputLabel>
 					</h2>
@@ -57,7 +59,7 @@
 							</p:column>
 						</p:dataTable>
 						<p:separator />
-						<p:commandButton value="SALVAR" actionListener="#{edicaoRegistroBean.salvar()}" update=":frmEntrada :mensagem" rendered="#{edicaoRegistroBean.viewPanel}" />
+						<p:commandButton value="SALVAR" oncomplete="PF('dlgMotivoEdicao').show()" update=":dlgMotivoEditRegistro" rendered="#{edicaoRegistroBean.viewPanel}" />
 					</h:panelGrid>
 				</h:form>
 			</div>
@@ -65,17 +67,17 @@
 			<div class="config-panel">
 				<h:form id="frmAuxiliar">
 					<h2 class="fadeIn">
-						<p:outputLabel value="Registro de entrada vinculado"  rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'ENTRADA'}">
+						<p:outputLabel value="Registro de entrada vinculado" rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'ENTRADA'}">
 							<div class="edit-entrada"></div>
 						</p:outputLabel>
-						<p:outputLabel value="Registro de saída vinculado"  rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'SAIDA'}">
+						<p:outputLabel value="Registro de saída vinculado" rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'SAIDA'}">
 							<div class="edit-saida"></div>
 						</p:outputLabel>
-						<p:outputLabel value="Registro de liberação vinculado"  rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'LIBERADO'}">
+						<p:outputLabel value="Registro de liberação vinculado" rendered="#{edicaoRegistroBean.rAuxiliar.tipo eq 'LIBERADO'}">
 							<div class="edit-liberado"></div>
 						</p:outputLabel>
 					</h2>
-					<h:panelGrid columns="1"  >
+					<h:panelGrid columns="1">
 						<p:outputLabel value="ID:" />
 						<p:inputText value="#{edicaoRegistroBean.rAuxiliar.id}" size="50" readonly="true" />
 						<p:outputLabel value="NOME:" />
@@ -83,7 +85,7 @@
 						<p:outputLabel value="EMPRESA:" />
 						<p:inputText value="#{edicaoRegistroBean.rAuxiliar.empresa.nome}" size="50" readonly="true" />
 						<p:outputLabel value="DATA:" />
-						<p:calendar value="#{edicaoRegistroBean.rAuxiliar.data}" pattern="dd/MM/yyyy HH:mm" mask="99/99/9999 99:99" readonly="true" showOn=""/>
+						<p:calendar value="#{edicaoRegistroBean.rAuxiliar.data}" pattern="dd/MM/yyyy HH:mm" mask="99/99/9999 99:99" readonly="true" showOn="" />
 						<p:outputLabel value="PLACA VEÍCULO:" />
 						<p:inputMask mask="aaa-9*99" value="#{edicaoRegistroBean.rAuxiliar.placaVeiculo}" styleClass="upper-case" readonly="true" />
 
@@ -111,11 +113,15 @@
 					<p:outputLabel value="#{nota.numeroNfe}" />
 				</p:column>
 			</p:dataTable>
-
 			<p:separator />
-			<p:commandButton value="Concluir" oncomplete="PF('dlgConfigAddNotas').hide()" />
 		</p:dialog>
 
+		<p:dialog widgetVar="dlgMotivoEdicao" id="dlgMotivoEditRegistro" header="MOTIVO DA EDIÇÃO DO REGISTRO" width="450" modal="true" appendTo="@(body)" resizable="false">
+			<h:panelGrid columns="1">
+				<p:inputTextarea cols="50" rows="9" styleClass="upper-case" value="#{edicaoRegistroBean.motivo.motivo}" required="true" autoResize="false" requiredMessage="É necessário um motivo de pelomenos 15 caracteres!" />
+				<p:commandButton value="Concluir" actionListener="#{edicaoRegistroBean.salvar()}" onclick="PF('dlgMotivoEdicao').hide()" update=":mensagem" />
+			</h:panelGrid>
+		</p:dialog>
 
 		<!-- DIALOGO DE CONFIRMAÇÃO -->
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="center">

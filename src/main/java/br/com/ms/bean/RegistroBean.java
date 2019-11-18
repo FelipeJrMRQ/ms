@@ -17,12 +17,14 @@ import org.omnifaces.util.Messages;
 import br.com.ms.dao.AtendimentoDao;
 import br.com.ms.dao.LiberacaoDao;
 import br.com.ms.dao.LiberacaoVisitanteDao;
+import br.com.ms.dao.MotivoEdicaoRegistroDao;
 import br.com.ms.dao.RegistroDao;
 import br.com.ms.dao.VisitanteDao;
 import br.com.ms.model.Atendimento;
 import br.com.ms.model.Empresa;
 import br.com.ms.model.Liberacao;
 import br.com.ms.model.LiberacaoVisitante;
+import br.com.ms.model.MotivoEdicaoRegistro;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
@@ -41,6 +43,8 @@ public class RegistroBean implements Serializable {
 	private String nome;
 	private String consulta;
 	private String emp;
+	private MotivoEdicaoRegistro motivo;
+	private MotivoEdicaoRegistroDao motivoDao;
 	private Registro registro;
 	private RegistroDao registroDao;
 	private Visitante visitante;
@@ -66,8 +70,11 @@ public class RegistroBean implements Serializable {
 	private List<String> numeroNotas;
 	private boolean monitorado;
 	private static final String ABERTO = "ABERTO", LIBERADO = "LIBERADO", FINALIZADO = "FINALIZADO", ENTRADA = "ENTRADA", SAIDA = "SAIDA";
+	private String id;
 
 	public RegistroBean() {
+		motivo = new MotivoEdicaoRegistro();
+		motivoDao = new MotivoEdicaoRegistroDao();
 		registro = new Registro();
 		registroDao = new RegistroDao();
 		visitante = new Visitante();
@@ -97,6 +104,10 @@ public class RegistroBean implements Serializable {
 		calculaPessoasPresentes();
 	}
 
+	public void ImprimirId() {
+		System.out.println(id);
+	}
+
 	/**
 	 * Atualiza a tela principal do sistema mantendo as informações sobre Pessoas
 	 * presentes Entradas Atendimentos Saidas As informações são pertinentes do dia
@@ -106,7 +117,7 @@ public class RegistroBean implements Serializable {
 		consultaLiberadosSaida();
 		calculaPessoasPresentes();
 	}
-	
+
 	public void urlLink() {
 		System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("codigo"));
 	}
@@ -470,10 +481,15 @@ public class RegistroBean implements Serializable {
 
 	public void registroSelecionado(ActionEvent event) {
 		registro = (Registro) event.getComponent().getAttributes().get("registroSelecionado");
+		consultarMotivo();
 		visitante = registro.getPrestadorDeServico();
 		listNfe = registro.getNotas();
 		placa = registro.getPlacaVeiculo();
 		qtdNotas = String.valueOf(registro.getNotas().size());
+	}
+	
+	public void consultarMotivo() {
+		motivo = motivoDao.consultar(registro.getId());
 	}
 
 	/*
@@ -789,4 +805,19 @@ public class RegistroBean implements Serializable {
 		this.monitorado = monitorado;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public MotivoEdicaoRegistro getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(MotivoEdicaoRegistro motivo) {
+		this.motivo = motivo;
+	}
 }

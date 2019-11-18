@@ -161,7 +161,9 @@
 								<p:outputLabel value="Histórico de entradas e saídas" />
 							</f:facet>
 							<p:column headerText="ID" width="40" styleClass="align">
-								<h:outputText value="#{registro.id}" />
+								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml" styleClass="link_lib">
+									<f:param name="registroId" value="#{registro.id}" />
+								</p:link>
 							</p:column>
 							<p:column headerText="Nome">
 								<h:outputText value="#{registro.prestadorDeServico.nome}" />
@@ -210,6 +212,11 @@
 							<f:facet name="header">
 								<p:outputLabel value="Saída Liberada" />
 							</f:facet>
+							<p:column headerText="ID" width="40" styleClass="align">
+								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml" styleClass="link_lib" id="editRegLink">
+									<f:param name="registroId" value="#{registro.id}" />
+								</p:link>
+							</p:column>
 							<p:column headerText="Nome">
 								<h:outputText value="#{registro.prestadorDeServico.nome}" />
 								<p:outputLabel>

@@ -76,6 +76,11 @@
 							</p:outputLabel>
 						</p:column>
 
+						<p:column rendered="#{registroBean.motivo.responsavel != null}">
+							<hr/>
+							<p:commandLink value="Registro editado manualmente" style="color:blue" oncomplete="PF('dlgViewMotivo').show()" update="tbView:dlgViewMot" />
+						</p:column>
+
 					</h:panelGrid>
 					<hr />
 					<p:commandButton value="Salvar" actionListener="#{registroBean.alterarRegistro}" update=":mensagem" oncomplete="PF('dlgAlterarRgistro').hide()" rendered="#{registroBean.registro.tipo != 'LIBERADO'}" style="margin-right:10px;" />
@@ -117,6 +122,17 @@
 			</div>
 			<div style="clear: both;"></div>
 		</div>
+	</p:dialog>
+
+	<p:dialog widgetVar="dlgViewMotivo" id="dlgViewMot" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+		<h:panelGrid columns="1">
+			<p:inputTextarea value="#{registroBean.motivo.motivo}" rows="9" cols="50" />
+			<hr/>
+			<p:column>
+				<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito"/>
+				<p:outputLabel value="#{registroBean.motivo.responsavel.nome}" styleClass="negrito" />
+			</p:column>
+		</h:panelGrid>
 	</p:dialog>
 
 	<!-- DIALOGO DE CONFIRMAÇÃO -->

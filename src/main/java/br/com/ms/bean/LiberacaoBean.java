@@ -13,7 +13,9 @@ import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
 
 import br.com.ms.dao.LiberacaoDao;
+import br.com.ms.dao.MotivoEdicaoRegistroDao;
 import br.com.ms.model.Liberacao;
+import br.com.ms.model.MotivoEdicaoRegistro;
 import br.com.ms.util.AutenticarServidorNotas;
 import br.com.ms.util.CalculaIntervadoDatas;
 import br.com.ms.util.HoraDaInternet;
@@ -24,6 +26,9 @@ public class LiberacaoBean implements Serializable {
 
 	private static final long serialVersionUID = 8310862975742614864L;
 	private Liberacao liberacao;
+	private MotivoEdicaoRegistro motivoEntrada;
+	private MotivoEdicaoRegistro motivoSaida;
+	private MotivoEdicaoRegistroDao motivoDao;
 	private String tipoConsulta;
 	private String consulta;
 	private Date dataInicial;
@@ -35,6 +40,9 @@ public class LiberacaoBean implements Serializable {
 	private boolean flag;
 
 	public LiberacaoBean() throws Exception {
+		motivoEntrada = new MotivoEdicaoRegistro();
+		motivoSaida = new MotivoEdicaoRegistro();
+		motivoDao = new MotivoEdicaoRegistroDao();
 		liberacao = new Liberacao();
 		dataFinal = HoraDaInternet.getHora();
 		dataInicial = HoraDaInternet.getHora();
@@ -60,21 +68,21 @@ public class LiberacaoBean implements Serializable {
 	public void consultaPorNome() {
 		try {
 			liberacoes = liberacaoDao.consultarPeloNomeDoPrestador(dataInicial, dataFinal, consulta);
-			if(liberacoes.isEmpty()) {
+			if (liberacoes.isEmpty()) {
 				Messages.addGlobalError("Não foram encontrados registros com este nome.");
 			}
 		} catch (Exception ex) {
 			Messages.addGlobalInfo(ex.getCause().getMessage());
 		}
 	}
-	
+
 	public void consultaPelaPlacaVeiculo() {
 		try {
 			liberacoes = liberacaoDao.consultarPelaPlacaVeiculo(dataInicial, dataFinal, consulta);
-			if(liberacoes.isEmpty()) {
+			if (liberacoes.isEmpty()) {
 				Messages.addGlobalError("Não foram encontrados registros com este número de placa.");
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
 	}
@@ -82,7 +90,7 @@ public class LiberacaoBean implements Serializable {
 	public void consultaPorEmpresa() {
 		try {
 			liberacoes = liberacaoDao.consultarPeloNomeDaEmpresa(dataInicial, dataFinal, consulta);
-			if(liberacoes.isEmpty()) {
+			if (liberacoes.isEmpty()) {
 				Messages.addGlobalError("Não foram encontrados registros.");
 			}
 		} catch (Exception ex) {
@@ -93,28 +101,24 @@ public class LiberacaoBean implements Serializable {
 	public void consultaPorCategoria() {
 		try {
 			liberacoes = liberacaoDao.consultarPorCategoria(dataInicial, dataFinal, consulta);
-			if(liberacoes.isEmpty()) {
+			if (liberacoes.isEmpty()) {
 				Messages.addGlobalError("Não foram encontrados registros para esta data.");
 			}
 		} catch (Exception ex) {
 			Messages.addGlobalInfo(ex.getCause().getMessage());
 		}
 	}
-	
-	public void teste() {
-		System.out.println("ok");
-	}
 
 	public void consultaPorNf() {
 		try {
 			if (flag) {
 				liberacoes = liberacaoDao.consultarPeloNumeroNfEntrada(consulta);
-				if(liberacoes.isEmpty()) {
+				if (liberacoes.isEmpty()) {
 					Messages.addGlobalError("Não foram encontrados registros com este número de nota.");
 				}
 			} else {
 				liberacoes = liberacaoDao.consultarPeloNumeroNfSaida(consulta);
-				if(liberacoes.isEmpty()) {
+				if (liberacoes.isEmpty()) {
 					Messages.addGlobalError("Não foram encontrados registros com este número de nota.");
 				}
 			}
@@ -127,6 +131,8 @@ public class LiberacaoBean implements Serializable {
 		Liberacao lib = new Liberacao();
 		lib = (Liberacao) event.getComponent().getAttributes().get("liberacaoSelecionada");
 		liberacao = liberacaoDao.consultaPorId(lib.getId());
+		motivoEntrada = motivoDao.consultar(lib.getEntrada().getId());
+		motivoSaida = motivoDao.consultar(lib.getSaida().getId());
 		tempo = CalculaIntervadoDatas.intevalo(liberacao.getEntrada().getData(), liberacao.getSaida().getData());
 		tempoAtendimento = CalculaIntervadoDatas.intevalo(liberacao.getAtendimento().getData_inicio(), liberacao.getAtendimento().getData_fim());
 	}
@@ -136,9 +142,25 @@ public class LiberacaoBean implements Serializable {
 	}
 
 	/*---------------------- geters and seters --------------------------- */
-
+	
 	public Liberacao getLiberacao() {
 		return liberacao;
+	}
+
+	public MotivoEdicaoRegistro getMotivoEntrada() {
+		return motivoEntrada;
+	}
+
+	public void setMotivoEntrada(MotivoEdicaoRegistro motivoEntrada) {
+		this.motivoEntrada = motivoEntrada;
+	}
+
+	public MotivoEdicaoRegistro getMotivoSaida() {
+		return motivoSaida;
+	}
+
+	public void setMotivoSaida(MotivoEdicaoRegistro motivoSaida) {
+		this.motivoSaida = motivoSaida;
 	}
 
 	public void setLiberacao(Liberacao liberacao) {

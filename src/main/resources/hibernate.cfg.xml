@@ -6,7 +6,7 @@
 
 		<!-- Confugurações de conexao com o banco de dadados -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.152:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
+		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.243:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
 
 		<!-- ?useTimezone=true&amp;serverTimezone=GMT-3 -->
 		<property name="hibernate.connection.username">felipe</property>
@@ -52,6 +52,7 @@
 		<mapping class="br.com.ms.model.Liberacao" />
 		<mapping class="br.com.ms.model.LiberacaoVisitante" />
 		<mapping class="br.com.ms.model.LiberacaoDeUso" />
+		<mapping class="br.com.ms.model.MotivoEdicaoRegistro" />
 		
 <!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-insert" />  -->
 <!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-update" /> -->

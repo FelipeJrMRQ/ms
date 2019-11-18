@@ -229,7 +229,7 @@
 							<div class="conteudo_lib">
 								<h:panelGrid columns="2">
 									<p:column>
-										<p:outputLabel value="ID"/>
+										<p:outputLabel value="ID" />
 										<p:separator />
 									</p:column>
 									<p:column headerText="ID">
@@ -317,7 +317,7 @@
 							<div class="conteudo_lib">
 								<h:panelGrid columns="2">
 									<p:column>
-										<p:outputLabel value="ID"/>
+										<p:outputLabel value="ID" />
 										<p:separator />
 									</p:column>
 									<p:column headerText="ID">
@@ -430,11 +430,20 @@
 						<div id="permanencia" class="negrito">
 							<em class="p"> Tempo de permanência total: </em> <em class="tempo"> <p:outputLabel value="#{liberacaoBean.tempo}" />
 							</em>
+
 							<div style="clear: both;"></div>
 						</div>
 
+						<div class="negrito">
+							<em class="p">
+								 <p:commandLink value="Entrada editada manualmente" style="color:blue" oncomplete="PF('dlgViewMotivoEntrada').show()"  update="dlgViewMotEntrad" rendered="#{liberacaoBean.motivoEntrada.id != null}"/>	
+							</em> 
+							<em class="tempo"> 
+								<p:commandLink value="Saída editada manualmente" style="color:blue"  oncomplete="PF('dlgViewMotivoSaida').show()" update=":dlgViewMotSaid"  rendered="#{liberacaoBean.motivoSaida.id != null}"/>
+							</em>
 
-
+							<div style="clear: both;"></div>
+						</div>
 					</div>
 				</div>
 				<div id="limpar"></div>
@@ -462,6 +471,27 @@
 			</p:dataTable>
 		</p:dialog>
 
+		<p:dialog widgetVar="dlgViewMotivoEntrada" id="dlgViewMotEntrad" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+			<h:panelGrid columns="1">
+				<p:inputTextarea value="#{liberacaoBean.motivoEntrada}" rows="9" cols="50"  readonly="true"/>
+				<hr />
+				<p:column>
+					<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito" />
+					<p:outputLabel value="#{liberacaoBean.motivoEntrada.responsavel.nome}" styleClass="negrito" />
+				</p:column>
+			</h:panelGrid>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgViewMotivoSaida" id="dlgViewMotSaid" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+			<h:panelGrid columns="1">
+				<p:inputTextarea value="#{liberacaoBean.motivoSaida.motivo}" rows="9" cols="50" readonly="true"/>
+				<hr />
+				<p:column>
+					<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito" />
+					<p:outputLabel value="#{liberacaoBean.motivoSaida.responsavel.nome}" styleClass="negrito" />
+				</p:column>
+			</h:panelGrid>
+		</p:dialog>
 
 		<p:dialog widgetVar="dlgViewNfeSaida" id="dlgViewNfSaida" header="NOTAS FISCAIS" modal="true" appendTo="@(body)" width="850" resizable="false">
 			<p:dataTable value="#{liberacaoBean.liberacao.saida.notas}" var="nota" paginator="true" rows="5" paginatorAlwaysVisible="false">

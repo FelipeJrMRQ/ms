@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
@@ -15,15 +17,18 @@ import org.omnifaces.util.Messages;
 import br.com.ms.dao.AtendimentoDao;
 import br.com.ms.dao.LiberacaoDao;
 import br.com.ms.dao.LiberacaoVisitanteDao;
+import br.com.ms.dao.MotivoEdicaoRegistroDao;
 import br.com.ms.dao.RegistroDao;
 import br.com.ms.model.Atendimento;
 import br.com.ms.model.Empresa;
 import br.com.ms.model.Liberacao;
 import br.com.ms.model.LiberacaoVisitante;
+import br.com.ms.model.MotivoEdicaoRegistro;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
 import br.com.ms.util.ConverteChaveDeAcesso;
+import br.com.ms.util.PermissoesUsuarios;
 
 @ManagedBean
 @ViewScoped
@@ -33,6 +38,8 @@ public class EdicaoRegistroBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 1605272245152225605L;
 	private Atendimento atendimento;
+	private MotivoEdicaoRegistro motivo;
+	private MotivoEdicaoRegistroDao motivoDao;
 	private AtendimentoDao atendimentoDao;
 	private Registro registro;
 	private RegistroDao registroDao;
@@ -42,18 +49,21 @@ public class EdicaoRegistroBean implements Serializable {
 	private List<Registro> registros;
 	private List<Liberacao> liberacaos;
 	private Date dataInicial, dataFinal;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private Visitante visitante;
 	private List<Visitante> visitantes;
 	private String numeroNf;
 	private List<Empresa> empresas;
 	private Registro rAuxiliar;
 	List<String> nfList;
+	private String registroId;
 	// private LiberacaoVisitanteDao libVisDao;
 
 	private boolean viewPanel;
 
 	public EdicaoRegistroBean() {
+		motivo = new MotivoEdicaoRegistro();
+		motivoDao = new MotivoEdicaoRegistroDao();
 		atendimento = new Atendimento();
 		atendimentoDao = new AtendimentoDao();
 		registro = new Registro();
@@ -72,10 +82,32 @@ public class EdicaoRegistroBean implements Serializable {
 		// libVisDao = new LiberacaoVisitanteDao();
 	}
 
+	/**
+	 * Utilizado para carregamento da tela de edição via passagem de parametro
+	 */
+	@PostConstruct
+	public void init() {
+		ConsultaPorParametro();
+	}
+
+	/**
+	 * Se a consultar for feita por url este parametro será executado
+	 */
+	private void ConsultaPorParametro() {
+		try {
+			idConsulta = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("registroId"));
+			motivo = motivoDao.consultar(idConsulta);
+			consultaRegistroPorId();
+		} catch (Exception e) {
+
+		}
+	}
+
 	public void consultaRegistroPorId() {
 		try {
 			try {
 				registro = registroDao.consultaRegistroPeloId(idConsulta);
+				motivo = motivoDao.consultar(registro.getId());
 				try {
 					if (registro.getId() > 0) {
 						rAuxiliar = new Registro();
@@ -94,6 +126,14 @@ public class EdicaoRegistroBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Neste metodo é atribuito de regitro de tipo oposto a variavel principal de
+	 * classe. Ex: se a variavel registro for do tipo SAIDA será realizada uma
+	 * consulta do registro oposto seja ele ENTRADA ou LIBERAÇÃO, em seguida este
+	 * valor será atribuido
+	 * 
+	 * @param registro
+	 */
 	private void verificaPrestador(Registro registro) {
 		try {
 			if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
@@ -139,14 +179,32 @@ public class EdicaoRegistroBean implements Serializable {
 		}
 	}
 
+	/**
+	 * realiza o salvamento de um motivo de edição
+	 * 
+	 * @param registro
+	 */
+	private void salvarMotivo(Registro registro) {
+		try {
+			motivo.setRegistro(registro);
+			motivo.setResponsavel(PermissoesUsuarios.getUsuario());
+			motivoDao.salvar(motivo);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	public void salvar() {
 		try {
 			try {
 				if (rAuxiliar.getId() > 0) {
+					salvarMotivo(registro);
 					verificaIntervalo(registro, rAuxiliar);
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
+					limpar();
 				} else if (registro.getId() > 0) {
 					registroDao.salvar(registro);
+					limpar();
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
 				}
 
@@ -156,6 +214,10 @@ public class EdicaoRegistroBean implements Serializable {
 		} catch (Exception e) {
 			Messages.addGlobalError("Registro não encontrado");
 		}
+	}
+	
+	public void limpar() {
+		motivo = new MotivoEdicaoRegistro();
 	}
 
 	private void verificaIntervalo(Registro registro, Registro auxiliar) throws Exception {
@@ -171,7 +233,7 @@ public class EdicaoRegistroBean implements Serializable {
 
 	private Liberacao consultarLiberacao(long id, String tipo) {
 		LiberacaoDao liDao = new LiberacaoDao();
-		if (tipo.equals("SAIDA") ||  tipo.equals("LIBERADO")) {
+		if (tipo.equals("SAIDA") || tipo.equals("LIBERADO")) {
 			return liDao.consultarPorIdDoRegistroDeSaida(id);
 		} else {
 			return liDao.consultarPorIdDoRegistroDeEntrada(id);
@@ -283,11 +345,11 @@ public class EdicaoRegistroBean implements Serializable {
 		this.liberacaoDao = liberacaoDao;
 	}
 
-	public Integer getIdConsulta() {
+	public Long getIdConsulta() {
 		return idConsulta;
 	}
 
-	public void setIdConsulta(Integer idConsulta) {
+	public void setIdConsulta(Long idConsulta) {
 		this.idConsulta = idConsulta;
 	}
 
@@ -338,4 +400,21 @@ public class EdicaoRegistroBean implements Serializable {
 	public void setrAuxiliar(Registro rAuxiliar) {
 		this.rAuxiliar = rAuxiliar;
 	}
+
+	public String getRegistroId() {
+		return registroId;
+	}
+
+	public void setRegistroId(String registroId) {
+		this.registroId = registroId;
+	}
+
+	public MotivoEdicaoRegistro getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(MotivoEdicaoRegistro motivo) {
+		this.motivo = motivo;
+	}
+
 }
