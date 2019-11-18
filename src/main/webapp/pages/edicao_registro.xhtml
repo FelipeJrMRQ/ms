@@ -26,6 +26,9 @@
 						<p:outputLabel value="Registro de saída" rendered="#{edicaoRegistroBean.registro.tipo eq 'SAIDA'}">
 							<div class="edit-saida"></div>
 						</p:outputLabel>
+						<p:outputLabel value="Registro de liberação"  rendered="#{edicaoRegistroBean.registro.tipo eq 'LIBERADO'}">
+							<div class="edit-liberado"></div>
+						</p:outputLabel>
 					</h2>
 					<h:panelGrid columns="1">
 						<p:outputLabel value="ID:" />
@@ -39,7 +42,7 @@
 						<p:outputLabel value="PLACA VEÍCULO:" />
 						<p:inputMask mask="aaa-9*99" value="#{edicaoRegistroBean.registro.placaVeiculo}" styleClass="upper-case" />
 
-						<p:dataTable value="#{edicaoRegistroBean.registro.notas}" var="nota" paginator="true" paginatorAlwaysVisible="false" rows="5">
+						<p:dataTable value="#{edicaoRegistroBean.registro.notas}" var="nota" paginator="true" paginatorAlwaysVisible="false" rows="5" rendered="#{edicaoRegistroBean.registro.prestadorDeServico.tipo eq 'PRESTADOR'}">
 							<f:facet name="header">
 								<p:commandButton value="Adicionar Notas" oncomplete="PF('dlgConfigAddNotas').show()" update="dlgConfAddNotas" rendered="#{edicaoRegistroBean.viewPanel}" />
 							</f:facet>
@@ -84,7 +87,7 @@
 						<p:outputLabel value="PLACA VEÍCULO:" />
 						<p:inputMask mask="aaa-9*99" value="#{edicaoRegistroBean.rAuxiliar.placaVeiculo}" styleClass="upper-case" readonly="true" />
 
-						<p:dataTable value="#{edicaoRegistroBean.rAuxiliar.notas}" var="nota" paginator="true" paginatorAlwaysVisible="false" rows="5">
+						<p:dataTable value="#{edicaoRegistroBean.rAuxiliar.notas}" var="nota" paginator="true" paginatorAlwaysVisible="false" rows="5" rendered="#{edicaoRegistroBean.rAuxiliar.prestadorDeServico.tipo eq 'PRESTADOR'}">
 							<p:column headerText="Notas">
 								<p:outputLabel value="#{nota.numeroNfe}" />
 							</p:column>

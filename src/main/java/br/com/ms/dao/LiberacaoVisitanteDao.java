@@ -60,6 +60,10 @@ public class LiberacaoVisitanteDao {
 			consulta.add(Restrictions.ge("dataLiberacao", dataInicial));
 			consulta.add(Restrictions.le("dataLiberacao", dFim));
 			consulta.add(Restrictions.like("v.nome", "%" + nome + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			for (LiberacaoVisitante liberacaoVisitante : lista) {
+				liberacaoVisitante.getEntrada().getNotas().size();
+				liberacaoVisitante.getSaida().getNotas().size();
+			}
 			lista = consulta.list();
 			return lista;
 		} catch (Exception e) {
@@ -75,6 +79,8 @@ public class LiberacaoVisitanteDao {
 			Criteria consulta = session.createCriteria(LiberacaoVisitante.class).createAlias("saida", "s");
 			consulta.add(Restrictions.eq("s.id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			liberacaoVisitante = (LiberacaoVisitante) consulta.uniqueResult();
+			liberacaoVisitante.getEntrada().getNotas().size();
+			liberacaoVisitante.getSaida().getNotas().size();
 			return liberacaoVisitante;
 		} catch (Exception e) {
 			throw e;
@@ -89,6 +95,8 @@ public class LiberacaoVisitanteDao {
 			Criteria consulta = session.createCriteria(LiberacaoVisitante.class).createAlias("entrada", "e");
 			consulta.add(Restrictions.eq("e.id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			liberacaoVisitante = (LiberacaoVisitante) consulta.uniqueResult();
+			liberacaoVisitante.getEntrada().getNotas().size();
+			liberacaoVisitante.getSaida().getNotas().size();
 			return liberacaoVisitante;
 		} catch (Exception e) {
 			throw e;

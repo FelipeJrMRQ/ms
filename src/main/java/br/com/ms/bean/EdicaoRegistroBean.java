@@ -100,10 +100,14 @@ public class EdicaoRegistroBean implements Serializable {
 				rAuxiliar = consultarLiberacao(registro.getId(), "SAIDA").getEntrada();
 			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
 				rAuxiliar = consultarLiberacao(registro.getId(), "ENTRADA").getSaida();
+			} else if (registro.getTipo().equals("LIBERADO") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
+				rAuxiliar = consultarLiberacao(registro.getId(), "LIBERADO").getEntrada();
 			} else if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
-				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "SAIDA").getSaida();
+				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "SAIDA").getEntrada();
 			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
 				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "ENTRADA").getSaida();
+			} else if (registro.getTipo().equals("LIBERADO") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
+				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "LIBERADO").getEntrada();
 			}
 		} catch (Exception e) {
 			new Exception("Registro de vinculo não encontrado");
@@ -113,7 +117,7 @@ public class EdicaoRegistroBean implements Serializable {
 	public void addNF() {
 		NotaRegistro nota = new NotaRegistro();
 		nota.setNumeroNfe(ConverteChaveDeAcesso.getNumeroNfe(numeroNf));
-		if(!nfList.contains(nota.getNumeroNfe())) {
+		if (!nfList.contains(nota.getNumeroNfe())) {
 			nota.setRegistro(registro);
 			try {
 				registro.getNotas().add(nota);
@@ -122,7 +126,7 @@ public class EdicaoRegistroBean implements Serializable {
 			} catch (Exception e) {
 				throw e;
 			}
-		}else {
+		} else {
 			numeroNf = "";
 		}
 	}
@@ -167,7 +171,7 @@ public class EdicaoRegistroBean implements Serializable {
 
 	private Liberacao consultarLiberacao(long id, String tipo) {
 		LiberacaoDao liDao = new LiberacaoDao();
-		if (tipo.equals("SAIDA")) {
+		if (tipo.equals("SAIDA") ||  tipo.equals("LIBERADO")) {
 			return liDao.consultarPorIdDoRegistroDeSaida(id);
 		} else {
 			return liDao.consultarPorIdDoRegistroDeEntrada(id);
@@ -176,7 +180,7 @@ public class EdicaoRegistroBean implements Serializable {
 
 	private LiberacaoVisitante consultaLibareacaoVisitante(long id, String tipo) {
 		LiberacaoVisitanteDao libDao = new LiberacaoVisitanteDao();
-		if (tipo.equals("SAIDA")) {
+		if (tipo.equals("SAIDA") || tipo.equals("LIBERADO")) {
 			return libDao.consultarLiberacaoPorIdSaida(id);
 		} else {
 			return libDao.consultarLiberacaoPorIdEntrada(id);

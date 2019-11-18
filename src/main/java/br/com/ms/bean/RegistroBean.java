@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
@@ -104,6 +105,10 @@ public class RegistroBean implements Serializable {
 	public void atualizaTela() {
 		consultaLiberadosSaida();
 		calculaPessoasPresentes();
+	}
+	
+	public void urlLink() {
+		System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("codigo"));
 	}
 
 	/**

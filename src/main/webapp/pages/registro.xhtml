@@ -260,32 +260,32 @@
 			<h:form id="frmAddNfe">
 				<h:panelGrid columns="1" id="panel">
 					<p:column>
-						<p:inputText value="#{registroBean.nfe}" maxlength="44"/>
+						<p:inputText value="#{registroBean.nfe}" maxlength="44" />
 						<p:commandButton icon="ui-icon-plus" actionListener="#{registroBean.addNotasFiscais}" update=":frmAddNfe :frmAddNfe:dtList :mensagem" />
 					</p:column>
 					<p:dataTable value="#{registroBean.listNfe}" var="nfe" id="dtList" paginator="true" paginatorAlwaysVisible="false" rows="10">
 						<p:column headerText="Número NF" width="50">
 							<p:outputLabel value="#{nfe.numeroNfe}" />
 						</p:column>
-<!-- 						<p:column headerText="Empresa"> -->
-<!-- 							<p:outputLabel value="#{nfe.nome}" /> -->
-<!-- 						</p:column> -->
-<!-- 						<p:column headerText="Valor" width="100"> -->
-<!-- 							<p:outputLabel value="#{nfe.valor}"> -->
-<!-- 								<f:convertNumber currencySymbol="R$" type="currency" /> -->
-<!-- 							</p:outputLabel> -->
-<!-- 						</p:column> -->
+						<!-- 						<p:column headerText="Empresa"> -->
+						<!-- 							<p:outputLabel value="#{nfe.nome}" /> -->
+						<!-- 						</p:column> -->
+						<!-- 						<p:column headerText="Valor" width="100"> -->
+						<!-- 							<p:outputLabel value="#{nfe.valor}"> -->
+						<!-- 								<f:convertNumber currencySymbol="R$" type="currency" /> -->
+						<!-- 							</p:outputLabel> -->
+						<!-- 						</p:column> -->
 					</p:dataTable>
 				</h:panelGrid>
 				<p:commandButton value="Concluído" update=":tbView:frmCadResgistroEntrada:panelNotas" oncomplete="PF('dglNotasFiscais').hide()" />
 			</h:form>
 		</p:dialog>
 
-<!-- 		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /> -->
+		<!-- 		<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /> -->
 
-<!-- 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" appendTo="@(body)"> -->
-<!-- 			<p:graphicImage url="https://media0.giphy.com/media/17mNCcKU1mJlrbXodo/giphy.gif" style="width:100px; height:100px" /> -->
-<!-- 		</p:dialog> -->
+		<!-- 		<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" appendTo="@(body)"> -->
+		<!-- 			<p:graphicImage url="https://media0.giphy.com/media/17mNCcKU1mJlrbXodo/giphy.gif" style="width:100px; height:100px" /> -->
+		<!-- 		</p:dialog> -->
 
 		<!-- DIALOGO DE PEQUISA POR NOME DO VISITANTE -->
 		<p:dialog widgetVar="dlgVisitantePrestador" header="Visitantes Cadastrados" id="dlgVisiPrest" width="800" modal="true" appendTo="@(body)" hideEffect="fade" showEffect="fade">
