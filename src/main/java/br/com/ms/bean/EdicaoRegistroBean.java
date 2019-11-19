@@ -54,6 +54,7 @@ public class EdicaoRegistroBean implements Serializable {
 	private List<Visitante> visitantes;
 	private String numeroNf;
 	private List<Empresa> empresas;
+	private String strMotivo;
 	private Registro rAuxiliar;
 	List<String> nfList;
 	private String registroId;
@@ -96,7 +97,6 @@ public class EdicaoRegistroBean implements Serializable {
 	private void ConsultaPorParametro() {
 		try {
 			idConsulta = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("registroId"));
-			motivo = motivoDao.consultar(idConsulta);
 			consultaRegistroPorId();
 		} catch (Exception e) {
 
@@ -108,6 +108,9 @@ public class EdicaoRegistroBean implements Serializable {
 			try {
 				registro = registroDao.consultaRegistroPeloId(idConsulta);
 				motivo = motivoDao.consultar(registro.getId());
+				if(motivo != null) {
+					strMotivo = motivo.getMotivo();
+				}
 				try {
 					if (registro.getId() > 0) {
 						rAuxiliar = new Registro();
@@ -186,9 +189,16 @@ public class EdicaoRegistroBean implements Serializable {
 	 */
 	private void salvarMotivo(Registro registro) {
 		try {
-			motivo.setRegistro(registro);
-			motivo.setResponsavel(PermissoesUsuarios.getUsuario());
-			motivoDao.salvar(motivo);
+			if(motivo == null) {
+				motivo = new MotivoEdicaoRegistro();
+				motivo.setMotivo(strMotivo);
+				motivo.setRegistro(registro);
+				motivo.setResponsavel(PermissoesUsuarios.getUsuario());
+				motivoDao.salvar(motivo);
+			}else {
+				motivo.setMotivo(strMotivo);
+				motivoDao.salvar(motivo);
+			}
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -204,8 +214,8 @@ public class EdicaoRegistroBean implements Serializable {
 					limpar();
 				} else if (registro.getId() > 0) {
 					registroDao.salvar(registro);
-					limpar();
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
+					limpar();
 				}
 
 			} catch (Exception e) {
@@ -218,6 +228,10 @@ public class EdicaoRegistroBean implements Serializable {
 	
 	public void limpar() {
 		motivo = new MotivoEdicaoRegistro();
+		registro = new Registro();
+		rAuxiliar = new Registro();
+		viewPanel = false;
+		idConsulta = null;
 	}
 
 	private void verificaIntervalo(Registro registro, Registro auxiliar) throws Exception {
@@ -417,4 +431,11 @@ public class EdicaoRegistroBean implements Serializable {
 		this.motivo = motivo;
 	}
 
+	public String getStrMotivo() {
+		return strMotivo;
+	}
+
+	public void setStrMotivo(String strMotivo) {
+		this.strMotivo = strMotivo;
+	}
 }

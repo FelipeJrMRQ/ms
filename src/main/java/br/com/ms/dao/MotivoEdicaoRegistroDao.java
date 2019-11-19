@@ -37,6 +37,13 @@ public class MotivoEdicaoRegistroDao {
 		}
 	}
 
+	/**
+	 * Realiza um consulta em um motivo de edição de registro pelo id do Registro de
+	 * entrada ou saida
+	 * 
+	 * @param idConsulta
+	 * @return
+	 */
 	public MotivoEdicaoRegistro consultar(Long idConsulta) {
 		session = getSession();
 		try {

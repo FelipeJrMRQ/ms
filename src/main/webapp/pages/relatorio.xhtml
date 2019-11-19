@@ -473,7 +473,7 @@
 
 		<p:dialog widgetVar="dlgViewMotivoEntrada" id="dlgViewMotEntrad" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
 			<h:panelGrid columns="1">
-				<p:inputTextarea value="#{liberacaoBean.motivoEntrada}" rows="9" cols="50"  readonly="true"/>
+				<p:inputTextarea value="#{liberacaoBean.motivoEntrada.motivo}" rows="9" cols="50"  readonly="true"/>
 				<hr />
 				<p:column>
 					<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito" />
