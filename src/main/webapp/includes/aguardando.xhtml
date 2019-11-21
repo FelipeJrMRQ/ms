@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 
 <h:form id="frmConsultaPorEmpresa">
-	<p:poll interval="5" update="tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" listener="#{atendimentoBean.consultaRegistrosAguadando}" />
+	<p:poll interval="5" update="tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" />
 </h:form>
 
 <h3 class="text-primary">Aguardando atendimento</h3>
 
-<p:dataTable value="#{atendimentoBean.registros}" var="prestador" id="tbRegistrosPrestadores" paginator="true" rows="15" emptyMessage="Não há novas entradas!">
-
-	<p:column width="10">
-		<p:rowToggler />
-	</p:column>
-
+<p:dataTable value="#{sharedListBean.aguardandoAtendimento()}" var="prestador" id="tbRegistrosPrestadores" paginator="true" rows="15" emptyMessage="Não há novas entradas!">
 	<p:column headerText="EMPRESA">
 		<p:outputLabel value="#{prestador.empresa.nome}" rendered="#{prestador.tipo == 'ENTRADA'}" styleClass="text-primary" />
 	</p:column>
@@ -27,35 +22,6 @@
 			<f:attribute name="registroSelecionado" value="#{prestador}" />
 		</p:commandButton>
 	</p:column>
-
-	<p:rowExpansion>
-		<h:panelGrid columns="2" style="border:0px;">
-			<p:column width="50">
-				<p:outputLabel value="#{prestador.prestadorDeServico.nome}" />
-				<br />
-				<br />
-				<p:outputLabel value="PLACA VEÍCULO: " />
-				<p:outputLabel value="#{prestador.placaVeiculo}" styleClass="negrito" />
-				<br />
-				<br />
-				<p:outputLabel value="STATUS: " />
-				<p:outputLabel value="#{prestador.tipo}" styleClass="negrito" />
-			</p:column>
-			<p:column width="50" headerText="Notas Fiscais">
-				<p:dataTable value="#{prestador.notas}" var="nota" style="width:250px;" id="tbNotas" paginator="true" rows="5">
-					<p:column headerText="NOTAS VINCULADAS" styleClass="align">
-						<p:outputLabel value="#{nota.numeroNfe}" />
-					</p:column>
-				</p:dataTable>
-			</p:column>
-		</h:panelGrid>
-		<h:panelGrid>
-			<p:column>
-				<p:outputLabel value="Criado por: " />
-				<p:outputLabel value="#{prestador.usuario.nome}" />
-			</p:column>
-		</h:panelGrid>
-	</p:rowExpansion>
 </p:dataTable>
 
 </html>

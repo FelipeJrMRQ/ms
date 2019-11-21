@@ -119,7 +119,7 @@
 		<p:dialog widgetVar="dlgMotivoEdicao" id="dlgMotivoEditRegistro" header="MOTIVO DA EDIÇÃO DO REGISTRO" width="450" modal="true" appendTo="@(body)" resizable="false">
 			<h:panelGrid columns="1">
 				<h:form>
-					<p:inputTextarea cols="50" rows="9" styleClass="upper-case" value="#{edicaoRegistroBean.strMotivo}" required="true" autoResize="false" requiredMessage="É necessário um motivo de pelomenos 15 caracteres!" />
+					<p:inputTextarea cols="50" rows="9" styleClass="upper-case" value="#{edicaoRegistroBean.strMotivo}" required="true" autoResize="false" requiredMessage="É necessário um motivo de pelo menos 15 caracteres!" />
 					<p:commandButton value="Concluir" actionListener="#{edicaoRegistroBean.salvar()}" onclick="PF('dlgMotivoEdicao').hide()" update=":frmEntrada :mensagem :frmAuxiliar :frmConsulta" />
 				</h:form>
 			</h:panelGrid>

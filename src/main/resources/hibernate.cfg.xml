@@ -6,7 +6,7 @@
 
 		<!-- Confugurações de conexao com o banco de dadados -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.152:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
+		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.243:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
 
 		<!-- ?useTimezone=true&amp;serverTimezone=GMT-3 -->
 		<property name="hibernate.connection.username">felipe</property>
@@ -29,7 +29,7 @@
 <!-- 		<property name="hibernate.current_session_context_class">thread</property> -->
 
 		<!-- Disable the second-level cache -->
-		<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+<!-- 		<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property> -->
 
 		<!-- Mostra os comandos SQL no console -->
 <!-- 		<property name="hibernate.show_sql">true</property> -->

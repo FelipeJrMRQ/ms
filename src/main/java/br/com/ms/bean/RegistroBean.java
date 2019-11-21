@@ -9,7 +9,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
@@ -98,14 +97,13 @@ public class RegistroBean implements Serializable {
 
 	@PostConstruct
 	private void iniciar() {
+		//long ti = Calendar.getInstance().getTimeInMillis();
 		tipoDeConsulta = "NOME";
 		consultaUtimosRegistros();
-		consultaLiberadosSaida();
+		SharedListBean.consultaLiberadosSaida();
 		calculaPessoasPresentes();
-	}
-
-	public void ImprimirId() {
-		System.out.println(id);
+		//long tf = Calendar.getInstance().getTimeInMillis();
+		//System.out.println("Tempo gasto: " + (tf - ti));
 	}
 
 	/**
@@ -114,12 +112,10 @@ public class RegistroBean implements Serializable {
 	 * em questão
 	 */
 	public void atualizaTela() {
-		consultaLiberadosSaida();
+		//long ti = Calendar.getInstance().getTimeInMillis();
 		calculaPessoasPresentes();
-	}
-
-	public void urlLink() {
-		System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("codigo"));
+		//long tf = Calendar.getInstance().getTimeInMillis();
+		//System.out.println("Tempo gasto: " + (tf - ti));
 	}
 
 	/**
@@ -204,10 +200,10 @@ public class RegistroBean implements Serializable {
 			registro.setTipo(SAIDA);
 			registro.setPlacaVeiculo(placa);
 			registroDao.salvar(registro);
+			SharedListBean.consultaLiberadosSaida();
+			consultaUtimosRegistros();
 			Messages.addGlobalInfo("Saída registrada com sucesso!");
 			limpar();
-			consultaUtimosRegistros();
-			consultaLiberadosSaida();
 		} catch (Exception ex) {
 			Messages.addGlobalError(ex.getCause().getMessage());
 		}
@@ -235,24 +231,12 @@ public class RegistroBean implements Serializable {
 			atdm.setData_fim(null);
 			atendimentoDao.alterarAtendimento(atdm);
 			libDao.excluirLiberacao(lib);
-			limpar();
-			consultaLiberadosSaida();
+			SharedListBean.consultaLiberadosSaida();
+			SharedListBean.consultaAtendimentosIni();
 			Messages.addGlobalInfo("Liberação recusada com sucesso!");
+			limpar();
 		} catch (Exception e) {
 			throw e;
-		}
-	}
-
-	/**
-	 * Realiza a consulta das pessoas que estão liberadas para saida porem ainda
-	 * estão nos estabelecimentos da empresa onde a portaria deverá registrar a
-	 * saida final
-	 */
-	public void consultaLiberadosSaida() {
-		try {
-			liberados = registroDao.consultaLiberadors();
-		} catch (Exception ex) {
-			Messages.addGlobalInfo(ex.getCause().getMessage());
 		}
 	}
 
@@ -299,26 +283,26 @@ public class RegistroBean implements Serializable {
 		}
 	}
 
-	/**
-	 * Método temporario no futuro substituir pelo addNotas
-	 */
-	public void addNFEdicaRegistro() {
-		carregarNotas();
-		String nf = ConverteChaveDeAcesso.getNumeroNfe(nfe);
-		if (!numeroNotas.contains(nf) && !nf.isEmpty()) {
-			numeroNotas.add(nf);
-			NotaRegistro nota = new NotaRegistro();
-			nota.setChave(nfe);
-			nota.setNumeroNfe(nf);
-			nota.setRegistro(registro);
-			listNfe.add(nota);
-			nfe = "";
-			qtdNotas = String.valueOf(listNfe.size());
-			return;
-		} else {
-			nfe = "";
-		}
-	}
+//	/**
+//	 * Método temporario no futuro substituir pelo addNotas
+//	 */
+//	public void addNFEdicaRegistro() {
+//		carregarNotas();
+//		String nf = ConverteChaveDeAcesso.getNumeroNfe(nfe);
+//		if (!numeroNotas.contains(nf) && !nf.isEmpty()) {
+//			numeroNotas.add(nf);
+//			NotaRegistro nota = new NotaRegistro();
+//			nota.setChave(nfe);
+//			nota.setNumeroNfe(nf);
+//			nota.setRegistro(registro);
+//			listNfe.add(nota);
+//			nfe = "";
+//			qtdNotas = String.valueOf(listNfe.size());
+//			return;
+//		} else {
+//			nfe = "";
+//		}
+//	}
 
 	/**
 	 * Caso hajam notas fiscais já cadastradas no registro este método as converte
@@ -378,7 +362,8 @@ public class RegistroBean implements Serializable {
 				}
 				limpar();
 				consultaUtimosRegistros();
-				consultaLiberadosSaida();
+				SharedListBean.consultaLiberadosSaida();
+				SharedListBean.consultaRegistrosAguardando();
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 				Messages.addGlobalError("Erro ao salvar registro!");
@@ -413,7 +398,7 @@ public class RegistroBean implements Serializable {
 			registroDao.desfazerSaida(registro);
 			limpar();
 			consultaUtimosRegistros();
-			consultaLiberadosSaida();
+			SharedListBean.consultaLiberadosSaida();
 			Messages.addGlobalInfo("Saída desfeita com sucesso!");
 		} catch (Exception e) {
 			Messages.addGlobalError("Falha ao desfazer saida! ");
@@ -487,7 +472,7 @@ public class RegistroBean implements Serializable {
 		placa = registro.getPlacaVeiculo();
 		qtdNotas = String.valueOf(registro.getNotas().size());
 	}
-	
+
 	public void consultarMotivo() {
 		motivo = motivoDao.consultar(registro.getId());
 	}
@@ -527,6 +512,7 @@ public class RegistroBean implements Serializable {
 				registroDao.excluir(r);
 				Messages.addGlobalInfo("Registro excluído com sucesso!");
 				consultaUtimosRegistros();
+				SharedListBean.consultaRegistrosAguardando();
 				return;
 			} else {
 				Messages.addGlobalWarn("Não é possível excluir este registro por que já possui vínculos.");
@@ -551,8 +537,8 @@ public class RegistroBean implements Serializable {
 				if (id > 0) {
 					lb = libDao.consultarLiberacaoPorIdSaida(id);
 					libDao.excluirLiberacaoVisitante(lb, lb.getEntrada(), lb.getSaida());
-					consultaLiberadosSaida();
 					consultaUtimosRegistros();
+					SharedListBean.consultaLiberadosSaida();
 					Messages.addGlobalInfo("Registro excluido com sucesso!");
 				} else {
 					Messages.addGlobalError("Não foi possível encontrar um liberação com esta ID");
@@ -563,7 +549,7 @@ public class RegistroBean implements Serializable {
 			}
 			limpar();
 			consultaUtimosRegistros();
-			consultaLiberadosSaida();
+			SharedListBean.consultaLiberadosSaida();
 		} catch (Exception e) {
 			e.printStackTrace();
 			Messages.addGlobalError("Erro ao excluir registro");

@@ -102,7 +102,7 @@
 					<h:form id="frmEditNota">
 						<p:inputText value="#{registroBean.nfe}" size="25" id="iptNota" maxlength="44" />
 						<p:focus for="iptNota" />
-						<p:commandButton value="Inserir" actionListener="#{registroBean.addNFEdicaRegistro}" update=":tbView:tbNotasFiscais :tbView:frmEditNota" />
+						<p:commandButton value="Inserir" actionListener="#{registroBean.addNotasFiscais()}" update=":tbView:tbNotasFiscais :tbView:frmEditNota" />
 					</h:form>
 				</h:panelGrid>
 				<p:dataTable value="#{registroBean.listNfe}" var="notas" id="tbNotasFiscais" paginator="true" rows="3" rendered="#{registroBean.registro.prestadorDeServico.tipo eq 'PRESTADOR'}">

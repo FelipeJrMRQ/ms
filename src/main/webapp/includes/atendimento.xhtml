@@ -5,15 +5,11 @@
 <h:form id="frmAtendimento">
 
 
-	<p:poll interval="5" update=":tbView:frmAtendimento:tbAtendimento" listener="#{atendimentoBean.consultaAtendimentosIni}" /> 
+	<p:poll interval="5" update=":tbView:frmAtendimento:tbAtendimento" />
 
 
 	<h3 class="text-success">Em atendimento</h3>
-	<p:dataTable id="tbAtendimento" value="#{atendimentoBean.atendimentos}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!">
-		<p:column width="20">
-			<p:rowToggler />
-		</p:column>
-
+	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!">
 		<p:column headerText="EMPRESA">
 			<h:outputLabel value="#{atdm.registro.empresa.nome}" styleClass="text-success" />
 		</p:column>
@@ -32,67 +28,80 @@
 				<p:confirm message="Deseja realmente desfazer este atendimento?" header="Alteração atendimento" icon="ui-icon-alert" />
 			</p:commandButton>
 		</p:column>
-		<p:rowExpansion>
-			<h:panelGrid columns="1" style="width:600px;">
-				<p:column>
-					<h:outputLabel value="PRESTADOR: " styleClass="negrito" />
-					<h:outputLabel value="#{atdm.registro.prestadorDeServico.nome}" />
-				</p:column>
-				<p:column>
-					<h:outputLabel value="CPF: " styleClass="negrito" />
-					<h:outputLabel value="#{atdm.registro.prestadorDeServico.cpf}" />
-				</p:column>
-				<p:column>
-					<h:outputLabel value="VEÍCULO: " styleClass="negrito" />
-					<h:outputLabel value="#{atdm.registro.placaVeiculo}" />
-				</p:column>
-				<p:column>
-					<p:dataList value="#{atdm.registro.notas}" var="nfe">
-						<f:facet name="header">
-							<p:outputLabel value="Notas fiscais vinculadas" />
-						</f:facet>
-						<p:outputLabel value="#{nfe.numeroNfe}" />
-					</p:dataList>
-				</p:column>
-				<p:column>
-					<h:outputLabel value="Iniciado:" />
-					<h:outputLabel value="#{atdm.usuario_inicio.nome}" />
-				</p:column>
-				<p:column>
-					<h:outputLabel value="Finalizado por:" />
-					<h:outputLabel value="#{atdm.usuario_fim.nome}" />
-				</p:column>
-			</h:panelGrid>
-		</p:rowExpansion>
 	</p:dataTable>
-
-
-
 </h:form>
 
-<p:dialog widgetVar="dlgNotasLiberacao" id="notasLiberacao" header="Liberação" modal="true" appendTo="@(body)" width="450" resizable="false" hideEffect="fade" showEffect="fade" closable="false">
-	<h:panelGrid columns="2">
-		<h:form id="frmNotaLiberacao">
-			<p:inputText value="#{atendimentoBean.numeroNf}" size="25" id="iptNfeLiberacao" maxlength="44" />
-			<p:focus for="iptNfeLiberacao" />
-			<p:commandButton icon="ui-icon-plus" actionListener="#{atendimentoBean.addNotas}" update=":tbView:tbNotasLiberacao :tbView:frmNotaLiberacao" id="btnInserir">
-				<p:tooltip for="btnInserir" value="Inserir nota fiscal" />
-			</p:commandButton>
-		</h:form>
-	</h:panelGrid>
-	<p:dataTable value="#{atendimentoBean.notas}" var="notas" id="tbNotasLiberacao" paginator="true" rows="3">
-		<p:column headerText="Número NF">
-			<h:outputText value="#{notas.numeroNfe}" />
-		</p:column>
-		<p:column headerText="Excluir" styleClass="align">
-			<p:commandButton icon="ui-icon-trash" actionListener="#{atendimentoBean.removeNota}" update=":mensagem :tbView:tbNotasLiberacao">
-				<f:attribute name="notaSelecionada" value="#{notas}" />
-			</p:commandButton>
-		</p:column>
-	</p:dataTable>
-	<br />
-	<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.validaFimAtendimento}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
-	<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limparListaNotas}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px"/>
+<p:dialog widgetVar="dlgNotasLiberacao" header="FINALIZAR ATENDIMENTO" id="notasLiberacao" width="800" resizable="false" modal="true" appendTo="@(body)" closable="false" hideEffect="fade" showEffect="fade">
+	<div>
+		<div id="panel_dados_cadastrais">
+			<h:form>
+				<h:panelGrid>
+					<p:column>
+						<h:outputText value="ID " styleClass="negrito" />
+						<h:outputText value="#{atendimentoBean.registro.id}" />
+						<hr />
+					</p:column>
+
+					<p:column>
+						<h:outputText value="NOME: " styleClass="negrito" />
+						<h:outputText value="#{atendimentoBean.registro.prestadorDeServico.nome}" />
+						<hr />
+					</p:column>
+
+					<p:column>
+						<p:outputLabel value="VEÍCULO-PLACA: " styleClass="negrito" />
+						<p:outputLabel value="#{atendimentoBean.registro.placaVeiculo}" styleClass="upper-case" />
+						<hr />
+					</p:column>
+
+					<p:column>
+						<p:outputLabel value="DATA: " styleClass="negrito" />
+						<p:outputLabel value="#{atendimentoBean.registro.data}">
+							<f:convertDateTime pattern="dd/MM/YYYY" />
+						</p:outputLabel>
+						<hr />
+					</p:column>
+
+					<p:column>
+						<p:outputLabel value="HORA DE ENTRADADA: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'ENTRADA'}" />
+						<p:outputLabel value="HORA DE SAÍDA " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'SAIDA'}" />
+						<p:outputLabel value="HORA DE LIBERAÇÃO " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'LIBERADO'}" />
+						<p:outputLabel value="#{atendimentoBean.registro.data}">
+							<f:convertDateTime pattern="HH:mm" />
+						</p:outputLabel>
+					</p:column>
+
+				</h:panelGrid>
+				<hr />
+			</h:form>
+		</div>
+		<div id="panel_notas_fiscais">
+			<h:panelGrid columns="2">
+				<h:form id="frmNotaLiberacao">
+					<p:inputText value="#{atendimentoBean.numeroNf}" size="25" id="iptNfeLiberacao" maxlength="44" />
+					<p:focus for="iptNfeLiberacao" />
+					<p:commandButton icon="ui-icon-plus" actionListener="#{atendimentoBean.addNotas}" update=":tbView:tbNotasLiberacao :tbView:frmNotaLiberacao" id="btnInserir">
+						<p:tooltip for="btnInserir" value="Inserir nota fiscal" />
+					</p:commandButton>
+				</h:form>
+			</h:panelGrid>
+			<p:dataTable value="#{atendimentoBean.notas}" var="notas" id="tbNotasLiberacao" paginator="true" rows="3">
+				<p:column headerText="Número NF">
+					<h:outputText value="#{notas.numeroNfe}" />
+				</p:column>
+				<p:column headerText="Excluir" styleClass="align">
+					<p:commandButton icon="ui-icon-trash" actionListener="#{atendimentoBean.removeNota}" update=":mensagem :tbView:tbNotasLiberacao">
+						<f:attribute name="notaSelecionada" value="#{notas}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			
+		</div>
+		<div style="clear: both;"></div>
+		<br />
+			<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.validaFimAtendimento}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
+			<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limparListaNotas}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
+	</div>
 </p:dialog>
 
 <!-- DIALOGO DE CONFIRMAÇÃO -->

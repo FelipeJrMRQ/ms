@@ -49,7 +49,7 @@ public class AtendimentoBean implements Serializable {
 	private Registro registro;
 	private String duracao;
 	List<String> numeroNota;
-	private List<Registro> registros;
+	//private List<Registro> registros;
 
 	/**
 	 * Construtor
@@ -65,7 +65,7 @@ public class AtendimentoBean implements Serializable {
 		dataFim = Calendar.getInstance().getTime();
 		status = "INICIADO";
 		numeroNota = new ArrayList<>();
-		registros = new ArrayList<>();
+		//registros = new ArrayList<>();
 	}
 
 	/**
@@ -94,8 +94,8 @@ public class AtendimentoBean implements Serializable {
 
 	@PostConstruct
 	private void consultaInicial() {
-		consultaAtendimentosIni();
-		consultaRegistrosAguadando();
+		SharedListBean.consultaRegistrosAguardando();
+		SharedListBean.consultaAtendimentosIni();
 	}
 
 	public void removeNota(ActionEvent event) {
@@ -131,6 +131,7 @@ public class AtendimentoBean implements Serializable {
 				alterarStatusRegistro(registro.getId(), status);
 				limpar();
 				consultaInicial();
+				SharedListBean.consultaLiberadosSaida();
 				Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
 			}
 		} catch (Exception erro) {
@@ -151,16 +152,14 @@ public class AtendimentoBean implements Serializable {
 		atendimento = atendimentoDao.consultarAtentimentoPorId(at.getId());
 		registro = atendimento.getRegistro();
 		if (atendimentoDao.consultarAtentimentoPorId(atendimento.getId()) == null) {
-			consultaAtendimentosIni();
-			consultaRegistrosAguadando();
+			consultaInicial();
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
 		} else {
 			try {
 				atendimentoDao.excluirAtendimento(atendimento);
 				alterarStatusRegistro(registro.getId(), ABERTO);
 				limpar();
-				consultaAtendimentosIni();
-				consultaRegistrosAguadando();
+				consultaInicial();
 				Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
 			} catch (Exception e) {
 				Messages.addGlobalError("Erro ao desfazer atendimento! " + e.getMessage());
@@ -219,6 +218,7 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public void selecionado(ActionEvent event) {
 		atendimento = (Atendimento) event.getComponent().getAttributes().get("registroSelecionado");
+		registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 	}
 
 	/**
@@ -232,12 +232,11 @@ public class AtendimentoBean implements Serializable {
 						fimAtendimento(atendimento);
 					}
 				} catch (Exception e) {
-					consultaAtendimentosIni();
+					consultaInicial();
 				}
 			}
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
-			consultaAtendimentosIni();
 		}
 	}
 
@@ -261,7 +260,8 @@ public class AtendimentoBean implements Serializable {
 				alterarStatusRegistro(at.getRegistro().getId(), FINALIZADO);
 				Messages.addGlobalInfo("Atendimento finalizado com sucesso!");
 				limpar();
-				consultaAtendimentosIni();
+				consultaInicial();
+				SharedListBean.consultaLiberadosSaida();
 			}
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
@@ -349,25 +349,25 @@ public class AtendimentoBean implements Serializable {
 		}
 	}
 
-	public synchronized void consultaRegistrosAguadando() {
-		try {
-			registros = registroDao.consultarRegistroPeloNomeDaEmpresa("");
-		} catch (Exception e) {
-			Messages.addGlobalError(e.getCause().getMessage());
-		}
-	}
+//	public synchronized void consultaRegistrosAguadando() {
+//		try {
+//			registros = registroDao.consultarRegistroPeloNomeDaEmpresa("");
+//		} catch (Exception e) {
+//			Messages.addGlobalError(e.getCause().getMessage());
+//		}
+//	}
 
 	public void registroSelecionado(ActionEvent ev) {
 		registro = (Registro) ev.getComponent().getAttributes().get("registroSelecionado");
 	}
 
-	public List<Registro> getRegistros() {
-		return registros;
-	}
-
-	public void setRegistros(List<Registro> registros) {
-		this.registros = registros;
-	}
+//	public List<Registro> getRegistros() {
+//		return registros;
+//	}
+//
+//	public void setRegistros(List<Registro> registros) {
+//		this.registros = registros;
+//	}
 
 	public void limpar() {
 		atendimento = new Atendimento();
