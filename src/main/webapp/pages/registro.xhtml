@@ -9,9 +9,9 @@
 		<h:form>
 			<p:poll interval="5" update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" />
 		</h:form>
-		
+
 		<h:form>
-			<p:poll interval="5" update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" listener="#{registroBean.calculaPessoasPresentes()}" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}"/>
+			<p:poll interval="5" update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" listener="#{registroBean.calculaPessoasPresentes()}" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}" />
 		</h:form>
 
 		<p:tabView id="tbView" style="border:0" activeIndex="0">
@@ -222,10 +222,17 @@
 								</p:link>
 							</p:column>
 							<p:column headerText="Nome">
-								<h:outputText value="#{registro.prestadorDeServico.nome}" />
-								<p:outputLabel>
-									<i class="fas fa-shield-alt icon_espera" />
-								</p:outputLabel>
+								<h:panelGrid columns="1">
+									<p:column rendered="#{registro.prestadorDeServico.tipo eq 'PRESTADOR'}">
+										<p:outputLabel value="#{registro.empresa.nome}" styleClass="text-primary" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{registro.prestadorDeServico.nome}" />
+										<p:outputLabel>
+											<i class="fas fa-shield-alt icon_espera" />
+										</p:outputLabel>
+									</p:column>
+								</h:panelGrid>
 							</p:column>
 							<p:column headerText="Liberar" width="50" styleClass="align">
 								<p:commandButton icon="fa fa-sign-out" id="btnLiberar" oncomplete="PF('dlgAlterarRgistro').show()" actionListener="#{registroBean.registroSelecionado}" update="tbView:dlgAltRegistro">

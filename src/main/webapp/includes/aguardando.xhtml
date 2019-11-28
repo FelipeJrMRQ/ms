@@ -8,10 +8,13 @@
 
 <h3 class="text-primary">Aguardando atendimento</h3>
 
-<p:dataTable value="#{sharedListBean.aguardandoAtendimento()}" var="prestador" id="tbRegistrosPrestadores" paginator="true" rows="15" emptyMessage="Não há novas entradas!">
-	<p:column headerText="EMPRESA">
-		<p:outputLabel value="#{prestador.empresa.nome}" rendered="#{prestador.tipo == 'ENTRADA'}" styleClass="text-primary" />
-	</p:column>
+<p:dataTable value="#{sharedListBean.aguardandoAtendimento()}" var="prestador" id="tbRegistrosPrestadores" paginator="true" rows="15" emptyMessage="Não há novas entradas!">	
+	<p:column headerText="EMPRESA / NOME">
+			<h:panelGrid columns="1">
+				<h:outputLabel value="#{prestador.empresa.nome}" styleClass="text-primary" />
+				<h:outputLabel value="#{prestador.prestadorDeServico.nome}" />
+			</h:panelGrid>
+		</p:column>
 
 	<p:column headerText="TEMPO" width="60" styleClass="align">
 		<p:outputLabel value="#{registroBean.tempoDeEspera(prestador.data)}" />

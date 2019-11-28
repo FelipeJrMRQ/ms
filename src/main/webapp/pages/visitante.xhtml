@@ -91,7 +91,10 @@
 					</div>
 				</div>
 			</h:form>
-			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="2" emptyMessage="Não há registros a serem exibidos.">
+			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="5" emptyMessage="Não há registros a serem exibidos.">
+				<p:column headerText="ID" width="60">
+					<p:outputLabel value="#{prestador.id}" />
+				</p:column>
 				<p:column headerText="NOME">
 					<p:outputLabel value="#{prestador.nome}" />
 				</p:column>

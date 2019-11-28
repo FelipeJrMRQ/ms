@@ -110,9 +110,8 @@ public class AtendimentoBean implements Serializable {
 	 * @param status
 	 * @throws Exception
 	 */
-	public void inicioAtendimento(Registro registro, String status) {
+	public synchronized void inicioAtendimento(Registro registro, String status) {
 		try {
-			synchronized (this) {
 				/**
 				 * Verifica se o registro já esta vinculado a um atendimento Como o sistema será
 				 * utilizado por varias pessoas há possibilidade de que haja o inicio do
@@ -127,13 +126,12 @@ public class AtendimentoBean implements Serializable {
 				atendimento.setStatus(INICIADO);
 				atendimento.setRegistro(registro);
 				atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
-				atendimentoDao.salvarAtendimento(atendimento);
-				alterarStatusRegistro(registro.getId(), status);
+				this.registro = registroDao.consultaRegistroPeloId(registro.getId());
+				this.registro.setStatus(INICIADO);
+				atendimentoDao.salvarAtendimento(atendimento, this.registro);
 				limpar();
 				consultaInicial();
-				SharedListBean.consultaLiberadosSaida();
 				Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
-			}
 		} catch (Exception erro) {
 			consultaInicial();
 			Messages.addGlobalError(erro.getMessage());
@@ -150,14 +148,14 @@ public class AtendimentoBean implements Serializable {
 		Atendimento at = new Atendimento();
 		at = (Atendimento) event.getComponent().getAttributes().get("atendimentoSelecionado");
 		atendimento = atendimentoDao.consultarAtentimentoPorId(at.getId());
-		registro = atendimento.getRegistro();
+		registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 		if (atendimentoDao.consultarAtentimentoPorId(atendimento.getId()) == null) {
 			consultaInicial();
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
 		} else {
-			try {
-				atendimentoDao.excluirAtendimento(atendimento);
-				alterarStatusRegistro(registro.getId(), ABERTO);
+			try {	
+				registro.setStatus(ABERTO);
+				atendimentoDao.excluirAtendimento(atendimento, registro);
 				limpar();
 				consultaInicial();
 				Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
@@ -191,24 +189,6 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public String quantidadeAtendimentos() {
 		return String.valueOf(atendimentos.size());
-	}
-
-	/**
-	 * Altera o STATUS do registro de acordo com a necessidade ABERTO - Aguardando
-	 * atendimento INICIADO - Processo de atendimento iniciado FINALIZADO - Processo
-	 * de atendimento finalizado e saída liberada
-	 * 
-	 * @param registroEntrada
-	 */
-	private synchronized void alterarStatusRegistro(Long id, String status) {
-		Registro re = new Registro();
-		try {
-			re = registroDao.consultaRegistroPeloId(id);
-			re.setStatus(status);
-			registroDao.salvar(re);
-		} catch (Exception erro) {
-			Messages.addGlobalInfo(erro.getCause().getMessage());
-		}
 	}
 
 	/**
@@ -256,8 +236,7 @@ public class AtendimentoBean implements Serializable {
 				at.setData_fim(HoraDaInternet.getHora());
 				at.setStatus(FINALIZADO);
 				at.setUsuario_fim(PermissoesUsuarios.getUsuario());
-				atendimentoDao.alterarAtendimento(at);
-				alterarStatusRegistro(at.getRegistro().getId(), FINALIZADO);
+				atendimentoDao.alterarAtendimento(at, registroDao.consultaRegistroPeloId(at.getRegistro().getId()));
 				Messages.addGlobalInfo("Atendimento finalizado com sucesso!");
 				limpar();
 				consultaInicial();
@@ -300,23 +279,6 @@ public class AtendimentoBean implements Serializable {
 		}
 	}
 
-//	private synchronized boolean gerarRegistroSaida(Atendimento atendimento) throws Exception {
-//		Atendimento at = new Atendimento();
-//		at = atendimentoDao.consultarAtentimentoPorId(atendimento.getId());
-//		Registro rgt = registroDao.consultaRegistroPeloId(at.getRegistro().getId());
-//		try {
-//			Registro rgL = new Registro();
-//			rgL = new RegistroRepository(HoraDaInternet.getHora(), rgt.getEmpresa(), notas, rgt.getPlacaVeiculo(), rgt.getPrestadorDeServico(), FINALIZADO, LIBERADO, PermissoesUsuarios.getUsuario()).save();
-//			if (gerarLiberacao(at, rgL)) {
-//				return true;
-//			} else {
-//				return false;
-//			}
-//		} catch (Exception ex) {
-//			throw new Exception("Erro ao tentar gerar registro de saída!");
-//		}
-//	}
-
 	/**
 	 * Gera uma liberação de saida para que posteriormente seja realizada um
 	 * conferencia e saida definitiva
@@ -349,25 +311,9 @@ public class AtendimentoBean implements Serializable {
 		}
 	}
 
-//	public synchronized void consultaRegistrosAguadando() {
-//		try {
-//			registros = registroDao.consultarRegistroPeloNomeDaEmpresa("");
-//		} catch (Exception e) {
-//			Messages.addGlobalError(e.getCause().getMessage());
-//		}
-//	}
-
 	public void registroSelecionado(ActionEvent ev) {
 		registro = (Registro) ev.getComponent().getAttributes().get("registroSelecionado");
 	}
-
-//	public List<Registro> getRegistros() {
-//		return registros;
-//	}
-//
-//	public void setRegistros(List<Registro> registros) {
-//		this.registros = registros;
-//	}
 
 	public void limpar() {
 		atendimento = new Atendimento();

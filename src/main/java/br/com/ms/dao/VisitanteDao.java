@@ -45,8 +45,7 @@ public class VisitanteDao {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			// DAO.getSession().delete(p);
-			session.createQuery("delete from Visitante where id = " + p.getId() + "").executeUpdate();
+			session.delete(p);
 			transaction.commit();
 		} catch (Exception er) {
 			transaction.rollback();
@@ -136,7 +135,11 @@ public class VisitanteDao {
 			consulta.createAlias("visitante", "v");
 			consulta.add(Restrictions.eq("v.id", id)).setMaxResults(1);
 			r = (Registro) consulta.uniqueResult();
-			r.getNotas().size();
+			try {
+				r.getNotas().size();
+			}catch(NullPointerException e) {
+				
+			}
 			return r;
 		} catch (RuntimeException erro) {
 			throw erro;

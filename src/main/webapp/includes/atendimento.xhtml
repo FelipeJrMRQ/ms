@@ -10,13 +10,18 @@
 
 	<h3 class="text-success">Em atendimento</h3>
 	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!">
-		<p:column headerText="EMPRESA">
-			<h:outputLabel value="#{atdm.registro.empresa.nome}" styleClass="text-success" />
+
+		<p:column headerText="EMPRESA / NOME">
+			<h:panelGrid columns="1">
+				<h:outputLabel value="#{atdm.registro.empresa.nome}" styleClass="text-success" />
+				<h:outputLabel value="#{atdm.registro.prestadorDeServico.nome}" />
+			</h:panelGrid>
 		</p:column>
 
 		<p:column headerText="TEMPO" width="70" styleClass="align">
 			<p:outputLabel value="#{atendimentoBean.calculaDuracao(atdm.data_inicio, atdm.data_fim)}" />
 		</p:column>
+
 		<p:column headerText="FINALIZAR" width="80" styleClass="align">
 			<p:commandButton icon="ui-icon-check" id="btnOpcao" actionListener="#{atendimentoBean.selecionado}" oncomplete="PF('dlgNotasLiberacao').show()" update=":tbView:notasLiberacao" rendered="#{atdm.status == 'INICIADO'}">
 				<f:attribute name="registroSelecionado" value="#{atdm}" />
@@ -28,6 +33,7 @@
 				<p:confirm message="Deseja realmente desfazer este atendimento?" header="Alteração atendimento" icon="ui-icon-alert" />
 			</p:commandButton>
 		</p:column>
+
 	</p:dataTable>
 </h:form>
 
@@ -95,12 +101,12 @@
 					</p:commandButton>
 				</p:column>
 			</p:dataTable>
-			
+
 		</div>
 		<div style="clear: both;"></div>
 		<br />
-			<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.validaFimAtendimento}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
-			<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limparListaNotas}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
+		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.validaFimAtendimento}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
+		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limparListaNotas}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
 	</div>
 </p:dialog>
 

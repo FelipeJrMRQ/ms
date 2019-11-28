@@ -50,7 +50,7 @@ public class NotaResgitroDao {
 			session.close();
 		}
 	}
-	
+
 	public NotaRegistro consultarNotaPorId(long id) {
 		NotaRegistro nr = new NotaRegistro();
 		session = getSession();
@@ -79,28 +79,35 @@ public class NotaResgitroDao {
 			session.close();
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public List<NotaRegistro> consultaNotasNaoSincrozizadas(String data, String tipo) {
+	
+	public void alterar(NotaRegistro nota) {
 		session = getSession();
 		try {
-			List<NotaRegistro> lista = new ArrayList<>();
-			lista = (List<NotaRegistro>) session.createSQLQuery("select * from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.data > '" + data + "' and !isnull(notas_registro.chave) and  isnull(notas_registro.cnpj) and registro.tipo = '" + tipo + "' and length(notas_registro.chave) = 44").addEntity(NotaRegistro.class).list();
-			//lista = (List<NotaRegistro>) session.createSQLQuery("select notas_registro.id , registro_id ,numeroNfe , chave, nome, cnpj, valor, emissao from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.tipo ='ENTRADA' and !isnull(chave) and length(chave) = 44 and isnull(cnpj);").addEntity(NotaRegistro.class).list();
-			return lista;
-		} catch (Exception e) {
-			throw e;
+			transaction = session.beginTransaction();
+			session.update(nota);
+			transaction.commit();
+		} catch (RuntimeException erro) {
+			transaction.rollback();
+			throw erro;
 		} finally {
 			session.close();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<NotaRegistro> consultaNotasSincrozizadas(String data, String tipo) {
+	public List<NotaRegistro> consultaNotasEntradaNaoSincronizada(String data, String tipo) {
 		session = getSession();
 		try {
 			List<NotaRegistro> lista = new ArrayList<>();
-			lista = (List<NotaRegistro>) session.createSQLQuery("select * from notas_registro inner join registro on registro.id = notas_registro.registro_id where registro.data > '" + data + "' and !isnull(notas_registro.chave) and registro.tipo = '" + tipo + "' and length(notas_registro.chave) = 44").addEntity(NotaRegistro.class).list();
+			lista = (List<NotaRegistro>) session.createSQLQuery("select notas_registro.id, notas_registro.chave, notas_registro.cnpj,\n" + 
+					" notas_registro.emissao, notas_registro.nome, notas_registro.numeroNfe,\n" + 
+					" notas_registro.registro_id, notas_registro.valor \n" + 
+					" from notas_registro \n" + 
+					"inner join registro on registro.id = notas_registro.registro_id \n" + 
+					"where registro.data >='"+data+"'\n" + 
+					"and registro.tipo = '"+tipo+"'  \n" + 
+					"and isnull(notas_registro.cnpj) \n" + 
+					"and length(notas_registro.chave) = 44;").addEntity(NotaRegistro.class).list();
 			return lista;
 		} catch (Exception e) {
 			throw e;

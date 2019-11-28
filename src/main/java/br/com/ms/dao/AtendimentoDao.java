@@ -11,6 +11,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.ms.model.Atendimento;
+import br.com.ms.model.Registro;
 import br.com.ms.util.HibernateUtil;
 
 public class AtendimentoDao {
@@ -45,12 +46,60 @@ public class AtendimentoDao {
 		}
 	}
 
+	/**
+	 * Realiza o salvamento de um inicio de atendimento e realiza a alteração do
+	 * status do registro
+	 * 
+	 * @param atendimento
+	 * @param r
+	 * @throws Exception
+	 */
+	public void salvarAtendimento(Atendimento atendimento, Registro r) throws Exception {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			session.save(atendimento);
+			session.merge(r);
+			transaction.commit();
+		} catch (Exception erro) {
+			transaction.rollback();
+			throw erro;
+		} finally {
+			session.close();
+		}
+	}
+
 	public Atendimento alterarAtendimento(Atendimento atendimento) {
 		Atendimento at = new Atendimento();
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
 			at = (Atendimento) session.merge(atendimento);
+			transaction.commit();
+			return at;
+		} catch (Exception erro) {
+			transaction.rollback();
+			throw erro;
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * Realiza a alteração do atendimento junto com a alteração do registro
+	 * 
+	 * @param atendimento
+	 * @param r
+	 * @return
+	 */
+	public Atendimento alterarAtendimento(Atendimento atendimento, Registro r) {
+		Atendimento at = new Atendimento();
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			at = (Atendimento) session.merge(atendimento);
+			r.setStatus("FINALIZADO");
+			session.merge(r);
 			transaction.commit();
 			return at;
 		} catch (Exception erro) {
@@ -89,6 +138,28 @@ public class AtendimentoDao {
 		}
 	}
 
+	/**
+	 * Realiza a exclusão de um atendimento e a alteração do registro para p estado
+	 * de aberto registro
+	 * 
+	 * @param atendimento
+	 * @param r
+	 */
+	public void excluirAtendimento(Atendimento atendimento, Registro r) {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			session.delete(atendimento);
+			session.merge(r);
+			transaction.commit();
+		} catch (Exception erro) {
+			transaction.rollback();
+			throw erro;
+		} finally {
+			session.close();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Atendimento> consultarAtentimento(String status) {
 		session = getSession();
@@ -118,7 +189,7 @@ public class AtendimentoDao {
 			return at;
 		} catch (Exception erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -134,7 +205,7 @@ public class AtendimentoDao {
 			return at;
 		} catch (Exception erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -151,11 +222,17 @@ public class AtendimentoDao {
 	@SuppressWarnings("unchecked")
 	public void consultarAtendimentoPorRegistro(long id) throws Exception {
 		session = getSession();
-		Criteria consulta = session.createCriteria(Atendimento.class);
-		consulta.add(Restrictions.eq("registro.id", id));
-		List<Atendimento> ls = consulta.list();
-		if (!ls.isEmpty()) {
-			throw new Exception("Este atendimento já foi iniciado");
+		try {
+			Criteria consulta = session.createCriteria(Atendimento.class);
+			consulta.add(Restrictions.eq("registro.id", id));
+			List<Atendimento> ls = consulta.list();
+			if (!ls.isEmpty()) {
+				throw new Exception("Este atendimento já foi iniciado");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
 		}
 
 	}
@@ -180,6 +257,8 @@ public class AtendimentoDao {
 			return atendimentos;
 		} catch (Exception erro) {
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 
@@ -199,6 +278,8 @@ public class AtendimentoDao {
 			return atendimentos;
 		} catch (Exception erro) {
 			throw erro;
+		} finally {
+			session.close();
 		}
 	}
 }

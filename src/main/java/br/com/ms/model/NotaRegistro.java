@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class NotaRegistro implements Serializable {
 	private String nome;
 	private Date emissao;
 	private String chave;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Registro registro;
 
 	public NotaRegistro() {
@@ -100,6 +101,6 @@ public class NotaRegistro implements Serializable {
 	}
 
 	public void setChave(String chave) {
-		this.chave = chave;
+		this.chave = chave.replaceAll(" ", "");
 	}
 }

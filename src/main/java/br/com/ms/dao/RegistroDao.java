@@ -25,6 +25,7 @@ public class RegistroDao {
 	private Session getSession() {
 		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
+
 	public RegistroDao() {
 		registro = new Registro();
 	}
@@ -42,7 +43,7 @@ public class RegistroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -58,7 +59,7 @@ public class RegistroDao {
 		} catch (RuntimeException erro) {
 			transaction.rollback();
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -68,13 +69,13 @@ public class RegistroDao {
 		Registro reg = new Registro();
 		try {
 			transaction = session.beginTransaction();
-			reg = (Registro) session.merge(r);
+			session.update(r);
 			transaction.commit();
 			return reg;
 		} catch (RuntimeException e) {
 			transaction.rollback();
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -92,7 +93,7 @@ public class RegistroDao {
 		} catch (RuntimeException e) {
 			transaction.rollback();
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -111,7 +112,7 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -143,7 +144,7 @@ public class RegistroDao {
 			return lista;
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -156,11 +157,11 @@ public class RegistroDao {
 			list = (List<Registro>) session.createSQLQuery("select * from registro where registro.tipo ='ENTRADA' and registro.status = 'INICIADO' or registro.status = 'ABERTO' or registro.tipo = 'LIBERADO'").addEntity(Registro.class).list();
 			for (Registro registro : list) {
 				registro.getNotas().size();
-			}	
+			}
 			return list;
 		} catch (Exception e) {
 			throw (e);
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -192,7 +193,7 @@ public class RegistroDao {
 			return lista;
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -224,7 +225,7 @@ public class RegistroDao {
 			return lista;
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -243,7 +244,7 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -262,7 +263,7 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -277,7 +278,7 @@ public class RegistroDao {
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -288,11 +289,15 @@ public class RegistroDao {
 			Criteria consulta = session.createCriteria(Registro.class);
 			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 			registro = (Registro) consulta.uniqueResult();
-			registro.getNotas().size();
+			try {
+				registro.getNotas().size();
+			} catch (NullPointerException e) {
+				System.out.println("ERRO");
+			}
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -306,7 +311,7 @@ public class RegistroDao {
 			return registro;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -331,7 +336,7 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -350,7 +355,7 @@ public class RegistroDao {
 			return registros;
 		} catch (RuntimeException erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -369,7 +374,7 @@ public class RegistroDao {
 			return registros;
 		} catch (Exception erro) {
 			throw erro;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}
@@ -388,7 +393,7 @@ public class RegistroDao {
 			return registros;
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			session.close();
 		}
 	}

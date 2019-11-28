@@ -12,14 +12,11 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
 import br.com.ms.dao.NotaResgitroDao;
-import br.com.ms.dao.RegistroDao;
 import br.com.ms.model.NotaRegistro;
-import br.com.ms.model.Registro;
 import br.com.ms.nfe.MontaRegistroNfe;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.nfe.exception.NfeException;
@@ -32,62 +29,52 @@ public class AtualizaNfeBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 6816686737400007298L;
 	private List<NotaRegistro> notas;
-	private NotaResgitroDao dao;
 	private Date data;
-	private NotaRegistro notaRegistro;
+	private NotaResgitroDao nDao;
 	private NotaRegistro novaNota;
-	//private Registro registro;
-	private RegistroDao rDao;
-	private List<NotaRegistro> auxiliar;
 	private String tipo;
+	private Integer progress;
+	private Integer sizeProgress;
 
 	public AtualizaNfeBean() {
 		notas = new ArrayList<NotaRegistro>();
-		dao = new NotaResgitroDao();
 		data = Calendar.getInstance().getTime();
-		//registro = new Registro();
-		notaRegistro = new NotaRegistro();
-		rDao = new RegistroDao();
-		auxiliar = new ArrayList<>();
 		tipo = "ENTRADA";
+		nDao = new NotaResgitroDao();
+	}
+	
+	public void executeProgresso() {
+		atualizaInterno();
 	}
 
-	public void consultaNotasDesatualizadas() {
+	public void consultaNotasNaoAtualizadas() {
 		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			auxiliar = dao.consultaNotasNaoSincrozizadas(format.format(data), tipo);
-			if (!auxiliar.isEmpty()) {
-				for (NotaRegistro notaRegistro : auxiliar) {
-					if (notaRegistro.getValor() == null && notaRegistro.getChave() != null) {
-						if (notaRegistro.getChave().length() == 44 && !notas.contains(notaRegistro)) {
-							notas.add(notaRegistro);
-						}
-					}
-				}
-			} else {
-				Messages.addGlobalInfo("Não há notas para sincronizar.");
-			}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			notas = nDao.consultaNotasEntradaNaoSincronizada(sdf.format(data), tipo);
 		} catch (Exception e) {
-			Messages.addGlobalError("Não foi possível realizar esta consulta");
+			throw e;
 		}
 	}
+	
+	public void resultado() {
+		getProgress();
+	}
+	
 
 	public void atualizaInterno() {
-		for (NotaRegistro notaRegistro : notas) {
-			Registro registro = new Registro();
-			registro = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
-			for (NotaRegistro nr : registro.getNotas()) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		notas = nDao.consultaNotasEntradaNaoSincronizada(sdf.format(data), tipo);
+		for (NotaRegistro nrg : notas) {
+			if (nrg.getCnpj() == null) {
 				try {
-					MontaRegistroNfe montaReg = new MontaRegistroNfe();
-					novaNota = montaReg.getNfe(notaRegistro.getRegistro(), notaRegistro.getChave());
-					nr.setNome(novaNota.getNome());
-					nr.setNumeroNfe(novaNota.getNumeroNfe());
-					nr.setCnpj(novaNota.getCnpj());
-					nr.setEmissao(novaNota.getEmissao());
-					nr.setValor(novaNota.getValor());
-					rDao.alterarRegistro(registro);
-					limpar();
-					// consultaNotasDesatualizadas();
+					MontaRegistroNfe montaNota = new MontaRegistroNfe();
+					novaNota = montaNota.getNfe(nrg.getRegistro(), nrg.getChave());
+					nrg.setNome(novaNota.getNome());
+					nrg.setNumeroNfe(novaNota.getNumeroNfe());
+					nrg.setCnpj(novaNota.getCnpj());
+					nrg.setEmissao(novaNota.getEmissao());
+					nrg.setValor(novaNota.getValor());
+					nDao.alterar(nrg);
 				} catch (FileNotFoundException e) {
 					Messages.addGlobalFatal("Não atualizado tente novamente");
 				} catch (IOException e) {
@@ -106,83 +93,38 @@ public class AtualizaNfeBean implements Serializable {
 	}
 
 	public void atualizarEmMass() {
-		try {
-			for (NotaRegistro notaRegistro : notas) {
-				Registro r = new Registro();
-				r = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
-				for (NotaRegistro nr : r.getNotas()) {
-					novaNota = MontaRegistroNfe.getNfe(notaRegistro.getChave(), notaRegistro.getRegistro());
-					nr.setNome(novaNota.getNome());
-					nr.setNumeroNfe(novaNota.getNumeroNfe());
-					nr.setCnpj(novaNota.getCnpj());
-					nr.setEmissao(novaNota.getEmissao());
-					nr.setValor(novaNota.getValor());
-					rDao.alterarRegistro(r);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		notas = nDao.consultaNotasEntradaNaoSincronizada(sdf.format(data), tipo);
+		for (NotaRegistro nrg : notas) {
+			if (nrg.getCnpj() == null) {
+				try {
+					novaNota = MontaRegistroNfe.getNfe(nrg.getChave().trim(), nrg.getRegistro());
+					nrg.setNome(novaNota.getNome());
+					nrg.setNumeroNfe(novaNota.getNumeroNfe());
+					nrg.setCnpj(novaNota.getCnpj());
+					nrg.setEmissao(novaNota.getEmissao());
+					nrg.setValor(novaNota.getValor());
+					nDao.alterar(nrg);
+				} catch (FileNotFoundException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (IOException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (NfeException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (CertificadoException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (ParseException e) {
+					Messages.addGlobalFatal("Não atualizado tente novamente");
+				} catch (Exception e) {
+					Messages.addGlobalFatal(e.getMessage());
 				}
 			}
-			limpar();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			notas = dao.consultaNotasNaoSincrozizadas(sdf.format(data), tipo);
-		} catch (FileNotFoundException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (IOException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (NfeException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (CertificadoException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (ParseException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
 		}
-
 	}
 
 	public void limpar() {
-		notaRegistro = new NotaRegistro();
-		//registro = new Registro();
 		novaNota = new NotaRegistro();
-		auxiliar = new ArrayList<>();
 		notas = new ArrayList<>();
-	}
-
-	public void notaSelecionada(ActionEvent event) {
-		try {
-			notaRegistro = (NotaRegistro) event.getComponent().getAttributes().get("notaSelecionada");
-			Registro r = new Registro();
-			r = rDao.consultaRegistroPeloId(notaRegistro.getRegistro().getId());
-			for (NotaRegistro notaRegistro : r.getNotas()) {
-				novaNota = MontaRegistroNfe.getNfe(notaRegistro.getChave(), notaRegistro.getRegistro());
-				notaRegistro.setNome(novaNota.getNome());
-				notaRegistro.setNumeroNfe(novaNota.getNumeroNfe());
-				notaRegistro.setCnpj(novaNota.getCnpj());
-				notaRegistro.setEmissao(novaNota.getEmissao());
-				notaRegistro.setValor(novaNota.getValor());
-				rDao.alterarRegistro(r);
-			}
-			limpar();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			notas = dao.consultaNotasSincrozizadas(sdf.format(data), tipo);
-		} catch (FileNotFoundException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (IOException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (NfeException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (CertificadoException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		} catch (ParseException e) {
-
-			Messages.addGlobalFatal("Não atualizado tente novamente");
-		}
 	}
 
 	public List<NotaRegistro> getNotas() {
@@ -207,6 +149,25 @@ public class AtualizaNfeBean implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public Integer getProgress() {
+		if(progress == null) {
+			progress = 0;
+		}
+		return progress;
+	}
+
+	public void setProgress(Integer progress) {
+		this.progress = progress;
+	}
+
+	public Integer getSizeProgress() {
+		return sizeProgress;
+	}
+
+	public void setSizeProgress(Integer sizeProgress) {
+		this.sizeProgress = sizeProgress;
 	}
 
 }

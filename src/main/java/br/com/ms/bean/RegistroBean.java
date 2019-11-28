@@ -411,8 +411,8 @@ public class RegistroBean implements Serializable {
 	private void salvarRegistroEntradaVisitante() {
 		try {
 			Registro r1 = new Registro();
-			r1.setTipo("ENTRADA");
-			r1.setStatus("FINALIZADO");
+			r1.setTipo(ENTRADA);
+			r1.setStatus(FINALIZADO);
 			r1.setUsuario(PermissoesUsuarios.getUsuario());
 			r1.setData(HoraDaInternet.getHora());
 			r1.setPrestadorDeServico(visitante);
@@ -433,8 +433,8 @@ public class RegistroBean implements Serializable {
 		try {
 			Registro r1 = new Registro();
 			r1.setEmpresa(r.getEmpresa());
-			r1.setTipo("LIBERADO");
-			r1.setStatus("FINALIZADO");
+			r1.setTipo(LIBERADO);
+			r1.setStatus(FINALIZADO);
 			r1.setData(HoraDaInternet.getHora());
 			r1.setnotas(r.getNotas());
 			r1.setPlacaVeiculo(r.getPlacaVeiculo());
@@ -698,9 +698,13 @@ public class RegistroBean implements Serializable {
 	public String getNfe() {
 		return nfe;
 	}
-
+	
+	/**
+	 * Utiliza a função ReplaceAll para remover espacos em branco
+	 * @param nfe
+	 */
 	public void setNfe(String nfe) {
-		this.nfe = nfe;
+		this.nfe = nfe.replaceAll(" ", "");
 	}
 
 	public String getNome() {

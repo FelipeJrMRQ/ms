@@ -9,7 +9,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import br.com.ms.model.Atendimento;
 import br.com.ms.model.Liberacao;
+import br.com.ms.model.Registro;
 import br.com.ms.util.HibernateUtil;
 
 public class LiberacaoDao {
@@ -33,7 +35,6 @@ public class LiberacaoDao {
 			session.close();
 		}
 	}
-	
 
 	public void excluirLiberacao(Liberacao liberacao) {
 		session = getSession();
@@ -48,7 +49,31 @@ public class LiberacaoDao {
 			session.close();
 		}
 	}
-	
+
+	/**
+	 * Metodo para excluir a liberação de usuários não monitorados onde junto é
+	 * excluido atendimento registro de entrada
+	 * 
+	 * @param liberacao
+	 * @param atendimento
+	 * @param entrada
+	 */
+	public void excluirLiberacao(Liberacao liberacao, Atendimento atendimento, Registro entrada) {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			session.delete(liberacao);
+			session.delete(atendimento);
+			session.delete(entrada);
+			transaction.commit();
+		} catch (Exception ex) {
+			transaction.rollback();
+			throw ex;
+		} finally {
+			session.close();
+		}
+	}
+
 	/**
 	 * Este metodo evita o Lazyloading do hibernate
 	 */
@@ -58,7 +83,7 @@ public class LiberacaoDao {
 			liberacao.getSaida().getNotas().size();
 		}
 	}
-	
+
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<Liberacao> consultarPeloNomeDoPrestador(Date dataInicial, Date DataFinal, String nome) {
 		session = getSession();

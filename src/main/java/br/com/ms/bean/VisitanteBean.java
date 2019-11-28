@@ -160,12 +160,12 @@ public class VisitanteBean implements Serializable {
 	public void exluir(ActionEvent event) {
 		try {
 			visitante = (Visitante) event.getComponent().getAttributes().get("prestadorSelecionado");
+			visitante = visitanteDao.consultaVisitantePorId(visitante.getId());
 			validaExclusao(visitante);
-			visitanteDao.excluirPrestadorDeServico(visitante);
+			visitanteDao.excluirPrestadorDeServico(visitanteDao.consultaVisitantePorId(visitante.getId()));
 			Messages.addGlobalInfo("Registro excluído com sucesso!");
 		} catch (Exception ex) {
 			Messages.addGlobalError(ex.getMessage());
-
 		}
 	}
 

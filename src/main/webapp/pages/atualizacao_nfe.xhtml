@@ -7,16 +7,20 @@
 
 		<h:form id="frm">
 			<p:calendar value="#{atualizaNfeBean.data}" pattern="dd/MM/yyyy" />
+
 			<p:selectOneMenu value="#{atualizaNfeBean.tipo}">
 				<f:selectItem itemLabel="ENTRADA" itemValue="ENTRADA" />
 				<f:selectItem itemLabel="SAIDA" itemValue="SAIDA" />
 				<p:ajax update=":frm :tbNf" listener="#{atualizaNfeBean.limpar()}" />
 			</p:selectOneMenu>
-			<p:commandButton value="Buscar notas não sincronizadas" actionListener="#{atualizaNfeBean.consultaNotasDesatualizadas()}" update=":tbNf :mensagem" />
+
+			<p:commandButton value="Buscar notas não sincronizadas" actionListener="#{atualizaNfeBean.consultaNotasNaoAtualizadas()}" update=":tbNf :mensagem" />
+
 			<p:ajaxStatus onstart="PF('dlgStatus').show()" onsuccess="PF('dlgStatus').hide()">
 				<p:commandButton value="Atualizar em Massa" actionListener="#{atualizaNfeBean.atualizarEmMass()}" update=":tbNf :mensagem" rendered="#{atualizaNfeBean.tipo eq 'ENTRADA'}" />
 				<p:commandButton value="Atualizar em Massa" actionListener="#{atualizaNfeBean.atualizaInterno()}" update=":tbNf :mensagem" rendered="#{atualizaNfeBean.tipo eq 'SAIDA'}" />
 			</p:ajaxStatus>
+
 		</h:form>
 
 		<p:dialog widgetVar="dlgStatus" id="statusAjax" modal="true" appendTo="@(body)" resizable="false" closable="false">
@@ -39,11 +43,6 @@
 				<p:outputLabel value="#{nota.valor}">
 					<f:convertNumber currencySymbol="R$" type="currency" />
 				</p:outputLabel>
-			</p:column>
-			<p:column>
-				<p:commandButton icon="ui-icon-check" actionListener="#{atualizaNfeBean.notaSelecionada}" update="tbNf">
-					<f:attribute value="#{nota}" name="notaSelecionada" />
-				</p:commandButton>
 			</p:column>
 		</p:dataTable>
 
