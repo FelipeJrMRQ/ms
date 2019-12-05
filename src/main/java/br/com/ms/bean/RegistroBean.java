@@ -104,6 +104,7 @@ public class RegistroBean implements Serializable {
 		calculaPessoasPresentes();
 		//long tf = Calendar.getInstance().getTimeInMillis();
 		//System.out.println("Tempo gasto: " + (tf - ti));
+		//timer.schedule(agendador, 1200000, 1200000);
 	}
 
 	/**
@@ -282,27 +283,6 @@ public class RegistroBean implements Serializable {
 			nfe = "";
 		}
 	}
-
-//	/**
-//	 * Método temporario no futuro substituir pelo addNotas
-//	 */
-//	public void addNFEdicaRegistro() {
-//		carregarNotas();
-//		String nf = ConverteChaveDeAcesso.getNumeroNfe(nfe);
-//		if (!numeroNotas.contains(nf) && !nf.isEmpty()) {
-//			numeroNotas.add(nf);
-//			NotaRegistro nota = new NotaRegistro();
-//			nota.setChave(nfe);
-//			nota.setNumeroNfe(nf);
-//			nota.setRegistro(registro);
-//			listNfe.add(nota);
-//			nfe = "";
-//			qtdNotas = String.valueOf(listNfe.size());
-//			return;
-//		} else {
-//			nfe = "";
-//		}
-//	}
 
 	/**
 	 * Caso hajam notas fiscais já cadastradas no registro este método as converte

@@ -42,6 +42,7 @@
 							<p:menuitem value="ALTERAR SENHA" outcome="alterar_senha.xhtml" icon="fa fa-key" />
 							<p:menuitem value="EDITAR REGISTROS" outcome="edicao_registro.xhtml" icon="fa fa-cog" rendered="#{loginBean.usuarioLogado.permissoes.edicaoRegistro}" />
 							<p:menuitem value="ATUALIZAR NFE" outcome="atualizacao_nfe.xhtml" icon="fa fa-download"  rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
+							<p:menuitem value="TAREFAS" outcome="agendador.xhtml" icon="fa fa-clock"  rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
 						</p:submenu>
 						<f:facet name="options">
 							<p:commandButton value="Sair" icon="ui-icon-extlink" actionListener="#{loginBean.logout}" id="btnSair">

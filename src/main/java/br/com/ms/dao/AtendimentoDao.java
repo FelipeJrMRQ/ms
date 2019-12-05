@@ -58,8 +58,8 @@ public class AtendimentoDao {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
+			session.update(r);
 			session.save(atendimento);
-			session.merge(r);
 			transaction.commit();
 		} catch (Exception erro) {
 			transaction.rollback();

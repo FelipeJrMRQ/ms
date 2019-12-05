@@ -43,7 +43,12 @@
 						<p:calendar value="#{edicaoRegistroBean.registro.data}" pattern="dd/MM/yyyy HH:mm" mask="99/99/9999 99:99" showOn="button" />
 						<p:outputLabel value="PLACA VEÍCULO:" />
 						<p:inputMask mask="aaa-9*99" value="#{edicaoRegistroBean.registro.placaVeiculo}" styleClass="upper-case" />
-
+						<p:outputLabel value="STATUS DE ATENDIMENTO" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}"/>
+						<p:selectOneMenu value="#{edicaoRegistroBean.registro.status}" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}">
+							<f:selectItem itemLabel="AGUARDANDO" itemValue="ABERTO" />
+							<f:selectItem itemLabel="INICIADO" itemValue="INICIADO" />
+							<f:selectItem itemLabel="FINALIZADO" itemValue="FINALIZADO"/>
+						</p:selectOneMenu>
 						<p:dataTable value="#{edicaoRegistroBean.registro.notas}" var="nota" paginator="true" paginatorAlwaysVisible="false" rows="5" rendered="#{edicaoRegistroBean.registro.prestadorDeServico.tipo eq 'PRESTADOR'}">
 							<f:facet name="header">
 								<p:commandButton value="Adicionar Notas" oncomplete="PF('dlgConfigAddNotas').show()" update="dlgConfAddNotas" rendered="#{edicaoRegistroBean.viewPanel}" />
