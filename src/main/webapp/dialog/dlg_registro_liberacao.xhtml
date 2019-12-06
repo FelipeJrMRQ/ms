@@ -6,7 +6,7 @@
 
 <h:body>
 
-	<p:dialog widgetVar="dlgAlterarRgistro" header="DADOS DO REGISTRO" id="dlgAltRegistro" width="800" resizable="false" modal="true" appendTo="@(body)" closable="false" hideEffect="fade" showEffect="fade">
+	<p:dialog widgetVar="dlgAlterarRgistro" header="DADOS DO REGISTRO" id="dlgAltRegistro" width="800" resizable="false" modal="true" appendTo="@(body)" closable="false" hideEffect="explode" showEffect="slide">
 		<h2>
 			<p:outputLabel value="Registro de entrada " styleClass="negrito" rendered="#{registroBean.registro.tipo eq 'ENTRADA'}">
 				<div class="edit-entrada fadeIn"></div>
@@ -124,7 +124,7 @@
 		</div>
 	</p:dialog>
 
-	<p:dialog widgetVar="dlgViewMotivo" id="dlgViewMot" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+	<p:dialog widgetVar="dlgViewMotivo" id="dlgViewMot" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450" showEffect="slide" hideEffect="explode">
 		<h:panelGrid columns="1">
 			<p:inputTextarea value="#{registroBean.motivo.motivo}" rows="9" cols="50" />
 			<hr/>
@@ -136,7 +136,7 @@
 	</p:dialog>
 
 	<!-- DIALOGO DE CONFIRMAÇÃO -->
-	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="center">
+	<p:confirmDialog global="true" showEffect="slide" hideEffect="explode" styleClass="center">
 		<p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 		<p:commandButton value="NÂO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 	</p:confirmDialog>

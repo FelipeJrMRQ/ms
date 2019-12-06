@@ -220,7 +220,7 @@
 			</h:panelGrid>
 		</h:form>
 
-		<p:dialog widgetVar="dlgLiberacao" id="dlgLib" width="900" modal="true" appendTo="@(body)" resizable="false" header="DADOS DA LIBERAÇÃO">
+		<p:dialog widgetVar="dlgLiberacao" id="dlgLib" width="900" modal="true" appendTo="@(body)" resizable="false" header="DADOS DA LIBERAÇÃO" showEffect="slide" hideEffect="explode">
 			<h:form>
 				<div id="container_lib">
 					<div id="dados">
@@ -451,7 +451,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgViewNfeEntrada" id="dlgViewNfEntrada" header="NOTAS FISCAIS" modal="true" appendTo="@(body)" width="850" resizable="false">
+		<p:dialog widgetVar="dlgViewNfeEntrada" id="dlgViewNfEntrada" header="NOTAS FISCAIS" modal="true" appendTo="@(body)" width="850" resizable="false" showEffect="slide" hideEffect="explode">
 			<p:dataTable value="#{liberacaoBean.liberacao.entrada.notas}" var="nota" paginator="true" rows="5" paginatorAlwaysVisible="false">
 				<p:column headerText="NÚMERO" width="100">
 					<p:outputLabel value="#{nota.numeroNfe}" />
@@ -472,7 +472,7 @@
 			</p:dataTable>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgViewMotivoEntrada" id="dlgViewMotEntrad" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+		<p:dialog widgetVar="dlgViewMotivoEntrada" id="dlgViewMotEntrad" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450" showEffect="slide" hideEffect="explode">
 			<h:panelGrid columns="1">
 				<p:inputTextarea value="#{liberacaoBean.motivoEntrada.motivo}" rows="9" cols="50"  readonly="true"/>
 				<hr />
@@ -483,7 +483,7 @@
 			</h:panelGrid>
 		</p:dialog>
 		
-		<p:dialog widgetVar="dlgViewMotivoSaida" id="dlgViewMotSaid" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450">
+		<p:dialog widgetVar="dlgViewMotivoSaida" id="dlgViewMotSaid" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450" showEffect="slide" hideEffect="explode">
 			<h:panelGrid columns="1">
 				<p:inputTextarea value="#{liberacaoBean.motivoSaida.motivo}" rows="9" cols="50" readonly="true"/>
 				<hr />

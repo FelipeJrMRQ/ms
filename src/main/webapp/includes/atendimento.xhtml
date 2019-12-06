@@ -9,7 +9,7 @@
 
 
 	<h3 class="text-success">Em atendimento</h3>
-	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!">
+	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!" >
 
 		<p:column headerText="EMPRESA / NOME">
 			<h:panelGrid columns="1">
@@ -37,7 +37,7 @@
 	</p:dataTable>
 </h:form>
 
-<p:dialog widgetVar="dlgNotasLiberacao" header="FINALIZAR ATENDIMENTO" id="notasLiberacao" width="800" resizable="false" modal="true" appendTo="@(body)" closable="false" hideEffect="fade" showEffect="fade">
+<p:dialog widgetVar="dlgNotasLiberacao" header="FINALIZAR ATENDIMENTO" id="notasLiberacao" width="800" resizable="false" modal="true" appendTo="@(body)" closable="false" hideEffect="explode" showEffect="slide">
 	<div>
 		<div id="panel_dados_cadastrais">
 			<h:form>
@@ -67,11 +67,16 @@
 						</p:outputLabel>
 						<hr />
 					</p:column>
+					<p:column>
+						<p:outputLabel value="RESPONSÁVEL: " styleClass="negrito"/>
+						<p:outputLabel value="#{atendimentoBean.atendimento.usuario_inicio.nome}"/>
+						<hr />
+					</p:column>
 
 					<p:column>
 						<p:outputLabel value="HORA DE ENTRADADA: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'ENTRADA'}" />
-						<p:outputLabel value="HORA DE SAÍDA " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'SAIDA'}" />
-						<p:outputLabel value="HORA DE LIBERAÇÃO " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'LIBERADO'}" />
+						<p:outputLabel value="HORA DE SAÍDA: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'SAIDA'}" />
+						<p:outputLabel value="HORA DE LIBERAÇÃO: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'LIBERADO'}" />
 						<p:outputLabel value="#{atendimentoBean.registro.data}">
 							<f:convertDateTime pattern="HH:mm" />
 						</p:outputLabel>

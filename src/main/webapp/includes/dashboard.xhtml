@@ -73,7 +73,7 @@
 	</div>
 </h:form>
 
-<p:dialog widgetVar="dlgVisitantePresentes" id="dlgVisPresente" header="Pessoas Presentes" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+<p:dialog widgetVar="dlgVisitantePresentes" id="dlgVisPresente" header="Pessoas Presentes" modal="true" appendTo="@(body)" width="850" hideEffect="explode" showEffect="slide">
 	<p:dataTable var="presentes" value="#{registroBean.quantidadePresentes}" paginator="true" rows="15">
 		<p:column headerText="ID" width="70">
 			<p:outputLabel value="#{presentes.id}" />
@@ -87,7 +87,7 @@
 	</p:dataTable>
 </p:dialog>
 
-<p:dialog widgetVar="dlgEntradasDia" id="dlgEntDia" header="Entradas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+<p:dialog widgetVar="dlgEntradasDia" id="dlgEntDia" header="Entradas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="explode" showEffect="slide">
 	<p:dataTable var="entrada" value="#{registroBean.quantidadeEntradas}" paginator="true" rows="15">
 		<p:column headerText="ID" width="70">
 			<p:outputLabel value="#{entrada.id}" />
@@ -101,7 +101,7 @@
 	</p:dataTable>
 </p:dialog>
 
-<p:dialog widgetVar="dlgAtendimentoDia" id="dlgAtendDia" header="Atendimentos em andamento" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+<p:dialog widgetVar="dlgAtendimentoDia" id="dlgAtendDia" header="Atendimentos em andamento" modal="true" appendTo="@(body)" width="850" hideEffect="explode" showEffect="slide">
 	<p:dataTable var="atendimento" value="#{registroBean.quantidadeAtentimentos}" paginator="true" rows="15">
 		<p:column headerText="ID" width="70">
 			<p:outputLabel value="#{atendimento.id}" />
@@ -115,7 +115,7 @@
 	</p:dataTable>
 </p:dialog>
 
-<p:dialog widgetVar="dlgSaidaDia" id="dlgSaidDia" header="Saídas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="fade" showEffect="fade">
+<p:dialog widgetVar="dlgSaidaDia" id="dlgSaidDia" header="Saídas do dia" modal="true" appendTo="@(body)" width="850" hideEffect="explode" showEffect="slide">
 	<p:dataTable var="saida" value="#{registroBean.quantidadeSaidas}" paginator="true" rows="15">
 		<p:column headerText="ID" width="70">
 			<p:outputLabel value="#{saida.id}" />
