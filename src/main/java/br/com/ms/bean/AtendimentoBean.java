@@ -49,7 +49,8 @@ public class AtendimentoBean implements Serializable {
 	private Registro registro;
 	private String duracao;
 	List<String> numeroNota;
-	//private List<Registro> registros;
+	private String nomeEmpresa;
+	// private List<Registro> registros;
 
 	/**
 	 * Construtor
@@ -65,7 +66,7 @@ public class AtendimentoBean implements Serializable {
 		dataFim = Calendar.getInstance().getTime();
 		status = "INICIADO";
 		numeroNota = new ArrayList<>();
-		//registros = new ArrayList<>();
+		// registros = new ArrayList<>();
 	}
 
 	/**
@@ -112,26 +113,26 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public synchronized void inicioAtendimento(Registro registro, String status) {
 		try {
-				/**
-				 * Verifica se o registro já esta vinculado a um atendimento Como o sistema será
-				 * utilizado por varias pessoas há possibilidade de que haja o inicio do
-				 * atendimento por outras pessoas este método protege esta situação.
-				 */
-				atendimentoDao.consultarAtendimentoPorRegistro(registro.getId());
-				// -------------------------------------------------------------------
-				liberacao = new Liberacao();
-				atendimento = new Atendimento();
-				atendimento.setData_inicio(HoraDaInternet.getHora());
-				atendimento.setData_fim(null);
-				atendimento.setStatus(INICIADO);
-				atendimento.setRegistro(registro);
-				atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
-				this.registro = registroDao.consultaRegistroPeloId(registro.getId());
-				this.registro.setStatus(INICIADO);
-				atendimentoDao.salvarAtendimento(atendimento, this.registro);
-				limpar();
-				consultaInicial();
-				Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
+			/**
+			 * Verifica se o registro já esta vinculado a um atendimento Como o sistema será
+			 * utilizado por varias pessoas há possibilidade de que haja o inicio do
+			 * atendimento por outras pessoas este método protege esta situação.
+			 */
+			atendimentoDao.consultarAtendimentoPorRegistro(registro.getId());
+			// -------------------------------------------------------------------
+			liberacao = new Liberacao();
+			atendimento = new Atendimento();
+			atendimento.setData_inicio(HoraDaInternet.getHora());
+			atendimento.setData_fim(null);
+			atendimento.setStatus(INICIADO);
+			atendimento.setRegistro(registro);
+			atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
+			this.registro = registroDao.consultaRegistroPeloId(registro.getId());
+			this.registro.setStatus(INICIADO);
+			atendimentoDao.salvarAtendimento(atendimento, this.registro);
+			limpar();
+			consultaInicial();
+			Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
 		} catch (Exception erro) {
 			consultaInicial();
 			Messages.addGlobalError(erro.getMessage());
@@ -153,7 +154,7 @@ public class AtendimentoBean implements Serializable {
 			consultaInicial();
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso!");
 		} else {
-			try {	
+			try {
 				registro.setStatus(ABERTO);
 				atendimentoDao.excluirAtendimento(atendimento, registro);
 				limpar();
@@ -298,6 +299,23 @@ public class AtendimentoBean implements Serializable {
 		}
 	}
 
+	public void consultarAtendimentoPorEmpresa() {
+		try {
+			atendimentos = atendimentoDao.consultarAtentimentoPorEmpresa(data, dataFim, nomeEmpresa);
+		} catch (Exception e) {
+			Messages.addGlobalError("Não foi possivel realizar esta consulta");
+		}
+	}
+
+	public String calculaIntervalo(Date inicio, Date fim) {
+		try {
+			return CalculaIntervadoDatas.intevalo(inicio, fim);
+		} catch (Exception e) {
+			System.out.println("Não foi possível");
+			throw e;
+		}
+	}
+
 	/**
 	 * Este método será utilizado para atualizar informações de atendimentos que
 	 * ainda estão aguardando atendimentos
@@ -319,6 +337,14 @@ public class AtendimentoBean implements Serializable {
 		atendimento = new Atendimento();
 		atendimentos = new ArrayList<>();
 		registro = new Registro();
+	}
+
+	public String getNomeEmpresa() {
+		return nomeEmpresa;
+	}
+
+	public void setNomeEmpresa(String nomeEmpresa) {
+		this.nomeEmpresa = nomeEmpresa.toUpperCase();
 	}
 
 	public Atendimento getAtendimento() {

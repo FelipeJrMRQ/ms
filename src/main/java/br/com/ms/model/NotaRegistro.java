@@ -27,7 +27,7 @@ public class NotaRegistro implements Serializable {
 	private String nome;
 	private Date emissao;
 	private String chave;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
 	private Registro registro;
 
 	public NotaRegistro() {

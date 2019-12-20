@@ -14,6 +14,8 @@
 			<h:panelGrid columns="4">
 				<p:column>
 					<p:outputLabel value="TIPO DE CONSULTA: " />
+				</p:column>
+				<p:column>
 					<p:selectOneMenu value="#{liberacaoBean.tipoConsulta}">
 						<f:selectItem itemLabel="Entradas e saídas por nome" itemValue="PRESTADOR" />
 						<f:selectItem itemLabel="Entradas e saídas por empresa" itemValue="EMPRESA" />
@@ -21,7 +23,8 @@
 						<f:selectItem itemLabel="Entradas e saídas por categoria" itemValue="CATEGORIA" />
 						<f:selectItem itemLabel="Entradas e Saídas Visitantes" itemValue="VISITANTE" />
 						<f:selectItem itemLabel="Entradas e Saídas por Placa" itemValue="PLACA" />
-						<p:ajax listener="#{liberacaoBean.consultaUpdate}" update=":frmConsultaPorNota :frmConsultaEntradaSaidaPrestador :frmConsultaEntradaSaidaCategoria :frmConsultaEntradaSaidaEmpresa :frmConsultaEntradaSaidaVisitante :frmConsultaPorPlaca :frmPanelPrestador:tbRegistros :frmPanelPrestador :frmPanelVisitante" />
+						<f:selectItem itemLabel="Atendimentos por período" itemValue="ATENDIMENTO" />
+						<p:ajax listener="#{liberacaoBean.consultaUpdate}" update=":frmTbAtendimentoPorPeriodo :frmConsultaPorNota :frmConsultaEntradaSaidaPrestador :frmConsultaEntradaSaidaCategoria :frmConsultaEntradaSaidaEmpresa :frmConsultaEntradaSaidaVisitante :frmConsultaPorPlaca :frmPanelPrestador:tbRegistros :frmPanelPrestador :frmPanelVisitante :frmConsultaAtendimentoPeriodo" />
 					</p:selectOneMenu>
 				</p:column>
 			</h:panelGrid>
@@ -93,6 +96,22 @@
 			</h:panelGrid>
 		</h:form>
 
+		<h:form id="frmConsultaAtendimentoPeriodo">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'ATENDIMENTO'}" columns="1">
+				<p:column>
+					<hr />
+					<p:outputLabel value="DATA INICIAL: " />
+					<p:calendar value="#{atendimentoBean.data}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data inicial!" />
+					<p:outputLabel value=" DATA FINAL: " />
+					<p:calendar value="#{atendimentoBean.dataFim}" size="11" pattern="dd/MM/yyyy" required="true" requiredMessage="Digite a data final!" />
+					<p:outputLabel value=" EMPRESA: " />
+					<p:inputText size="40" value="#{atendimentoBean.nomeEmpresa}"  styleClass="upper-case" />
+					<p:commandButton icon="ui-icon-search" actionListener="#{atendimentoBean.consultarAtendimentoPorEmpresa()}" update=":frmTbAtendimentoPorPeriodo :mensagem :frmConsultaAtendimentoPeriodo" styleClass="btn_consulta_nfe_liberacao" />
+					<hr />
+				</p:column>
+			</h:panelGrid>
+		</h:form>
+
 		<h:form id="frmConsultaEntradaSaidaCategoria">
 			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'CATEGORIA'}" columns="1">
 				<p:column>
@@ -134,7 +153,7 @@
 
 		<h:form id="frmPanelPrestador">
 			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'PRESTADOR' or liberacaoBean.tipoConsulta eq 'NOTA' or liberacaoBean.tipoConsulta eq 'EMPRESA' or liberacaoBean.tipoConsulta eq 'CATEGORIA' or liberacaoBean.tipoConsulta eq 'PLACA'}">
-				<p:dataTable value="#{liberacaoBean.liberacoes}" var="registro" id="tbRegistros" paginator="true" rows="10" emptyMessage="Não há resgistros">
+				<p:dataTable value="#{liberacaoBean.liberacoes}" var="registro" id="tbRegistros" paginator="true" rows="10" emptyMessage="Não há resgistros" paginatorAlwaysVisible="false">
 					<f:facet name="header">
 						<p:outputLabel value="REGISTRO DE LIBERAÇÃO:  " />
 					</f:facet>
@@ -159,6 +178,9 @@
 						<h:outputLabel value="#{registro.saida.data}">
 							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
 						</h:outputLabel>
+					</p:column>
+					<p:column headerText="PERÍODO" width="60">
+						<p:outputLabel value="#{liberacaoBean.calculaIntervalo(registro.entrada.data, registro.saida.data)}"/>	
 					</p:column>
 					<p:column width="30">
 						<p:commandButton icon="ui-icon-document" oncomplete="PF('dlgLiberacao').show()" actionListener="#{liberacaoBean.liberacaoSelecionada}" update=":dlgLib">
@@ -186,7 +208,7 @@
 
 		<h:form id="frmPanelVisitante">
 			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'VISITANTE'}">
-				<p:dataTable value="#{liberacaoVisitanteBean.liberacoes}" var="registro" id="tblRegistros" paginator="true" rows="10">
+				<p:dataTable value="#{liberacaoVisitanteBean.liberacoes}" var="registro" id="tblRegistros" paginator="true" rows="10" paginatorAlwaysVisible="false">
 					<f:facet name="header">
 						<p:outputLabel value="REGISTRO DE LIBERAÇÃO" />
 					</f:facet>
@@ -220,11 +242,67 @@
 			</h:panelGrid>
 		</h:form>
 
+		<h:form id="frmTbAtendimentoPorPeriodo">
+			<h:panelGrid rendered="#{liberacaoBean.tipoConsulta eq 'ATENDIMENTO'}">
+				<p:dataTable value="#{atendimentoBean.atendimentos}" var="atendimento" id="AtendimentoPeriodo" widgetVar="tbAtedimento" paginator="true" paginatorAlwaysVisible="false" rows="15">
+					<p:column headerText="ID" width="40">
+						<p:outputLabel value="#{atendimento.id}" />
+					</p:column>
+					<p:column width="40" headerText="REG." rendered="#{loginBean.usuarioLogado.permissoes.edicaoRegistro}">
+						<p:link value="#{atendimento.registro.id}" outcome="edicao_registro.xhtml" styleClass="link_lib">
+							<f:param name="registroId" value="#{atendimento.registro.id}"/>
+						</p:link>
+					</p:column>
+					<p:column headerText="EMPRESA" sortBy="#{atendimento.registro.empresa.nome}">
+						<p:outputLabel value="#{atendimento.registro.empresa.nome}" />
+					</p:column>
+					<p:column headerText="NOME">
+						<p:outputLabel value="#{atendimento.registro.prestadorDeServico.nome}" />
+					</p:column>
+					<p:column headerText="RESP. INI." width="100" >
+						<p:outputLabel value="#{atendimento.usuario_inicio.nome}"/>
+					</p:column>
+					<p:column headerText="RESP. FIM" width="100" >
+						<p:outputLabel value="#{atendimento.usuario_fim.nome}"/>
+					</p:column>
+					<p:column headerText="INICIO" width="100" >
+						<p:outputLabel value="#{atendimento.data_inicio}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</p:outputLabel>
+					</p:column>
+					<p:column headerText="FIM" width="100" >
+						<p:outputLabel value="#{atendimento.data_fim}">
+							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
+						</p:outputLabel>
+					</p:column>
+					<p:column headerText="PERÍODO" width="70" >
+						<p:outputLabel value="#{atendimentoBean.calculaIntervalo(atendimento.data_inicio, atendimento.data_fim)}" />
+					</p:column>
+
+					<f:facet name="footer">
+
+						<div style="float: left; margin-top: 5px">
+							<p:outputLabel value="REGISTROS: " />
+							<p:outputLabel value="#{atendimentoBean.atendimentos.size()}" />
+						</div>
+						<div style="float: right; margin-top: 1px">
+							<h:commandLink id="exportar">
+								<p:graphicImage url="../img/Logo_Excel-pt.png" width="20" style="text-align:right" />
+								<p:dataExporter type="xls" target="AtendimentoPeriodo" fileName="Atendimentos" />
+								<p:tooltip for="exportar" value="Exportar dados para excel" position="left" />
+							</h:commandLink>
+						</div>
+						<div style="clear: both"></div>
+					</f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+		</h:form>
+
 		<p:dialog widgetVar="dlgLiberacao" id="dlgLib" width="900" modal="true" appendTo="@(body)" resizable="false" header="DADOS DA LIBERAÇÃO" showEffect="slide" hideEffect="explode">
 			<h:form>
 				<div id="container_lib">
 					<div id="dados">
-						
+
 						<div id="entrada">
 							<div class="header header-entrada negrito">ENTRADA</div>
 							<div class="conteudo_lib">
@@ -436,11 +514,8 @@
 						</div>
 
 						<div class="negrito">
-							<em class="p">
-								 <p:commandLink value="Entrada editada manualmente" style="color:blue" oncomplete="PF('dlgViewMotivoEntrada').show()"  update="dlgViewMotEntrad" rendered="#{liberacaoBean.motivoEntrada.id != null}"/>	
-							</em> 
-							<em class="tempo"> 
-								<p:commandLink value="Saída editada manualmente" style="color:blue"  oncomplete="PF('dlgViewMotivoSaida').show()" update=":dlgViewMotSaid"  rendered="#{liberacaoBean.motivoSaida.id != null}"/>
+							<em class="p"> <p:commandLink value="Entrada editada manualmente" style="color:blue" oncomplete="PF('dlgViewMotivoEntrada').show()" update="dlgViewMotEntrad" rendered="#{liberacaoBean.motivoEntrada.id != null}" />
+							</em> <em class="tempo"> <p:commandLink value="Saída editada manualmente" style="color:blue" oncomplete="PF('dlgViewMotivoSaida').show()" update=":dlgViewMotSaid" rendered="#{liberacaoBean.motivoSaida.id != null}" />
 							</em>
 
 							<div style="clear: both;"></div>
@@ -474,7 +549,7 @@
 
 		<p:dialog widgetVar="dlgViewMotivoEntrada" id="dlgViewMotEntrad" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450" showEffect="slide" hideEffect="explode">
 			<h:panelGrid columns="1">
-				<p:inputTextarea value="#{liberacaoBean.motivoEntrada.motivo}" rows="9" cols="50"  readonly="true"/>
+				<p:inputTextarea value="#{liberacaoBean.motivoEntrada.motivo}" rows="9" cols="50" readonly="true" />
 				<hr />
 				<p:column>
 					<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito" />
@@ -482,10 +557,10 @@
 				</p:column>
 			</h:panelGrid>
 		</p:dialog>
-		
+
 		<p:dialog widgetVar="dlgViewMotivoSaida" id="dlgViewMotSaid" header="MOTIVO DE EDIÇÃO" resizable="false" modal="true" appendTo="@(body)" width="450" showEffect="slide" hideEffect="explode">
 			<h:panelGrid columns="1">
-				<p:inputTextarea value="#{liberacaoBean.motivoSaida.motivo}" rows="9" cols="50" readonly="true"/>
+				<p:inputTextarea value="#{liberacaoBean.motivoSaida.motivo}" rows="9" cols="50" readonly="true" />
 				<hr />
 				<p:column>
 					<p:outputLabel value="RESPONSÁVEL PELA ALTERAÇÃO: " styleClass="negrito" />

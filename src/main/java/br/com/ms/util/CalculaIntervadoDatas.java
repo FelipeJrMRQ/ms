@@ -15,10 +15,14 @@ public class CalculaIntervadoDatas {
 	 * @return
 	 */
 	public static String intevalo(Date entrada, Date saida) {
-		Instant dataInicial = entrada.toInstant();
-		Instant dataFinal = saida.toInstant();
-		Duration d = Duration.between(dataInicial, dataFinal);
-		return (verificaHora(d.toMillis() / 3600000)) + ":" + verificaMinuto(((d.toMillis() / 60000) % 60)) + ":" + verificaSegundo(((d.toMillis() / 1000) % 60));
+		try {
+			Instant dataInicial = entrada.toInstant();
+			Instant dataFinal = saida.toInstant();
+			Duration d = Duration.between(dataInicial, dataFinal);
+			return (verificaHora(d.toMillis() / 3600000)) + ":" + verificaMinuto(((d.toMillis() / 60000) % 60)) + ":" + verificaSegundo(((d.toMillis() / 1000) % 60));
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	private static String verificaHora(long hora) {

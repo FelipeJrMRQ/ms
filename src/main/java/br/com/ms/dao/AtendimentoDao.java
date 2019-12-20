@@ -193,6 +193,39 @@ public class AtendimentoDao {
 			session.close();
 		}
 	}
+	
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public List<Atendimento> consultarAtentimentoPorEmpresa(Date dataInicial, Date DataFinal, String nome) {
+		session = getSession();
+		List<Atendimento> atendimentos = new ArrayList<>();
+		try {
+			Criteria consulta = session.createCriteria(Atendimento.class);
+			consulta.createAlias("registro.empresa", "e");
+			consulta.createAlias("registro.visitante", "v");
+			Date dFim = new Date();
+			dFim.setDate(DataFinal.getDate());
+			dFim.setMonth(DataFinal.getMonth());
+			dFim.setYear(DataFinal.getYear());
+			dFim.setHours(23);
+			dFim.setMinutes(59);
+			dFim.setSeconds(59);
+			dataInicial.setHours(00);
+			dataInicial.setMinutes(00);
+			dataInicial.setSeconds(00);
+			consulta.add(Restrictions.ge("data_inicio", dataInicial));
+			consulta.add(Restrictions.le("data_fim", dFim));
+			consulta.add(Restrictions.eq("status", "FINALIZADO"));
+			consulta.add(Restrictions.eq("v.naoMonitorado", false));
+			consulta.add(Restrictions.like("e.nome", "%" + nome + "%")).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			atendimentos = consulta.list();
+			return atendimentos;
+		} catch (Exception erro) {
+			throw erro;
+		} finally {
+			session.close();
+		}
+	}
+	
 
 	public Atendimento consultarAtentimentoPorId(long id) {
 		session = getSession();

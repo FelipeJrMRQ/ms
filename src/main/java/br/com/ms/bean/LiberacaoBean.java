@@ -126,7 +126,21 @@ public class LiberacaoBean implements Serializable {
 			Messages.addGlobalInfo(ex.getCause().getMessage());
 		}
 	}
-
+	
+	/**
+	 * Realiza o calculo de intervalo de entrada de saída da portaria
+	 * @param inicio
+	 * @param fim
+	 */
+	public String calculaIntervalo(Date entrada, Date saida) {
+		try {
+			return CalculaIntervadoDatas.intevalo(entrada, saida);
+		}catch(Exception e) {
+			Messages.addGlobalError(e.getMessage());
+			throw e;
+		}
+	}
+	
 	public void liberacaoSelecionada(ActionEvent event) {
 		Liberacao lib = new Liberacao();
 		lib = (Liberacao) event.getComponent().getAttributes().get("liberacaoSelecionada");
