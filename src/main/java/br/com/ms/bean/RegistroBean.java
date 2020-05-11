@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -13,6 +15,8 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
+import br.com.controller.NotasFiscaisController;
+import br.com.controller.VisitanteController;
 import br.com.ms.dao.AtendimentoDao;
 import br.com.ms.dao.LiberacaoDao;
 import br.com.ms.dao.LiberacaoVisitanteDao;
@@ -61,7 +65,7 @@ public class RegistroBean implements Serializable {
 	private List<Registro> registros;
 	private List<Registro> liberados;
 	private List<Visitante> visitantesNome;
-	private List<NotaRegistro> listNfe;
+	private Set<NotaRegistro> listNfe;
 	private List<Registro> quantidadeEntradas;
 	private List<Registro> quantidadeAtentimentos;
 	private List<Registro> quantidadeSaidas;
@@ -70,9 +74,13 @@ public class RegistroBean implements Serializable {
 	private boolean monitorado;
 	private static final String ABERTO = "ABERTO", LIBERADO = "LIBERADO", FINALIZADO = "FINALIZADO", ENTRADA = "ENTRADA", SAIDA = "SAIDA";
 	private String id;
+	private VisitanteController visitanteController;
+	
+	///////////////
+	
+	private NotasFiscaisController notasFiscaisController;
 
 	public RegistroBean() {
-		motivo = new MotivoEdicaoRegistro();
 		motivoDao = new MotivoEdicaoRegistroDao();
 		registro = new Registro();
 		registroDao = new RegistroDao();
@@ -80,8 +88,7 @@ public class RegistroBean implements Serializable {
 		visitanteDao = new VisitanteDao();
 		notaRegistro = new NotaRegistro();
 		empresas = new ArrayList<>();
-		registros = new ArrayList<>();
-		listNfe = new ArrayList<>();
+		listNfe = new HashSet<>();
 		visitantesNome = new ArrayList<>();
 		liberados = new ArrayList<>();
 		libVisiDao = new LiberacaoVisitanteDao();
@@ -93,18 +100,16 @@ public class RegistroBean implements Serializable {
 		quantidadeAtentimentos = new ArrayList<>();
 		quantidadeSaidas = new ArrayList<>();
 		quantidadePresentes = new ArrayList<>();
+		visitanteController = new VisitanteController();
+		notasFiscaisController = new NotasFiscaisController();
 	}
 
 	@PostConstruct
 	private void iniciar() {
-		//long ti = Calendar.getInstance().getTimeInMillis();
 		tipoDeConsulta = "NOME";
 		consultaUtimosRegistros();
 		SharedListBean.consultaLiberadosSaida();
 		calculaPessoasPresentes();
-		//long tf = Calendar.getInstance().getTimeInMillis();
-		//System.out.println("Tempo gasto: " + (tf - ti));
-		//timer.schedule(agendador, 1200000, 1200000);
 	}
 
 	/**
@@ -113,10 +118,7 @@ public class RegistroBean implements Serializable {
 	 * em questão
 	 */
 	public void atualizaTela() {
-		//long ti = Calendar.getInstance().getTimeInMillis();
 		calculaPessoasPresentes();
-		//long tf = Calendar.getInstance().getTimeInMillis();
-		//System.out.println("Tempo gasto: " + (tf - ti));
 	}
 
 	/**
@@ -141,19 +143,9 @@ public class RegistroBean implements Serializable {
 	 */
 	public void consultarPrestadorPeloCpf() {
 		try {
-			visitante = visitanteDao.consultaPrestadorPeloCpf(cpf);
-			if (visitante != null) {
-				if (visitante.getStatus()) {
-					empresas = visitante.getEmpresas();
-				} else {
-					Messages.addGlobalError("Entrada bloqueada, consulte o setor responsável!");
-					visitante = new Visitante();
-				}
-			} else {
-				Messages.addGlobalError("Numero de CPF não encontrado!");
-			}
+			visitanteController.consultaPorCPF(cpf);
 		} catch (Exception e) {
-			Messages.addGlobalError(e.getMessage());
+			Messages.addGlobalWarn(e.getMessage());
 		}
 	}
 
@@ -169,7 +161,7 @@ public class RegistroBean implements Serializable {
 
 	public void consultaPrestadorPeloRg() {
 		try {
-			visitantesNome = visitanteDao.consultaPrestadorPeloRg(consulta);
+			visitantesNome = visitanteDao.consultaVisitantePeloRg(consulta);
 			if (visitantesNome.isEmpty()) {
 				Messages.addGlobalError("Número de RG não encontrado!");
 				return;
@@ -181,7 +173,7 @@ public class RegistroBean implements Serializable {
 
 	public void consultaPrestadorPorNome() {
 		try {
-			visitantesNome = visitanteDao.consultaPrestadorDeServicoPeloNome(this.nome);
+			visitantesNome = visitanteDao.consultaVisitantePeloNome(this.nome);
 			if (visitantesNome.isEmpty()) {
 				Messages.addGlobalError("Nome não encontrado!");
 				return;
@@ -249,15 +241,10 @@ public class RegistroBean implements Serializable {
 	 */
 	public void prestadorSelecionado(Visitante v) {
 		try {
-			if (!v.getStatus()) {
-				Messages.addGlobalWarn("Entrada bloqueada, consulte o setor responsável!");
-				return;
-			} else if (v.getStatus()) {
-				visitante = v;
-				empresas = v.getEmpresas();
-			}
+			this.visitante = visitanteController.verificaPermissaoDeAcesso(v);
+			this.empresas = this.visitante.getEmpresas();
 		} catch (Exception e) {
-			Messages.addGlobalError(e.getMessage());
+			Messages.addGlobalWarn(e.getMessage());
 		}
 	}
 
@@ -266,12 +253,7 @@ public class RegistroBean implements Serializable {
 		String nf = ConverteChaveDeAcesso.getNumeroNfe(nfe);
 		if (!numeroNotas.contains(nf) && !nf.isEmpty()) {
 			try {
-				// listNfe.add(MontaRegistroNfe.getNfe(nfe, registro));
-				NotaRegistro n = new NotaRegistro();
-				n.setChave(nfe);
-				n.setRegistro(registro);
-				n.setNumeroNfe(nf);
-				listNfe.add(n);
+				listNfe.add(notasFiscaisController.carregaNota(nfe, registro));
 				qtdNotas = String.valueOf(listNfe.size());
 				numeroNotas.add(nf);
 				nfe = "";
@@ -316,44 +298,55 @@ public class RegistroBean implements Serializable {
 	 * @throws Exception
 	 */
 	public synchronized void salvarRegistroEntrada() throws Exception {
-		try {
-			try {
-				if (visitante.getNome() == null) {
-					Messages.addGlobalError("Visitante não selecionado!");
-				} else {
-					if (visitante.getTipo().equals("PRESTADOR") && !visitante.isNaoMonitorado()) {
-						registroDao.salvar(gerarRegistro(ENTRADA, ABERTO, listNfe));
-						Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
-					} else if (visitante.getTipo().equals("VISITANTE")) {
-						try {
-							salvarRegistroEntradaVisitante();
-							Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
-						} catch (Exception e) {
-							Messages.addGlobalError("Erro ao salvar registro!");
-						}
-					} else if (visitante.getTipo().equals("PRESTADOR") && visitante.isNaoMonitorado()) {
-						Registro entrada = new Registro();
-						Registro saida = new Registro();
-						entrada = registroDao.salvar(gerarRegistro(ENTRADA, FINALIZADO, listNfe));
-						saida = registroDao.salvar(gerarRegistro(LIBERADO, FINALIZADO, new ArrayList<>()));
-						new LiberacaoRepository(entrada, saida, new AtendimentoRepository(entrada, FINALIZADO, PermissoesUsuarios.getUsuario()).save(), PermissoesUsuarios.getUsuario());
-						Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
-					}
-				}
-				limpar();
-				consultaUtimosRegistros();
-				SharedListBean.consultaLiberadosSaida();
-				SharedListBean.consultaRegistrosAguardando();
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-				Messages.addGlobalError("Erro ao salvar registro!");
+		if (visitante.getNome() == null) {
+			Messages.addGlobalError("Visitante não selecionado!");
+		} else {
+			if (visitante.getTipo().equals("PRESTADOR") && !visitante.isNaoMonitorado()) {
+				salvarRegistroPrestador();
+			} else if (visitante.getTipo().equals("VISITANTE")) {
+				salvarRegistroVisitante();
+			} else if (visitante.getTipo().equals("PRESTADOR") && visitante.isNaoMonitorado()) {
+				salvarRegistroPrestadorNaoMonitorado();
 			}
-		} catch (RuntimeException e) {
-			Messages.addGlobalError(e.getCause().getMessage());
+		}
+		limpar();
+		consultaUtimosRegistros();
+		SharedListBean.consultaLiberadosSaida();
+		SharedListBean.consultaRegistrosAguardando();
+	}
+
+	private void salvarRegistroPrestador() {
+		try {
+			registroDao.salvar(gerarRegistro(ENTRADA, ABERTO, listNfe));
+			Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
+		} catch (Exception e) {
+			Messages.addGlobalError("Falha ao salvar registro de entrada");
 		}
 	}
 
-	private Registro gerarRegistro(String tipo, String status, List<NotaRegistro> notas) {
+	private void salvarRegistroPrestadorNaoMonitorado() {
+		try {
+			Registro entrada = new Registro();
+			Registro saida = new Registro();
+			entrada = registroDao.salvar(gerarRegistro(ENTRADA, FINALIZADO, listNfe));
+			saida = registroDao.salvar(gerarRegistro(LIBERADO, FINALIZADO, new HashSet<>()));
+			new LiberacaoRepository(entrada, saida, new AtendimentoRepository(entrada, FINALIZADO, PermissoesUsuarios.getUsuario()).save(), PermissoesUsuarios.getUsuario());
+			Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
+		} catch (Exception e) {
+			Messages.addGlobalInfo("A");
+		}
+	}
+
+	private void salvarRegistroVisitante() {
+		try {
+			salvarRegistroEntradaVisitante();
+			Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
+		} catch (Exception e) {
+			Messages.addGlobalError("Erro ao salvar registro!");
+		}
+	}
+
+	private Registro gerarRegistro(String tipo, String status, Set<NotaRegistro> notas) {
 		Registro r = new Registro();
 		r.setPlacaVeiculo(registro.getPlacaVeiculo());
 		r.setEmpresa(registro.getEmpresa());
@@ -586,7 +579,7 @@ public class RegistroBean implements Serializable {
 		registro = new Registro();
 		empresas = new ArrayList<>();
 		visitante = new Visitante();
-		listNfe = new ArrayList<>();
+		listNfe = new HashSet<>();
 		numeroNotas = new ArrayList<>();
 		cpf = "";
 		nome = "";
@@ -659,11 +652,11 @@ public class RegistroBean implements Serializable {
 		this.registros = registros;
 	}
 
-	public List<NotaRegistro> getListNfe() {
+	public Set<NotaRegistro> getListNfe() {
 		return listNfe;
 	}
 
-	public void setListNfe(List<NotaRegistro> listNfe) {
+	public void setListNfe(Set<NotaRegistro> listNfe) {
 		this.listNfe = listNfe;
 	}
 
@@ -678,9 +671,10 @@ public class RegistroBean implements Serializable {
 	public String getNfe() {
 		return nfe;
 	}
-	
+
 	/**
 	 * Utiliza a função ReplaceAll para remover espacos em branco
+	 * 
 	 * @param nfe
 	 */
 	public void setNfe(String nfe) {

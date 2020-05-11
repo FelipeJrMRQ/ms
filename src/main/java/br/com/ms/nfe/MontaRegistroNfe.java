@@ -110,10 +110,14 @@ public class MontaRegistroNfe {
 	 */
 	private synchronized File localizaArquivo(String chave) {
 		Calendar cal = Calendar.getInstance();
-		if(consultaArquivo(chave, cal.get(Calendar.MONTH)+1) != null) {
-			return consultaArquivo(chave, cal.get(Calendar.MONTH)+1);
-		}else{
-			return consultaArquivo(chave, (cal.get(Calendar.MONTH)));
+		try {
+			if(consultaArquivo(chave, cal.get(Calendar.MONTH)+1) != null) {
+				return consultaArquivo(chave, cal.get(Calendar.MONTH)+1);
+			}else{
+				return consultaArquivo(chave, (cal.get(Calendar.MONTH)));
+			}
+		}catch(Exception e) {
+			throw e;
 		}
 	}
 	

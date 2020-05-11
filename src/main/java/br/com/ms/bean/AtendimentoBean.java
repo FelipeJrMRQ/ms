@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -43,7 +45,7 @@ public class AtendimentoBean implements Serializable {
 	private Date dataFim;
 	private RegistroDao registroDao;
 	private Usuario usuario;
-	private List<NotaRegistro> notas;
+	private Set<NotaRegistro> notas;
 	private String numeroNf;
 	Liberacao liberacao = new Liberacao();
 	private Registro registro;
@@ -60,7 +62,7 @@ public class AtendimentoBean implements Serializable {
 		atendimento = new Atendimento();
 		atendimentos = new ArrayList<>();
 		registroDao = new RegistroDao();
-		notas = new ArrayList<>();
+		notas = new HashSet<>();
 		registro = new Registro();
 		data = Calendar.getInstance().getTime();
 		dataFim = Calendar.getInstance().getTime();
@@ -89,7 +91,7 @@ public class AtendimentoBean implements Serializable {
 	}
 
 	public void limparListaNotas() {
-		notas = new ArrayList<>();
+		notas = new HashSet<>();
 		numeroNota = new ArrayList<>();
 	}
 
@@ -291,7 +293,7 @@ public class AtendimentoBean implements Serializable {
 	private synchronized boolean gerarLiberacao(Atendimento atendimento, Registro saida) throws Exception {
 		try {
 			new LiberacaoRepository(atendimento.getRegistro(), saida, atendimento, PermissoesUsuarios.getUsuario());
-			notas = new ArrayList<>();
+			notas = new HashSet<>();
 			return true;
 		} catch (Exception ex) {
 			Messages.addGlobalError(ex.getMessage());
@@ -395,11 +397,11 @@ public class AtendimentoBean implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public List<NotaRegistro> getNotas() {
+	public Set<NotaRegistro> getNotas() {
 		return notas;
 	}
 
-	public void setNotas(List<NotaRegistro> notas) {
+	public void setNotas(Set<NotaRegistro> notas) {
 		this.notas = notas;
 	}
 

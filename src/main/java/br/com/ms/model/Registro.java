@@ -2,7 +2,7 @@ package br.com.ms.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +17,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity(name = "Registro")
-//@Audited
 public class Registro implements Serializable {
 
 	private static final long serialVersionUID = 5634188710473732871L;
@@ -46,7 +45,7 @@ public class Registro implements Serializable {
 	private String status;
 
 	@OneToMany(mappedBy = "registro", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)//Aqui foi alterada esta propriedade [fetch = FetchType.LAZY]
-	private List<NotaRegistro> notas;
+	private Set<NotaRegistro> notas;
 	
 	public Registro() {
 	}
@@ -129,12 +128,12 @@ public class Registro implements Serializable {
 		this.empresa = empresa;
 	}
 
-	public List<NotaRegistro> getNotas() {
+	public Set<NotaRegistro> getNotas() {
 		return notas;
 	}
 
-	public void setnotas(List<NotaRegistro> notas) {
-		this.notas = notas;
+	public void setnotas(Set<NotaRegistro> notas2) {
+		this.notas = notas2;
 	}
 
 	public String getStatus() {

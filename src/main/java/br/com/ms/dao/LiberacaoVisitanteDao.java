@@ -13,6 +13,7 @@ import br.com.ms.model.LiberacaoVisitante;
 import br.com.ms.model.Registro;
 import br.com.ms.util.HibernateUtil;
 
+
 public class LiberacaoVisitanteDao {
 	private Transaction transaction;
 	private LiberacaoVisitante liberacaoVisitante;

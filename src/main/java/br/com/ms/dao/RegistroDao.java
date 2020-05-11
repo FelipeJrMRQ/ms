@@ -1,5 +1,6 @@
 package br.com.ms.dao;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,13 +12,17 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
 
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
 import br.com.ms.util.HibernateUtil;
 
-public class RegistroDao {
+@Component
+public class RegistroDao implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private Transaction transaction;
 	private Registro registro;
 	private Session session;

@@ -61,7 +61,7 @@
 										<p:outputLabel value="NOME: " />
 									</p:column>
 									<p:column>
-										<p:inputText value="#{registroBean.nome}" size="50" styleClass="upper-case" maxlength="70" />
+										<p:inputText value="#{registroBean.nome}" size="50" styleClass="upper-case" maxlength="70" required="true" requiredMessage="Digite parte do nome consultado!"/>
 										<p:commandButton icon="ui-icon-search" oncomplete="PF('dlgVisitantePrestador').show()" action="#{registroBean.consultaPrestadorPorNome}" update=":mensagem :dlgVisiPrest" />
 									</p:column>
 								</h:panelGrid>

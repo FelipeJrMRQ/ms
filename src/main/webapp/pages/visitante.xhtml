@@ -56,7 +56,7 @@
 								<div class="ui-g-12">
 									<p:outputLabel value="EMPRESA:" />
 									<br />
-									<p:inputText size="76" placeholder="Buscar empresa cadastrada" value="#{visitanteBean.consulta}" styleClass="upper-case" />
+									<p:inputText size="76" placeholder="Buscar empresa cadastrada" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" />
 									<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" oncomplete="PF('dlgCadastroEmpresa').show()" update=":dlgCadEmpresa :mensagem" />
 								</div>
 							</p:column>
@@ -86,12 +86,12 @@
 			<h:form>
 				<div class="ui-g">
 					<div class="ui-g-12">
-						<p:inputText size="50" placeholder="Consultar visitante" value="#{visitanteBean.consultaVisitante}" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
+						<p:inputText size="50" placeholder="Consultar visitante" value="#{visitanteBean.nomeVisitante}" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
 						<p:commandButton icon="ui-icon-search" update=":tbCadastroPrestador :mensagem" action="#{visitanteBean.consultarVisitante}" />
 					</div>
 				</div>
 			</h:form>
-			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="5" emptyMessage="Não há registros a serem exibidos.">
+			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="5" emptyMessage="Não há registros a serem exibidos." rendered="not empty visitanteBean.empresas">
 				<p:column headerText="ID" width="60">
 					<p:outputLabel value="#{prestador.id}" />
 				</p:column>
@@ -131,7 +131,7 @@
 		</p:dialog>
 
 		<!-- DIALOGO DE CONSULTA DE EMPRESA PARA EDICAO DE PRESTADOR -->
-		<p:dialog widgetVar="dlgEditCadEmpresa" id="dlgEdCadCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas" width="600">
+		<p:dialog widgetVar="dlgEditCadEmpresa" id="dlgEdCadCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas" width="600" rendered="#{not empty visitanteBean.empresas}">
 			<p:dataTable value="#{visitanteBean.empresas}" var="empresa" emptyMessage="Não foram encontrados registros" paginator="true" rows="10">
 				<p:column headerText="NOME">
 					<p:outputLabel value="#{empresa.nome}" />
@@ -150,16 +150,14 @@
 				<h:panelGrid columns="2">
 					<p:outputLabel value="NOME" />
 					<p:inputText value="#{visitanteBean.visitante.nome}" size="50" styleClass="upper-case" />
-					<p:outputLabel value="CPF" />
-					<p:inputMask mask="999.999.999-99" value="#{visitanteBean.visitante.cpf}" />
 					<p:outputLabel value="RG: " />
 					<p:inputText value="#{visitanteBean.visitante.rg}" />
 					<p:outputLabel value="STATUS" />
 					<p:selectBooleanButton value="#{visitanteBean.visitante.status}" onLabel="ATIVO" offLabel="INATIVO" onIcon="ui-icon-check" offIcon="ui-icon-close" />
 				</h:panelGrid>
 				<br />
-				<p:inputText size="50" value="#{visitanteBean.consulta}" styleClass="upper-case" />
-				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" oncomplete="PF('dlgEditCadEmpresa').show()" update=":dlgEdCadCadEmpresa" />
+				<p:inputText size="50" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" />
+				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" onchange="PF('dlgEditCadEmpresa').show()" update=":dlgEdCadCadEmpresa" />
 					<p:selectOneRadio value="#{visitanteBean.tipo}">
 						<f:selectItem itemLabel="VISITANTE" itemValue="VISITANTE" />
 						<f:selectItem itemLabel="PRESTADOR" itemValue="PRESTADOR" />

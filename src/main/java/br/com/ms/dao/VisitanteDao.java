@@ -1,5 +1,6 @@
 package br.com.ms.dao;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +9,20 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Component;
 
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
 import br.com.ms.util.HibernateUtil;
 
-public class VisitanteDao {
 
+@Component
+public class VisitanteDao implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Transaction transaction;
 	private Visitante visitante;
 	private Session session;
@@ -27,11 +35,11 @@ public class VisitanteDao {
 		return HibernateUtil.getFrabricadeSessoes().openSession();
 	}
 	
-	public void salvarPrestadorDeServico(Visitante p) {
+	public void salvarVisitante(Visitante visitante) {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			session.merge(p);
+			session.merge(visitante);
 			transaction.commit();
 		} catch (Exception erro) {
 			transaction.rollback();
@@ -41,11 +49,11 @@ public class VisitanteDao {
 		}
 	}
 
-	public void excluirPrestadorDeServico(Visitante p) {
+	public void excluirVisitante(Visitante visitante) {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			session.delete(p);
+			session.delete(visitante);
 			transaction.commit();
 		} catch (Exception er) {
 			transaction.rollback();
@@ -55,7 +63,7 @@ public class VisitanteDao {
 		}
 	}
 
-	public Visitante consultaPrestadorPeloCpf(String cpf) {
+	public Visitante consultaVisitantePeloCpf(String cpf) {
 		Visitante visitante = new Visitante();
 		session = getSession();
 		try {
@@ -74,7 +82,7 @@ public class VisitanteDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Visitante> consultaPrestadorPeloRg(String rg) {
+	public List<Visitante> consultaVisitantePeloRg(String rg) {
 		List<Visitante> prestadores = new ArrayList<>();
 		session = getSession();
 		try {
@@ -93,7 +101,7 @@ public class VisitanteDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Visitante> consultaPrestadorDeServicoPeloNome(String nome) {
+	public List<Visitante> consultaVisitantePeloNome(String nome) {
 		List<Visitante> prestadores = new ArrayList<>();
 		session = getSession();
 		try {
@@ -155,11 +163,11 @@ public class VisitanteDao {
 	 * @param v
 	 * @return
 	 */
-	public Visitante validaExistenciaRg(Visitante v) {
+	public Visitante validaExistenciaRg(Visitante visitante) {
 		session = getSession();
 		try {
 			Criteria consulta = session.createCriteria(Visitante.class);
-			consulta.add(Restrictions.eq("rg", v.getRg())).setMaxResults(1);
+			consulta.add(Restrictions.eq("rg", visitante.getRg())).setMaxResults(1);
 			return (Visitante) consulta.uniqueResult() ;
 		} catch (Exception e) {
 			throw e;
@@ -175,11 +183,11 @@ public class VisitanteDao {
 	 * @param v
 	 * @return
 	 */
-	public Visitante validaExistenciaCpf(Visitante v) {
+	public Visitante validaExistenciaCpf(Visitante visitante) {
 		session = getSession();
 		try {
 			Criteria consulta = session.createCriteria(Visitante.class);
-			consulta.add(Restrictions.eq("cpf", v.getCpf())).setMaxResults(1);
+			consulta.add(Restrictions.eq("cpf", visitante.getCpf())).setMaxResults(1);
 			return (Visitante) consulta.uniqueResult();
 		} catch (Exception e) {
 			throw e;
