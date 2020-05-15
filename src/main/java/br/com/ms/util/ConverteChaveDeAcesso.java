@@ -8,7 +8,7 @@ public class ConverteChaveDeAcesso {
 		
 	}
 
-	private static String validaChaveDeAcesso(String chave) throws NumberFormatException {
+	private static String validaChaveDeAcesso(String chave) {
 		if(chave.length() == 44) {
 			int n = 0;
 			int s = 0;

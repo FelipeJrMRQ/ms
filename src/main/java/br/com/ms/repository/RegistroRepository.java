@@ -1,7 +1,7 @@
 package br.com.ms.repository;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import br.com.ms.dao.RegistroDao;
 import br.com.ms.model.Empresa;
@@ -14,7 +14,7 @@ public class RegistroRepository {
 	private Registro registro = new Registro();
 	private RegistroDao registroDao;
 
-	public RegistroRepository(Date data, Empresa empresa, Set<NotaRegistro> notas, String placaVeiculo, Visitante visitante, String status, String tipo, Usuario usuario) {
+	public RegistroRepository(Date data, Empresa empresa, List<NotaRegistro> notas, String placaVeiculo, Visitante visitante, String status, String tipo, Usuario usuario) {
 		registro = new Registro();
 		registroDao = new RegistroDao();
 		this.registro.setData(data);

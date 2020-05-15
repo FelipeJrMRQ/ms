@@ -2,7 +2,7 @@ package br.com.ms.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,7 +45,7 @@ public class Registro implements Serializable {
 	private String status;
 
 	@OneToMany(mappedBy = "registro", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)//Aqui foi alterada esta propriedade [fetch = FetchType.LAZY]
-	private Set<NotaRegistro> notas;
+	private List<NotaRegistro> notas;
 	
 	public Registro() {
 	}
@@ -128,11 +128,11 @@ public class Registro implements Serializable {
 		this.empresa = empresa;
 	}
 
-	public Set<NotaRegistro> getNotas() {
+	public List<NotaRegistro> getNotas() {
 		return notas;
 	}
 
-	public void setnotas(Set<NotaRegistro> notas2) {
+	public void setnotas(List<NotaRegistro> notas2) {
 		this.notas = notas2;
 	}
 

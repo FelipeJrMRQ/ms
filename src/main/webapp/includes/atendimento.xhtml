@@ -44,25 +44,25 @@
 				<h:panelGrid>
 					<p:column>
 						<h:outputText value="ID " styleClass="negrito" />
-						<h:outputText value="#{atendimentoBean.registro.id}" />
+						<h:outputText value="#{atendimentoBean.atendimento.registro.id}" />
 						<hr />
 					</p:column>
 
 					<p:column>
 						<h:outputText value="NOME: " styleClass="negrito" />
-						<h:outputText value="#{atendimentoBean.registro.prestadorDeServico.nome}" />
+						<h:outputText value="#{atendimentoBean.atendimento.registro.prestadorDeServico.nome}" />
 						<hr />
 					</p:column>
 
 					<p:column>
 						<p:outputLabel value="VEÍCULO-PLACA: " styleClass="negrito" />
-						<p:outputLabel value="#{atendimentoBean.registro.placaVeiculo}" styleClass="upper-case" />
+						<p:outputLabel value="#{atendimentoBean.atendimento.registro.placaVeiculo}" styleClass="upper-case" />
 						<hr />
 					</p:column>
 
 					<p:column>
 						<p:outputLabel value="DATA: " styleClass="negrito" />
-						<p:outputLabel value="#{atendimentoBean.registro.data}">
+						<p:outputLabel value="#{atendimentoBean.atendimento.registro.data}">
 							<f:convertDateTime pattern="dd/MM/YYYY" />
 						</p:outputLabel>
 						<hr />
@@ -74,10 +74,10 @@
 					</p:column>
 
 					<p:column>
-						<p:outputLabel value="HORA DE ENTRADADA: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'ENTRADA'}" />
-						<p:outputLabel value="HORA DE SAÍDA: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'SAIDA'}" />
-						<p:outputLabel value="HORA DE LIBERAÇÃO: " styleClass="negrito" rendered="#{atendimentoBean.registro.tipo eq 'LIBERADO'}" />
-						<p:outputLabel value="#{atendimentoBean.registro.data}">
+						<p:outputLabel value="HORA DE ENTRADADA: " styleClass="negrito" rendered="#{atendimentoBean.atendimento.registro.tipo eq 'ENTRADA'}" />
+						<p:outputLabel value="HORA DE SAÍDA: " styleClass="negrito" rendered="#{atendimentoBean.atendimento.registro.tipo eq 'SAIDA'}" />
+						<p:outputLabel value="HORA DE LIBERAÇÃO: " styleClass="negrito" rendered="#{atendimentoBean.atendimento.registro.tipo eq 'LIBERADO'}" />
+						<p:outputLabel value="#{atendimentoBean.atendimento.registro.data}">
 							<f:convertDateTime pattern="HH:mm" />
 						</p:outputLabel>
 					</p:column>
@@ -110,8 +110,8 @@
 		</div>
 		<div style="clear: both;"></div>
 		<br />
-		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.validaFimAtendimento}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
-		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limparListaNotas}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
+		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.finalizarAtendimento()}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
+		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limpar()}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
 	</div>
 </p:dialog>
 

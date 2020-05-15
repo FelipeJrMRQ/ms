@@ -54,7 +54,7 @@ public class AtendimentoDao {
 	 * @param r
 	 * @throws Exception
 	 */
-	public void salvarAtendimento(Atendimento atendimento, Registro r) throws Exception {
+	public void salvarAtendimento(Atendimento atendimento, Registro r){
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
@@ -253,7 +253,7 @@ public class AtendimentoDao {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public void consultarAtendimentoPorRegistro(long id) throws Exception {
+	public void consultarAtendimentoPorRegistro(long id) {
 		session = getSession();
 		try {
 			Criteria consulta = session.createCriteria(Atendimento.class);
@@ -263,7 +263,7 @@ public class AtendimentoDao {
 				throw new Exception("Este atendimento já foi iniciado");
 			}
 		} catch (Exception e) {
-			throw e;
+			e.printStackTrace();
 		} finally {
 			session.close();
 		}

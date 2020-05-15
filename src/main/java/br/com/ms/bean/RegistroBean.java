@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -65,7 +63,7 @@ public class RegistroBean implements Serializable {
 	private List<Registro> registros;
 	private List<Registro> liberados;
 	private List<Visitante> visitantesNome;
-	private Set<NotaRegistro> listNfe;
+	private List<NotaRegistro> listNfe;
 	private List<Registro> quantidadeEntradas;
 	private List<Registro> quantidadeAtentimentos;
 	private List<Registro> quantidadeSaidas;
@@ -75,9 +73,9 @@ public class RegistroBean implements Serializable {
 	private static final String ABERTO = "ABERTO", LIBERADO = "LIBERADO", FINALIZADO = "FINALIZADO", ENTRADA = "ENTRADA", SAIDA = "SAIDA";
 	private String id;
 	private VisitanteController visitanteController;
-	
+
 	///////////////
-	
+
 	private NotasFiscaisController notasFiscaisController;
 
 	public RegistroBean() {
@@ -88,7 +86,7 @@ public class RegistroBean implements Serializable {
 		visitanteDao = new VisitanteDao();
 		notaRegistro = new NotaRegistro();
 		empresas = new ArrayList<>();
-		listNfe = new HashSet<>();
+		listNfe = new ArrayList<>();
 		visitantesNome = new ArrayList<>();
 		liberados = new ArrayList<>();
 		libVisiDao = new LiberacaoVisitanteDao();
@@ -329,7 +327,7 @@ public class RegistroBean implements Serializable {
 			Registro entrada = new Registro();
 			Registro saida = new Registro();
 			entrada = registroDao.salvar(gerarRegistro(ENTRADA, FINALIZADO, listNfe));
-			saida = registroDao.salvar(gerarRegistro(LIBERADO, FINALIZADO, new HashSet<>()));
+			saida = registroDao.salvar(gerarRegistro(LIBERADO, FINALIZADO, new ArrayList<>()));
 			new LiberacaoRepository(entrada, saida, new AtendimentoRepository(entrada, FINALIZADO, PermissoesUsuarios.getUsuario()).save(), PermissoesUsuarios.getUsuario());
 			Messages.addGlobalInfo("Entrada cadastrado com sucesso!");
 		} catch (Exception e) {
@@ -346,7 +344,7 @@ public class RegistroBean implements Serializable {
 		}
 	}
 
-	private Registro gerarRegistro(String tipo, String status, Set<NotaRegistro> notas) {
+	private Registro gerarRegistro(String tipo, String status, List<NotaRegistro> notas) {
 		Registro r = new Registro();
 		r.setPlacaVeiculo(registro.getPlacaVeiculo());
 		r.setEmpresa(registro.getEmpresa());
@@ -579,7 +577,7 @@ public class RegistroBean implements Serializable {
 		registro = new Registro();
 		empresas = new ArrayList<>();
 		visitante = new Visitante();
-		listNfe = new HashSet<>();
+		listNfe = new ArrayList<>();
 		numeroNotas = new ArrayList<>();
 		cpf = "";
 		nome = "";
@@ -652,11 +650,11 @@ public class RegistroBean implements Serializable {
 		this.registros = registros;
 	}
 
-	public Set<NotaRegistro> getListNfe() {
+	public List<NotaRegistro> getListNfe() {
 		return listNfe;
 	}
 
-	public void setListNfe(Set<NotaRegistro> listNfe) {
+	public void setListNfe(List<NotaRegistro> listNfe) {
 		this.listNfe = listNfe;
 	}
 

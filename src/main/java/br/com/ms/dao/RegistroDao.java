@@ -297,7 +297,7 @@ public class RegistroDao implements Serializable{
 			try {
 				registro.getNotas().size();
 			} catch (NullPointerException e) {
-				System.out.println("ERRO");
+				throw e;
 			}
 			return registro;
 		} catch (RuntimeException erro) {
