@@ -29,7 +29,7 @@ public class VisitanteBean implements Serializable {
 	private String tipo;
 	private VisitanteController visitanteController;
 	private EmpresaController empresaController;
-
+	private boolean flagBotao;
 
 	public VisitanteBean() {
 		visitante = new Visitante();
@@ -39,13 +39,14 @@ public class VisitanteBean implements Serializable {
 		tipo = "PRESTADOR";
 		visitanteController = new VisitanteController();
 		empresaController = new EmpresaController();
+		flagBotao = true;
 	}
 
 	public void salvar() {
 		try {
 			visitanteController.salvar(visitante, empresasEscolhidas, tipo);
 			limpar();
-			Messages.addGlobalInfo("Registro salvo com sucesso!");
+			Messages.addGlobalInfo("Salvo com sucesso!");
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
@@ -54,8 +55,9 @@ public class VisitanteBean implements Serializable {
 	public void alterar() {
 		try {
 			visitanteController.alterar(visitante, empresasEscolhidas, tipo);
+			flagBotao = false;
 			limpar();
-			Messages.addGlobalInfo("Registro alterado com sucesso!");
+			Messages.addGlobalInfo("Alterado com sucesso!");
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
 		}
@@ -65,16 +67,17 @@ public class VisitanteBean implements Serializable {
 		try {
 			visitanteController.exluir((Visitante) event.getComponent().getAttributes().get("prestadorSelecionado"));
 			limpar();
-			Messages.addGlobalInfo("Registro excluído com sucesso!");
+			Messages.addGlobalInfo("Excluído com sucesso!");
 		} catch (Exception ex) {
 			Messages.addGlobalError(ex.getMessage());
 		}
 	}
 
 	public void consultarVisitante() {
-		visitantes = visitanteController.consultaPorNome(nomeVisitante);
-		if (visitantes.isEmpty()) {
-			Messages.addGlobalError("Não encontrado!");
+		try {
+			visitantes = visitanteController.consultaPorNome(nomeVisitante);
+		} catch (Exception e) {
+			Messages.addGlobalError(e.getMessage());
 		}
 	}
 
@@ -82,6 +85,7 @@ public class VisitanteBean implements Serializable {
 		visitante = (Visitante) event.getComponent().getAttributes().get("prestadorSelecionado");
 		tipo = visitante.getTipo();
 		empresasEscolhidas = visitante.getEmpresas();
+		flagBotao = true;
 	}
 
 	public void removeEmpresa(ActionEvent event) {
@@ -162,7 +166,7 @@ public class VisitanteBean implements Serializable {
 	}
 
 	public void setNomeVisitante(String nomeVisitante) {
-		this.nomeVisitante = nomeVisitante;
+		this.nomeVisitante = nomeVisitante.toUpperCase();
 	}
 
 	public String getTipo() {
@@ -172,4 +176,13 @@ public class VisitanteBean implements Serializable {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
+
+	public boolean isFlagBotao() {
+		return flagBotao;
+	}
+
+	public void setFlagBotao(boolean flagBotao) {
+		this.flagBotao = flagBotao;
+	}
+
 }

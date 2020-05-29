@@ -7,8 +7,8 @@ import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
-import br.com.ms.dao.AtendimentoDao;
-import br.com.ms.dao.RegistroDao;
+import br.com.controller.AtendimentoController;
+import br.com.controller.RegistroController;
 import br.com.ms.model.Atendimento;
 import br.com.ms.model.Registro;
 
@@ -22,10 +22,10 @@ public class SharedListBean implements Serializable {
 	private static final long serialVersionUID = 1187269388550791163L;
 
 	private static List<Atendimento> atendimentos = new ArrayList<>();
-	private static AtendimentoDao atendimentoDao = new AtendimentoDao();
 	private static List<Registro> registros = new ArrayList<>();
 	private static List<Registro> liberados = new ArrayList<>();
-	private static RegistroDao registroDao = new RegistroDao();
+	private static RegistroController registroController = new RegistroController();
+	private static AtendimentoController atendimentoController = new AtendimentoController();
 
 	public SharedListBean() {
 
@@ -40,7 +40,7 @@ public class SharedListBean implements Serializable {
 	public static synchronized void consultaAtendimentosIni() {
 		String status = "INICIADO";
 		try {
-			atendimentos = atendimentoDao.consultarAtentimento(status);
+			atendimentos = atendimentoController.consultarAtendimento(status);
 		} catch (Exception erro) {
 			throw erro;
 		}
@@ -54,7 +54,7 @@ public class SharedListBean implements Serializable {
 	 */
 	public static synchronized void consultaRegistrosAguardando() {
 		try {
-			registros = registroDao.consultarRegistroPeloNomeDaEmpresa("");
+			registros = registroController.consultaRegistrosAguardandoAtendimento();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -68,7 +68,7 @@ public class SharedListBean implements Serializable {
 	 */
 	public static synchronized void consultaLiberadosSaida() {
 		try {
-			liberados = registroDao.consultaLiberadors();
+			liberados = registroController.consultarLiberadosSaida();
 		} catch (Exception e) {
 			throw e;
 		}

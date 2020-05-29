@@ -108,6 +108,7 @@ public class VisitanteDao implements Serializable {
 			Criteria consulta = session.createCriteria(Visitante.class);
 			consulta.add(Restrictions.like("nome", "%" + nome + "%", MatchMode.ANYWHERE));
 			consulta.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			consulta.setMaxResults(40);
 			prestadores = consulta.list();
 			for (Visitante visitante : prestadores) {
 				visitante.getEmpresas().size();

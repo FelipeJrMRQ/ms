@@ -31,7 +31,7 @@ public class NotasFiscaisController {
 			listNfe.add(numeroNf);
 			return montarNotaFiscal(chaveDeAcesso, registro, numeroNf);
 		}else {
-			throw new IllegalArgumentException("Valor inválido");
+			throw new IllegalArgumentException("Este número de nota já foi inserido!");
 		}
 	}
 	

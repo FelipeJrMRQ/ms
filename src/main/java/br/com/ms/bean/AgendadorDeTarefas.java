@@ -26,9 +26,10 @@ public class AgendadorDeTarefas implements Serializable {
 	 */
 	private static final long serialVersionUID = 2153789129877554744L;
 	private boolean statusAtualizaNFE;
-	SchedulerFactory schedulerFactory;
-	Scheduler scheduler;
-	Trigger trigger;
+	private SchedulerFactory schedulerFactory;
+	private  Scheduler scheduler;
+	private Trigger trigger;
+
 
 	public AgendadorDeTarefas() throws SchedulerException {
 		try {
@@ -50,6 +51,15 @@ public class AgendadorDeTarefas implements Serializable {
 				scheduler.standby();
 			}
 		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void iniciarProcesso() {
+		try {
+			inicarAtualizacaoNFE();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

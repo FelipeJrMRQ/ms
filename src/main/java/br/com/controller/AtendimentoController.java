@@ -25,13 +25,22 @@ public class AtendimentoController {
 	private AtendimentoDao atendimentoDao;
 	private RegistroDao registroDao;
 	private Atendimento atendimento;
-	private RegistroController registroController;
+	
+	
+	public void consultaTabelasCompartilhadas() {
+		SharedListBean.consultaRegistrosAguardando();
+		SharedListBean.consultaAtendimentosIni();
+	}
 	
 	public AtendimentoController() {
 		atendimentoDao = new AtendimentoDao();
 		atendimento = new Atendimento();
 		registroDao = new RegistroDao();
-		registroController = new RegistroController();
+	}
+	
+	public RegistroController getRegistroControler() {
+		RegistroController controller = new RegistroController();
+		return controller;
 	}
 	
 	public List<Atendimento> consultarAtendimentoPorEmpresa(Date dataInicial, Date dataFinal, String nomeEmpresa) {
@@ -39,6 +48,22 @@ public class AtendimentoController {
 			return atendimentoDao.consultarAtentimentoPorEmpresa(dataInicial, dataFinal, nomeEmpresa);
 		}catch(Exception ex) {
 			throw ex;
+		}
+	}
+	
+	public List<Atendimento> consultarAtendimento(String status){
+		try {
+			return atendimentoDao.consultarAtentimento(status);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public Atendimento consultaAtendimentoPorId(Long id) {
+		try {
+			return atendimentoDao.consultarAtentimentoPorId(id);
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 	
@@ -70,6 +95,7 @@ public class AtendimentoController {
 			atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
 			registro.setStatus(INICIADO);
 			atendimentoDao.salvarAtendimento(atendimento, registro);
+			consultaTabelasCompartilhadas();
 		}catch (Exception e) {
 			throw e;
 		}
@@ -85,12 +111,13 @@ public class AtendimentoController {
 	 */
 	public synchronized void finalizaAtendimento(Atendimento at, List<NotaRegistro> notas) {
 		try {
-			if (registroController.gerarRegistroSaida(at, notas)) {
+			if (getRegistroControler().gerarRegistroSaida(at, notas)) {
 				at.setData_fim(HoraDaInternet.getHora());
 				at.setStatus(FINALIZADO);
 				at.setUsuario_fim(PermissoesUsuarios.getUsuario());
 				atendimentoDao.alterarAtendimento(at, at.getRegistro());
 				SharedListBean.consultaLiberadosSaida();
+				consultaTabelasCompartilhadas();
 			}
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
@@ -103,15 +130,16 @@ public class AtendimentoController {
 			registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 			atendimentoDao.excluirAtendimento(atendimento);
 			registro.setStatus(ABERTO);
-			registroController.aterarRegistro(registro);
+			getRegistroControler().salvarRegistro(registro);
+			consultaTabelasCompartilhadas();
 		}catch(Exception e) {
 			throw e;
 		}
 	}
 	
-	public List<Atendimento> consultarAtendimentoIniciado(String status){
+	public void alterarAtendimento(Atendimento atendimento) {
 		try {
-			return atendimentoDao.consultarAtentimento(status);
+			atendimentoDao.alterarAtendimento(atendimento);
 		} catch (Exception e) {
 			throw e;
 		}

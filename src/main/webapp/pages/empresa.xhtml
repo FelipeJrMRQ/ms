@@ -60,7 +60,7 @@
 		<h:form>
 			<div class="ui-g">
 				<div class="ui-g-12">
-					<p:inputText size="50" value="#{empresaBean.consulta}" styleClass="upper-case" placeholder="Consultar empresas cadastradas" required="true" requiredMessage="Digite o nome da empresa!" />
+					<p:inputText size="50" value="#{empresaBean.nomeEmpresa}" styleClass="upper-case" placeholder="Consultar empresas cadastradas" required="true" requiredMessage="Digite o nome da empresa!" />
 					<p:commandButton icon="ui-icon-search" action="#{empresaBean.consultaEmpresaPeloNome}" update=":tbEmpresaCadastrada :mensagem" />
 				</div>
 			</div>
@@ -92,9 +92,9 @@
 			<h:form>
 				<h:panelGrid columns="2">
 					<p:outputLabel value="NOME:" />
-					<p:inputText value="#{empresaBean.empresa.nome}" size="50" maxlength="50" />
+					<p:inputText value="#{empresaBean.empresa.nome}" size="50" maxlength="50" styleClass="upper-case"/>
 					<p:outputLabel value="CNPJ" />
-					<p:inputMask mask="99.999.999.9999-99" size="19" value="#{empresaBean.cnpj}" />
+					<p:inputMask mask="99.999.999.9999-99" size="19" value="#{empresaBean.cnpj}"  readonly="true" disabled="true"/>
 					<p:outputLabel value="CATEGORIA:" />
 					<p:selectOneMenu value="#{empresaBean.empresa.categoria}">
 						<f:selectItem noSelectionOption="true" itemLabel="Selecione" />
@@ -115,8 +115,8 @@
 		</p:dialog>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="align">
-			<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			<p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="NÃO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
 
 	</ui:define>

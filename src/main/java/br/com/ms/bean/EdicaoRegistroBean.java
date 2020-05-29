@@ -14,15 +14,12 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
-import br.com.ms.dao.AtendimentoDao;
-import br.com.ms.dao.LiberacaoDao;
-import br.com.ms.dao.LiberacaoVisitanteDao;
-import br.com.ms.dao.MotivoEdicaoRegistroDao;
-import br.com.ms.dao.RegistroDao;
+import br.com.controller.EdicaoRegistroController;
+import br.com.controller.MotivoEdicaoRegistroController;
+import br.com.controller.RegistroController;
 import br.com.ms.model.Atendimento;
 import br.com.ms.model.Empresa;
 import br.com.ms.model.Liberacao;
-import br.com.ms.model.LiberacaoVisitante;
 import br.com.ms.model.MotivoEdicaoRegistro;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
@@ -39,12 +36,8 @@ public class EdicaoRegistroBean implements Serializable {
 	private static final long serialVersionUID = 1605272245152225605L;
 	private Atendimento atendimento;
 	private MotivoEdicaoRegistro motivo;
-	private MotivoEdicaoRegistroDao motivoDao;
-	private AtendimentoDao atendimentoDao;
 	private Registro registro;
-	private RegistroDao registroDao;
 	private Liberacao liberacao;
-	private LiberacaoDao liberacaoDao;
 	private List<Atendimento> atendimentos;
 	private List<Registro> registros;
 	private List<Liberacao> liberacaos;
@@ -58,19 +51,18 @@ public class EdicaoRegistroBean implements Serializable {
 	private Registro rAuxiliar;
 	List<String> nfList;
 	private String registroId;
-	// private LiberacaoVisitanteDao libVisDao;
+
+	private MotivoEdicaoRegistroController motivoController;
+	private RegistroController registroController;
+	private EdicaoRegistroController edicaoRegistroController;
 
 	private boolean viewPanel;
 
 	public EdicaoRegistroBean() {
 		motivo = new MotivoEdicaoRegistro();
-		motivoDao = new MotivoEdicaoRegistroDao();
 		atendimento = new Atendimento();
-		atendimentoDao = new AtendimentoDao();
 		registro = new Registro();
-		registroDao = new RegistroDao();
 		liberacao = new Liberacao();
-		liberacaoDao = new LiberacaoDao();
 		atendimentos = new ArrayList<>();
 		registros = new ArrayList<>();
 		dataInicial = Calendar.getInstance().getTime();
@@ -80,7 +72,11 @@ public class EdicaoRegistroBean implements Serializable {
 		visitantes = new ArrayList<>();
 		empresas = new ArrayList<>();
 		nfList = new ArrayList<>();
-		// libVisDao = new LiberacaoVisitanteDao();
+
+		// Controllers
+		registroController = new RegistroController();
+		motivoController = new MotivoEdicaoRegistroController();
+		edicaoRegistroController = new EdicaoRegistroController();
 	}
 
 	/**
@@ -105,55 +101,18 @@ public class EdicaoRegistroBean implements Serializable {
 
 	public void consultaRegistroPorId() {
 		try {
-			try {
-				registro = registroDao.consultaRegistroPeloId(idConsulta);
-				motivo = motivoDao.consultar(registro.getId());
-				if(motivo != null) {
-					strMotivo = motivo.getMotivo();
-				}
-				try {
-					if (registro.getId() > 0) {
-						rAuxiliar = new Registro();
-						viewPanel = true;
-						verificaPrestador(registro);
-					}
-				} catch (NullPointerException e) {
-					rAuxiliar = new Registro();
-					Messages.addGlobalError(e.getMessage());
-				}
-			} catch (Exception e) {
-				Messages.addGlobalError(e.getMessage());
+			registro = registroController.consultarRegistroPorId(idConsulta);
+			motivo = motivoController.consultarMotivo(registro.getId());
+			if (motivo != null) {
+				strMotivo = motivo.getMotivo();
+			}
+			rAuxiliar = new Registro();
+			rAuxiliar = edicaoRegistroController.verificaTipoDeRegistroEpessoa(registro);
+			if(rAuxiliar != null) {
+				viewPanel = true;
 			}
 		} catch (Exception e) {
-			Messages.addGlobalError("Registro não encontrado");
-		}
-	}
-
-	/**
-	 * Neste metodo é atribuito de regitro de tipo oposto a variavel principal de
-	 * classe. Ex: se a variavel registro for do tipo SAIDA será realizada uma
-	 * consulta do registro oposto seja ele ENTRADA ou LIBERAÇÃO, em seguida este
-	 * valor será atribuido
-	 * 
-	 * @param registro
-	 */
-	private void verificaPrestador(Registro registro) {
-		try {
-			if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
-				rAuxiliar = consultarLiberacao(registro.getId(), "SAIDA").getEntrada();
-			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
-				rAuxiliar = consultarLiberacao(registro.getId(), "ENTRADA").getSaida();
-			} else if (registro.getTipo().equals("LIBERADO") && registro.getPrestadorDeServico().getTipo().equals("PRESTADOR")) {
-				rAuxiliar = consultarLiberacao(registro.getId(), "LIBERADO").getEntrada();
-			} else if (registro.getTipo().equals("SAIDA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
-				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "SAIDA").getEntrada();
-			} else if (registro.getTipo().equals("ENTRADA") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
-				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "ENTRADA").getSaida();
-			} else if (registro.getTipo().equals("LIBERADO") && registro.getPrestadorDeServico().getTipo().equals("VISITANTE")) {
-				rAuxiliar = consultaLibareacaoVisitante(registro.getId(), "LIBERADO").getEntrada();
-			}
-		} catch (Exception e) {
-			new Exception("Registro de vinculo não encontrado");
+			Messages.addGlobalError(e.getMessage());
 		}
 	}
 
@@ -189,18 +148,15 @@ public class EdicaoRegistroBean implements Serializable {
 	 */
 	private void salvarMotivo(Registro registro) {
 		try {
-			if(motivo == null) {
-				motivo = new MotivoEdicaoRegistro();
+			if (motivo == null) {
+				motivo = new MotivoEdicaoRegistro(strMotivo, registro, PermissoesUsuarios.getUsuario());
+				motivoController.salvar(motivo);
+			} else {
 				motivo.setMotivo(strMotivo);
-				motivo.setRegistro(registro);
-				motivo.setResponsavel(PermissoesUsuarios.getUsuario());
-				motivoDao.salvar(motivo);
-			}else {
-				motivo.setMotivo(strMotivo);
-				motivoDao.salvar(motivo);
+				motivoController.salvar(motivo);
 			}
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 
@@ -213,7 +169,8 @@ public class EdicaoRegistroBean implements Serializable {
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
 					limpar();
 				} else if (registro.getId() > 0) {
-					registroDao.salvar(registro);
+					registroController.salvarRegistro(registro);
+					salvarMotivo(registro);
 					Messages.addGlobalInfo("Registro salvo com sucesso!");
 					limpar();
 				}
@@ -225,7 +182,7 @@ public class EdicaoRegistroBean implements Serializable {
 			Messages.addGlobalError("Registro não encontrado");
 		}
 	}
-	
+
 	public void limpar() {
 		motivo = new MotivoEdicaoRegistro();
 		registro = new Registro();
@@ -240,26 +197,8 @@ public class EdicaoRegistroBean implements Serializable {
 		} else if (registro.getData().getTime() <= auxiliar.getData().getTime() && registro.getTipo().equals("SAIDA")) {
 			throw new Exception("A data de saída não pode ser menor que a data de entrada");
 		} else {
-			registroDao.salvar(registro);
-			registroDao.salvar(auxiliar);
-		}
-	}
-
-	private Liberacao consultarLiberacao(long id, String tipo) {
-		LiberacaoDao liDao = new LiberacaoDao();
-		if (tipo.equals("SAIDA") || tipo.equals("LIBERADO")) {
-			return liDao.consultarPorIdDoRegistroDeSaida(id);
-		} else {
-			return liDao.consultarPorIdDoRegistroDeEntrada(id);
-		}
-	}
-
-	private LiberacaoVisitante consultaLibareacaoVisitante(long id, String tipo) {
-		LiberacaoVisitanteDao libDao = new LiberacaoVisitanteDao();
-		if (tipo.equals("SAIDA") || tipo.equals("LIBERADO")) {
-			return libDao.consultarLiberacaoPorIdSaida(id);
-		} else {
-			return libDao.consultarLiberacaoPorIdEntrada(id);
+			registroController.salvarRegistro(registro);
+			registroController.salvarRegistro(auxiliar);
 		}
 	}
 
@@ -319,14 +258,6 @@ public class EdicaoRegistroBean implements Serializable {
 		this.atendimento = atendimento;
 	}
 
-	public AtendimentoDao getAtendimentoDao() {
-		return atendimentoDao;
-	}
-
-	public void setAtendimentoDao(AtendimentoDao atendimentoDao) {
-		this.atendimentoDao = atendimentoDao;
-	}
-
 	public Registro getRegistro() {
 		return registro;
 	}
@@ -335,28 +266,12 @@ public class EdicaoRegistroBean implements Serializable {
 		this.registro = registro;
 	}
 
-	public RegistroDao getRegistroDao() {
-		return registroDao;
-	}
-
-	public void setRegistroDao(RegistroDao registroDao) {
-		this.registroDao = registroDao;
-	}
-
 	public Liberacao getLiberacao() {
 		return liberacao;
 	}
 
 	public void setLiberacao(Liberacao liberacao) {
 		this.liberacao = liberacao;
-	}
-
-	public LiberacaoDao getLiberacaoDao() {
-		return liberacaoDao;
-	}
-
-	public void setLiberacaoDao(LiberacaoDao liberacaoDao) {
-		this.liberacaoDao = liberacaoDao;
 	}
 
 	public Long getIdConsulta() {

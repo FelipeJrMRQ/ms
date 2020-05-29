@@ -31,7 +31,7 @@ public class RegistroRepository {
 	public Registro save() {
 		System.out.println(registro);
 		Registro reg = new Registro();
-		reg =  registroDao.alterarRegistro(registro);
+		reg =  registroDao.salvar(registro);
 		return reg;
 	}
 }

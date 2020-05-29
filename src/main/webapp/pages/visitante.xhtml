@@ -86,12 +86,12 @@
 			<h:form>
 				<div class="ui-g">
 					<div class="ui-g-12">
-						<p:inputText size="50" placeholder="Consultar visitante" value="#{visitanteBean.nomeVisitante}" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
+						<p:inputText size="50" placeholder="CONSULTA VISITANTE POR NOME" value="#{visitanteBean.nomeVisitante}" styleClass="upper-case" required="true" requiredMessage="Digite o nome" />
 						<p:commandButton icon="ui-icon-search" update=":tbCadastroPrestador :mensagem" action="#{visitanteBean.consultarVisitante}" />
 					</div>
 				</div>
 			</h:form>
-			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="5" emptyMessage="Não há registros a serem exibidos." rendered="not empty visitanteBean.empresas">
+			<p:dataTable value="#{visitanteBean.visitantes}" var="prestador" id="tbCadastroPrestador" paginator="true" rows="5" emptyMessage="Não há registros a serem exibidos.">
 				<p:column headerText="ID" width="60">
 					<p:outputLabel value="#{prestador.id}" />
 				</p:column>
@@ -131,7 +131,7 @@
 		</p:dialog>
 
 		<!-- DIALOGO DE CONSULTA DE EMPRESA PARA EDICAO DE PRESTADOR -->
-		<p:dialog widgetVar="dlgEditCadEmpresa" id="dlgEdCadCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas" width="600" rendered="#{not empty visitanteBean.empresas}">
+		<p:dialog widgetVar="dlgEditCadEmpresa" id="dlgEditCadEmpresa" modal="true" appendTo="@(body)" resizable="false" header="Empresas" width="600">
 			<p:dataTable value="#{visitanteBean.empresas}" var="empresa" emptyMessage="Não foram encontrados registros" paginator="true" rows="10">
 				<p:column headerText="NOME">
 					<p:outputLabel value="#{empresa.nome}" />
@@ -157,7 +157,7 @@
 				</h:panelGrid>
 				<br />
 				<p:inputText size="50" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" />
-				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" onchange="PF('dlgEditCadEmpresa').show()" update=":dlgEdCadCadEmpresa" />
+				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" update="dlgEditCadEmpresa" oncomplete="PF('dlgEditCadEmpresa').show()" />
 					<p:selectOneRadio value="#{visitanteBean.tipo}">
 						<f:selectItem itemLabel="VISITANTE" itemValue="VISITANTE" />
 						<f:selectItem itemLabel="PRESTADOR" itemValue="PRESTADOR" />
@@ -179,7 +179,7 @@
 				<p:selectBooleanCheckbox value="#{visitanteBean.visitante.naoMonitorado}" itemLabel="NÃO MONITORADO" />
 				<p:messages id="msg" />
 				<p:separator />
-				<p:commandButton value="Salvar" actionListener="#{visitanteBean.alterar}" update=":frmEdicaoPrestador:msg" />
+				<p:commandButton value="Salvar" actionListener="#{visitanteBean.alterar}" id="btnSave" update=":frmEdicaoPrestador"  rendered="#{visitanteBean.flagBotao}"/>
 				<p:commandButton value="Fechar" actionListener="#{visitanteBean.limpar()}" oncomplete="PF('dlgConsultaPrestador').hide()" update=":tbCadastroPrestador :dlgSelEmpresa" />
 			</h:form>
 		</p:dialog>

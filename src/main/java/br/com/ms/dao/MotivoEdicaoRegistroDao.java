@@ -60,4 +60,18 @@ public class MotivoEdicaoRegistroDao {
 
 		}
 	}
+	
+	public void excluir(MotivoEdicaoRegistro motivo) {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			session.delete(motivo);
+			transaction.commit();
+		} catch (Exception e) {
+			transaction.rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
+	}
 }

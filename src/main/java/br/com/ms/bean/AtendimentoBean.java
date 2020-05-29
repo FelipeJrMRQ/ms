@@ -37,7 +37,6 @@ public class AtendimentoBean implements Serializable {
 	private Registro registro;
 	private String duracao;
 	private String nomeEmpresa;
-	// private List<Registro> registros;
 
 	/**
 	 * Construtor
@@ -49,13 +48,15 @@ public class AtendimentoBean implements Serializable {
 		registro = new Registro();
 		data = Calendar.getInstance().getTime();
 		dataFim = Calendar.getInstance().getTime();
-
-		/**
-		 * Controller
-		 */
 		atendimentoController = new AtendimentoController();
 		notasFiscaisController = new NotasFiscaisController();
 	}
+	
+	@PostConstruct
+	private void consultaInicial() {
+		atendimentoController.consultaTabelasCompartilhadas();
+	}
+
 
 	/**
 	 * Permite a inserção de notas fiscais
@@ -71,13 +72,11 @@ public class AtendimentoBean implements Serializable {
 		}
 
 	}
-
-	@PostConstruct
-	private void consultaInicial() {
-		SharedListBean.consultaRegistrosAguardando();
-		SharedListBean.consultaAtendimentosIni();
-	}
-
+	
+	/**
+	 * Realiza a remoção de notas fiscais inseridas
+	 * @param event
+	 */
 	public void removeNota(ActionEvent event) {
 		NotaRegistro nf = (NotaRegistro) event.getComponent().getAttributes().get("notaSelecionada");
 		notasFiscaisController.removeNota(nf.getNumeroNfe());
@@ -98,14 +97,13 @@ public class AtendimentoBean implements Serializable {
 			Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
 			notasFiscaisController.limparListaDeNotas();
 			limpar();
-			consultaInicial();
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
 		}
 	}
 	
 	/**
-	 * Este método impede que o usuário finalize duas vezes o mesmo atendimento.
+	 * Finaliza um atendimento em andamento
 	 */
 	public synchronized void finalizarAtendimento() {
 		try {
@@ -113,7 +111,6 @@ public class AtendimentoBean implements Serializable {
 			notasFiscaisController.limparListaDeNotas();
 			Messages.addGlobalInfo("Atendimento finalizado com sucesso!");
 			limpar();
-			consultaInicial();
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
@@ -131,7 +128,6 @@ public class AtendimentoBean implements Serializable {
 			atendimentoController.desfazerAtendimento(atendimento, atendimento.getRegistro());
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso");
 			limpar();
-			consultaInicial();
 		}catch(Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
@@ -181,7 +177,7 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public synchronized void consultaAtendimentosIni() {
 		try {
-			atendimentoController.consultarAtendimentoIniciado("INICIADO");
+			atendimentoController.consultarAtendimento("INICIADO");
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getCause().getMessage());
 		}

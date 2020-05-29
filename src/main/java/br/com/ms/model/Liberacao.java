@@ -20,6 +20,7 @@ public class Liberacao implements Serializable{
 	private static final long serialVersionUID = 6842914312803503814L;
 
 	public Liberacao() {
+		
 	}
 	
 	@Id
@@ -29,7 +30,7 @@ public class Liberacao implements Serializable{
 	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH} , fetch = FetchType.EAGER)
 	private Registro entrada;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
 	private Registro saida;
 	
 	@Temporal(TemporalType.TIMESTAMP)

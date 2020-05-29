@@ -281,10 +281,14 @@
 						<p:inputText value="#{registroBean.nfe}" maxlength="44" />
 						<p:commandButton icon="ui-icon-plus" actionListener="#{registroBean.addNotasFiscais}" update=":frmAddNfe :frmAddNfe:dtList :mensagem" />
 					</p:column>
-					<p:dataTable value="#{registroBean.listNfe}" var="nfe" id="dtList" paginator="true" paginatorAlwaysVisible="false" rows="10">
+					<p:dataTable value="#{registroBean.listNfe}" var="nfe" id="dtList" paginator="true" paginatorAlwaysVisible="false" rows="5">
 						<p:column headerText="Número NF" width="50">
 							<p:outputLabel value="#{nfe.numeroNfe}" />
 						</p:column>
+						<f:facet name="footer">
+							<p:outputLabel value="Quantidade de notas: "/>
+							<p:outputLabel value="#{registroBean.qtdNotas}"/>
+						</f:facet>
 					</p:dataTable>
 				</h:panelGrid>
 				<p:commandButton value="Concluído" update=":tbView:frmCadResgistroEntrada:panelNotas" oncomplete="PF('dglNotasFiscais').hide()" />

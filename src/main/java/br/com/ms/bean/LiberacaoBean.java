@@ -12,7 +12,7 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
-import br.com.ms.dao.LiberacaoDao;
+import br.com.controller.LiberacaoController;
 import br.com.ms.dao.MotivoEdicaoRegistroDao;
 import br.com.ms.model.Liberacao;
 import br.com.ms.model.MotivoEdicaoRegistro;
@@ -33,11 +33,12 @@ public class LiberacaoBean implements Serializable {
 	private String consulta;
 	private Date dataInicial;
 	private Date dataFinal;
-	private LiberacaoDao liberacaoDao;
 	private List<Liberacao> liberacoes;
 	String tempo;
 	String tempoAtendimento;
 	private boolean flag;
+	
+	private LiberacaoController liberacaoController;
 
 	public LiberacaoBean() throws Exception {
 		motivoEntrada = new MotivoEdicaoRegistro();
@@ -46,10 +47,11 @@ public class LiberacaoBean implements Serializable {
 		liberacao = new Liberacao();
 		dataFinal = HoraDaInternet.getHora();
 		dataInicial = HoraDaInternet.getHora();
-		liberacaoDao = new LiberacaoDao();
 		liberacoes = new ArrayList<>();
 		tipoConsulta = "EMPRESA";
 		flag = true;
+		
+		liberacaoController = new LiberacaoController();
 	}
 
 	public void consultaUpdate() {
@@ -67,21 +69,15 @@ public class LiberacaoBean implements Serializable {
 
 	public void consultaPorNome() {
 		try {
-			liberacoes = liberacaoDao.consultarPeloNomeDoPrestador(dataInicial, dataFinal, consulta);
-			if (liberacoes.isEmpty()) {
-				Messages.addGlobalError("Não foram encontrados registros com este nome.");
-			}
+			liberacoes = liberacaoController.consultaPorNome(dataInicial, dataFinal, consulta);
 		} catch (Exception ex) {
-			Messages.addGlobalInfo(ex.getCause().getMessage());
+			Messages.addGlobalError(ex.getMessage());
 		}
 	}
 
 	public void consultaPelaPlacaVeiculo() {
 		try {
-			liberacoes = liberacaoDao.consultarPelaPlacaVeiculo(dataInicial, dataFinal, consulta);
-			if (liberacoes.isEmpty()) {
-				Messages.addGlobalError("Não foram encontrados registros com este número de placa.");
-			}
+			liberacoes = liberacaoController.consultaPelaPlacaVeiculo(dataInicial, dataFinal, consulta);
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
@@ -89,41 +85,29 @@ public class LiberacaoBean implements Serializable {
 
 	public void consultaPorEmpresa() {
 		try {
-			liberacoes = liberacaoDao.consultarPeloNomeDaEmpresa(dataInicial, dataFinal, consulta);
-			if (liberacoes.isEmpty()) {
-				Messages.addGlobalError("Não foram encontrados registros.");
-			}
+			liberacoes = liberacaoController.consultaPorEmpresa(dataInicial, dataFinal, consulta);
 		} catch (Exception ex) {
-			Messages.addGlobalInfo(ex.getCause().getMessage());// http://localhost:8080/ms/pages/liberacao.xhtml#
+			Messages.addGlobalError(ex.getMessage());
 		}
 	}
 
 	public void consultaPorCategoria() {
 		try {
-			liberacoes = liberacaoDao.consultarPorCategoria(dataInicial, dataFinal, consulta);
-			if (liberacoes.isEmpty()) {
-				Messages.addGlobalError("Não foram encontrados registros para esta data.");
-			}
+			liberacoes = liberacaoController.consultaPorCategoria(dataInicial, dataFinal, consulta);
 		} catch (Exception ex) {
-			Messages.addGlobalInfo(ex.getCause().getMessage());
+			Messages.addGlobalError(ex.getCause().getMessage());
 		}
 	}
 
 	public void consultaPorNf() {
 		try {
 			if (flag) {
-				liberacoes = liberacaoDao.consultarPeloNumeroNfEntrada(consulta);
-				if (liberacoes.isEmpty()) {
-					Messages.addGlobalError("Não foram encontrados registros com este número de nota.");
-				}
+				liberacoes = liberacaoController.consultaPelaNotaDeEntrada(consulta);
 			} else {
-				liberacoes = liberacaoDao.consultarPeloNumeroNfSaida(consulta);
-				if (liberacoes.isEmpty()) {
-					Messages.addGlobalError("Não foram encontrados registros com este número de nota.");
-				}
+				liberacoes = liberacaoController.consultaPelaNotaDeSaida(consulta);
 			}
 		} catch (Exception ex) {
-			Messages.addGlobalInfo(ex.getCause().getMessage());
+			Messages.addGlobalError(ex.getMessage());
 		}
 	}
 	
@@ -144,7 +128,7 @@ public class LiberacaoBean implements Serializable {
 	public void liberacaoSelecionada(ActionEvent event) {
 		Liberacao lib = new Liberacao();
 		lib = (Liberacao) event.getComponent().getAttributes().get("liberacaoSelecionada");
-		liberacao = liberacaoDao.consultaPorId(lib.getId());
+		liberacao = liberacaoController.consultaPorId(lib.getId());
 		motivoEntrada = motivoDao.consultar(lib.getEntrada().getId());
 		motivoSaida = motivoDao.consultar(lib.getSaida().getId());
 		tempo = CalculaIntervadoDatas.intevalo(liberacao.getEntrada().getData(), liberacao.getSaida().getData());

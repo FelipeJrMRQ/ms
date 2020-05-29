@@ -10,7 +10,7 @@ import javax.faces.bean.ViewScoped;
 
 import org.omnifaces.util.Messages;
 
-import br.com.ms.dao.LiberacaoVisitanteDao;
+import br.com.controller.LiberacaoVisitanteController;
 import br.com.ms.model.LiberacaoVisitante;
 import br.com.ms.util.CalculaIntervadoDatas;
 import br.com.ms.util.HoraDaInternet;
@@ -22,8 +22,8 @@ public class LiberacaoVisitanteBean implements Serializable {
 	private static final long serialVersionUID = 392917479878041320L;
 
 	private LiberacaoVisitante libVisi;
+	private LiberacaoVisitanteController libVisController;
 	private List<LiberacaoVisitante> liberacoes;
-	private LiberacaoVisitanteDao libVisDao;
 	private String nome;
 	private Date dataInicial;
 	private Date dataFinal;
@@ -31,14 +31,13 @@ public class LiberacaoVisitanteBean implements Serializable {
 	public LiberacaoVisitanteBean() throws Exception {
 		libVisi = new LiberacaoVisitante();
 		liberacoes = new ArrayList<>();
-		libVisDao = new LiberacaoVisitanteDao();
 		dataInicial = HoraDaInternet.getHora();
 		dataFinal = HoraDaInternet.getHora();
 	}
 
 	public void consultarLibercaoes() {
 		try {
-			liberacoes = libVisDao.consultarLiberacaoVisitante(dataInicial, dataFinal, nome);
+			liberacoes = libVisController.consultarLiberacoes(dataInicial, dataFinal, nome);
 			if (liberacoes.size() <= 0) {
 				Messages.addGlobalError("Não foram encontradas liberações neste período!");
 			}

@@ -45,7 +45,7 @@ public class RegistroDao implements Serializable{
 			registro = (Registro) session.merge(registro);
 			transaction.commit();
 			return registro;
-		} catch (RuntimeException erro) {
+		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
 		} finally {
@@ -61,48 +61,14 @@ public class RegistroDao implements Serializable{
 			transaction = session.beginTransaction();
 			session.delete(rg);
 			transaction.commit();
-		} catch (RuntimeException erro) {
+		} catch (Exception erro) {
 			transaction.rollback();
 			throw erro;
 		} finally {
 			session.close();
 		}
 	}
-
-	public Registro alterarRegistro(Registro r) {
-		session = getSession();
-		Registro reg = new Registro();
-		try {
-			transaction = session.beginTransaction();
-			session.update(r);
-			transaction.commit();
-			return reg;
-		} catch (RuntimeException e) {
-			transaction.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
-	}
-
-	public void desfazerSaida(Registro r) {
-		session = getSession();
-		List<NotaRegistro> ls = new ArrayList<>();
-		for (NotaRegistro n : r.getNotas()) {
-			ls.add(n);
-		}
-		try {
-			transaction = session.beginTransaction();
-			session.update(r);
-			transaction.commit();
-		} catch (RuntimeException e) {
-			transaction.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<Registro> consultarRegistroPeloNomeDaEmpresa(String nome) {
 		session = getSession();
@@ -115,7 +81,7 @@ public class RegistroDao implements Serializable{
 				registro.getNotas().size();
 			}
 			return registros;
-		} catch (RuntimeException erro) {
+		} catch (Exception erro) {
 			throw erro;
 		} finally {
 			session.close();
@@ -404,7 +370,7 @@ public class RegistroDao implements Serializable{
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Registro> consultaLiberadors() {
+	public List<Registro> consultaLiberadosSaida() {
 		session = getSession();
 		List<Registro> registros = new ArrayList<>();
 		try {

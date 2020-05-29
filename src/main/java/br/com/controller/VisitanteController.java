@@ -20,6 +20,8 @@ public class VisitanteController implements Serializable {
 
 	@Autowired
 	private Visitante visitante;
+	
+	private List<Visitante> visitantes;
 
 	/**
 	 * 
@@ -29,6 +31,7 @@ public class VisitanteController implements Serializable {
 	public VisitanteController() {
 		visitanteDao = new VisitanteDao();
 		visitante = new Visitante();
+		visitantes = new ArrayList<>();
 	}
 
 	public void salvar(Visitante visitante, List<Empresa> empresasEscolhidas, String tipoVisitante) throws Exception {
@@ -56,13 +59,7 @@ public class VisitanteController implements Serializable {
 		}
 	}
 
-	public List<Visitante> consultaPorNome(String nomeVisitante) {
-		try {
-			return visitanteDao.consultaVisitantePeloNome(nomeVisitante);
-		} catch (Exception ex) {
-			throw ex;
-		}
-	}
+	
 
 	/**
 	 * Verifica se o prestador de serviço possuir permissão de acesso as
@@ -91,6 +88,52 @@ public class VisitanteController implements Serializable {
 		this.visitante = visitanteDao.consultaVisitantePeloCpf(cpf);
 		return verificaPermissaoDeAcesso(visitante);
 	}
+	
+	public List<Visitante> consultaPorNome(String nomeVisitante) throws Exception {
+		try {
+			visitantes = visitanteDao.consultaVisitantePeloNome(nomeVisitante);
+			if(visitantes.isEmpty()) {
+				throw new Exception("Nome não encontrado!");
+			}
+			return visitantes;
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
+	public Visitante consultaPorId(Long id) throws Exception {
+		try {
+			this.visitante = visitanteDao.consultaVisitantePorId(id);
+			if(visitante == null) {
+				throw new Exception("Código não encontrado!");
+			}
+			return visitante;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	public List<Visitante> consultaPorRg(String Rg) throws Exception {
+		try {
+			visitantes = visitanteDao.consultaVisitantePeloRg(Rg);
+			if(visitantes.isEmpty()) {
+				throw new Exception("Númemro de RG não encontrado!");
+			}
+			return visitantes;
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
+	
+	
+	public List<Visitante> consultaPeloRg(String consulta)  {
+		return visitantes;
+	}
+	
+	
+	
 
 	private void verificaTipo(Visitante visitante, List<Empresa> empresasEscolhidas, String tipoVisitante) throws Exception {
 		try {

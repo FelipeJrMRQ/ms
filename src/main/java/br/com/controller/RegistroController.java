@@ -1,38 +1,154 @@
 package br.com.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
 import br.com.ms.dao.RegistroDao;
 import br.com.ms.model.Atendimento;
+import br.com.ms.model.Empresa;
+import br.com.ms.model.Liberacao;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
+import br.com.ms.model.Visitante;
 import br.com.ms.util.HoraDaInternet;
 import br.com.ms.util.PermissoesUsuarios;
 
 public class RegistroController {
-	
+
 	private RegistroDao registroDao;
-	private LiberacaoController liberacaoController; 
-	
-	
+
+	/**
+	 * Realiza um verificao no banco para verificar o se o regitro não possui
+	 * vinculos e pode ser excluido.
+	 * 
+	 * @param r
+	 * @return
+	 * @throws Exception
+	 */
+	private void verificaPermissaoExclusao(Registro r) throws Exception {
+		getMotivoController().excluirMotivoPorRegistro(r.getId());
+		r = registroDao.consultaRegistroPeloId(r.getId());
+		if (r.getStatus().equals("ABERTO")) {
+			registroDao.excluir(r);
+		} else {
+			throw new Exception("Não é possivel excluir o registro porque ele está em atendimento!");
+		}
+	}
+
 	public RegistroController() {
 		registroDao = new RegistroDao();
-		liberacaoController = new LiberacaoController();
 	}
-	
-	
-	public void salvarRegistroDeEntrada(Registro registro) {
-		
-	}
-	
-	public Registro consultarRegistroPorId(Long id) {
+
+	public Registro salvarRegistro(Registro registro) {
 		try {
-			return registroDao.consultaRegistroPeloId(id);
-		}catch(Exception e) {
+			return registroDao.salvar(registro);
+		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
+
+	public void excluirRegistro(Registro registro) throws Exception {
+		verificaPermissaoExclusao(registro);
+	}
+
+	public AtendimentoController getAtendimentoController() {
+		AtendimentoController controller = new AtendimentoController();
+		return controller;
+	}
+
+	/**
+	 * Faz e recusa de uma registro de liberação excluindo os seguintes registros
+	 * 
+	 * Liberacao
+	 * Motivo de edicao de registro se houver
+	 * Registro de saida
+	 * 
+	 * 
+	 * @param registro
+	 */
+	public void recusarLiberacaoSaida(Registro registro) {
+		Liberacao lib = getLiberacaoController().consultarPeloIdDeSaida(registro.getId());
+		Registro entrada = registroDao.consultaRegistroPeloId(lib.getEntrada().getId());
+		try {
+			alterarAtendimentoRecusaLiberacao(getAtendimentoController().consultaAtendimentoPorId(lib.getAtendimento().getId()));
+			getMotivoController().excluirMotivoPorRegistro(registro.getId());
+			getLiberacaoController().excluirLiberacaoSaida(lib);
+			alteraRegistroDeRecusaLiberacao("INICIADO", entrada);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public void registrarSaida(Registro registro, List<NotaRegistro> notas, String placaVeiculo, String tipoRegistro) {
+		try {
+			registro.setData(HoraDaInternet.getHora());
+			registro.setUsuario(PermissoesUsuarios.getUsuario());
+			registro.setTipo(tipoRegistro);
+			registro.setPlacaVeiculo(placaVeiculo);
+			registro.setnotas(notas);
+			salvarRegistro(registro);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Registro geradorDeRegistro(String tipo, String status, List<NotaRegistro> notas, String placaVeiculo, Empresa empresa, Visitante visitante) {
+		try {
+			Registro r = new Registro();
+			r.setPlacaVeiculo(placaVeiculo);
+			r.setEmpresa(empresa);
+			r.setTipo(tipo);
+			r.setStatus(status);
+			r.setUsuario(PermissoesUsuarios.getUsuario());
+			r.setData(Calendar.getInstance().getTime());
+			r.setPrestadorDeServico(visitante);
+			r.setnotas(notas);
+			return r;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public Registro consultarRegistroPorId(Long id) {
+		try {
+			return registroDao.consultaRegistroPeloId(id);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public List<Registro> consultaPessoasPresentes() {
+		try {
+			return registroDao.quantidadePresentes();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public List<Registro> consultaPessoasEmAtendimento() {
+		try {
+			return registroDao.quantidadeAtendimentos();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public List<Registro> consultaEntradaPessoas() {
+		try {
+			return registroDao.quantidadeEntradas();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public List<Registro> consultaSaidaPessoas() {
+		try {
+			return registroDao.quantidadeSaidas();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	public synchronized boolean gerarRegistroSaida(Atendimento atendimento, List<NotaRegistro> notas) throws Exception {
 		Registro rg = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 		try {
@@ -47,7 +163,7 @@ public class RegistroController {
 			registro.setUsuario(PermissoesUsuarios.getUsuario());
 			Registro regLiberacao = new Registro();
 			regLiberacao = registroDao.salvar(registro);
-			if (liberacaoController.gerarRegistroDeLiberacao(atendimento, regLiberacao)) {
+			if (getLiberacaoController().gerarRegistroDeLiberacao(atendimento, regLiberacao)) {
 				return true;
 			} else {
 				registroDao.excluir(regLiberacao);
@@ -57,20 +173,52 @@ public class RegistroController {
 			throw new Exception("Erro ao tentar gerar registro de saída!");
 		}
 	}
-	
-	public void excluirRegistro(Registro registro) {
+
+	public List<Registro> consultarLiberadosSaida() {
 		try {
-			registroDao.excluir(registro);
-		}catch(Exception e) {
+			return registroDao.consultaLiberadosSaida();
+		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
-	public void aterarRegistro(Registro registro) {
+
+	public List<Registro> consultaRegistrosAguardandoAtendimento() {
 		try {
-			registroDao.alterarRegistro(registro);
-		}catch(Exception e) {
+			return registroDao.consultarRegistroPeloNomeDaEmpresa("");
+		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	public List<Registro> consultaUltimosRegistro() {
+		try {
+			return registroDao.consultaUltimosRegistros();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/****************** Métodos privados a classe ********************/
+
+	private void alteraRegistroDeRecusaLiberacao(String status, Registro registro) {
+		registro.setStatus(status);
+		registroDao.salvar(registro);
+	}
+
+	private void alterarAtendimentoRecusaLiberacao(Atendimento atendimento) {
+		atendimento.setStatus("INICIADO");
+		atendimento.setUsuario_fim(null);
+		atendimento.setData_fim(null);
+		getAtendimentoController().alterarAtendimento(atendimento);
+	}
+
+	private LiberacaoController getLiberacaoController() {
+		LiberacaoController controller = new LiberacaoController();
+		return controller;
+	}
+
+	private MotivoEdicaoRegistroController getMotivoController() {
+		MotivoEdicaoRegistroController controller = new MotivoEdicaoRegistroController();
+		return controller;
 	}
 }

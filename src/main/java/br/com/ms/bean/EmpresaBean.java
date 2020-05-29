@@ -10,10 +10,8 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
-import br.com.ms.dao.EmpresaDao;
+import br.com.controller.EmpresaController;
 import br.com.ms.model.Empresa;
-import br.com.ms.util.HoraDaInternet;
-import br.com.ms.validacao.ValidaCNPJ;
 
 @ManagedBean
 @ViewScoped
@@ -21,36 +19,31 @@ public class EmpresaBean implements Serializable {
 
 	private static final long serialVersionUID = 2701635752069790578L;
 	private Empresa empresa;
-	private EmpresaDao empresaDao;
 	private List<Empresa> empresas;
-	private String consulta;
+	private String nomeEmpresa;
 	private String cnpj;
+
+	private EmpresaController empresaController;
 
 	public EmpresaBean() {
 		this.empresa = new Empresa();
-		this.empresaDao = new EmpresaDao();
 		this.empresas = new ArrayList<>();
+		empresaController = new EmpresaController();
 	}
 
-	public void salvarEmpresa() throws Exception {
+	public void salvarEmpresa() {
 		try {
-			validaCNPJ(cnpj);
-			consultaCNPJExistente(cnpj);
-			empresa.setDataCadastro(HoraDaInternet.getHora());
-			empresa.setCnpj(cnpj);
-			empresaDao.salvarEmpresa(empresa);
+			empresaController.adicionarEmpresa(cnpj, empresa);
 			Messages.addGlobalInfo("Empresa cadastrada com sucesso!");
 			limparComponentes();
-		} catch (Throwable erro) {
+		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
 		}
 	}
 
 	public void alterarEmpresa() {
 		try {
-			validaCNPJ(cnpj);
-			empresa.setCnpj(cnpj);
-			empresaDao.alterarEmpresa(empresa);
+			empresaController.alterarEmpresa(empresa);
 			Messages.addGlobalInfo("Empresa alterada com sucesso!");
 			limparComponentes();
 		} catch (Exception erro) {
@@ -58,26 +51,9 @@ public class EmpresaBean implements Serializable {
 		}
 	}
 
-	private void validaCNPJ(String c) throws Exception {
-		if (!ValidaCNPJ.isCNPJ(c)) {
-			throw new Exception("O CNPJ digitado é inválido!");
-		}
-	}
-
-	private void consultaCNPJExistente(String cnpj) throws Exception {
-		Empresa empresa = new Empresa();
-		empresa = empresaDao.consultarEmpresaPeloCnpj(cnpj);
-		if(empresa != null) {
-			if(empresa.getCnpj().equals(cnpj)) {
-				throw new Exception("Esta empresa já está cadastrada no sistema!");
-			}
-		}
-	}
-
 	public void excluirEmpresa(ActionEvent event) {
 		try {
-			validaExclusaoEmpresa((Empresa) event.getComponent().getAttributes().get("empresaSelecionada"));
-			empresaDao.excluirEmpresa((Empresa) event.getComponent().getAttributes().get("empresaSelecionada"));
+			empresaController.excluirEmpresa((Empresa) event.getComponent().getAttributes().get("empresaSelecionada"));
 			Messages.addGlobalInfo("Empresa excluída com sucesso!");
 			limparComponentes();
 		} catch (Exception erro) {
@@ -85,15 +61,9 @@ public class EmpresaBean implements Serializable {
 		}
 	}
 
-	private void validaExclusaoEmpresa(Empresa e) throws Exception {
-		if (empresaDao.consultaRegistroEmpresaPorId(e.getId()) != null) {
-			throw new Exception("Este registro possui vínculos que impossibilitam sua exclusão!");
-		}
-	}
-
 	public void consultaEmpresaPeloNome() {
 		try {
-			empresas = empresaDao.consultarEmpresa(consulta);
+			empresas = empresaController.consultaEmpresaPeloNome(nomeEmpresa);
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError(erro.getCause().getMessage());
 		}
@@ -101,7 +71,7 @@ public class EmpresaBean implements Serializable {
 
 	public void consultaEmpresaPeloCnpj() {
 		try {
-			empresa = empresaDao.consultarEmpresaPeloCnpj(cnpj);
+			empresa = empresaController.consultaEmpresaPeloCnpj(cnpj);
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError(erro.getCause().getMessage());
 		}
@@ -135,12 +105,12 @@ public class EmpresaBean implements Serializable {
 		this.empresas = empresas;
 	}
 
-	public String getConsulta() {
-		return consulta;
+	public String getNomeEmpresa() {
+		return nomeEmpresa;
 	}
 
-	public void setConsulta(String consulta) {
-		this.consulta = consulta.toUpperCase();
+	public void setNomeEmpresa(String nomeEmpresa) {
+		this.nomeEmpresa = nomeEmpresa.toUpperCase();
 	}
 
 	public String getCnpj() {

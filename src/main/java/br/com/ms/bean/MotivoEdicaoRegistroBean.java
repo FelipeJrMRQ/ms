@@ -7,7 +7,7 @@ import javax.faces.bean.ManagedBean;
 
 import org.omnifaces.util.Messages;
 
-import br.com.ms.dao.MotivoEdicaoRegistroDao;
+import br.com.controller.MotivoEdicaoRegistroController;
 import br.com.ms.model.MotivoEdicaoRegistro;
 
 @ManagedBean
@@ -15,16 +15,16 @@ import br.com.ms.model.MotivoEdicaoRegistro;
 public class MotivoEdicaoRegistroBean implements Serializable {
 	private static final long serialVersionUID = -5461084474997228795L;
 	private MotivoEdicaoRegistro motivo;
-	private MotivoEdicaoRegistroDao motivoDao;
+	private MotivoEdicaoRegistroController motivoController;
 	
 	public MotivoEdicaoRegistroBean() {
 		motivo = new MotivoEdicaoRegistro();
-		motivoDao = new MotivoEdicaoRegistroDao();
+
 	}
 	
 	public void salvar() {
 		try {
-			motivoDao.salvar(motivo);
+			motivoController.salvar(motivo);
 		}catch(Exception e ) {
 			Messages.addGlobalError(e.getMessage());
 		}
