@@ -14,7 +14,7 @@ import br.com.ms.util.HoraDaInternet;
 import br.com.ms.util.PermissoesUsuarios;
 
 public class RegistroController {
-
+	
 	private RegistroDao registroDao;
 
 	/**
@@ -36,6 +36,7 @@ public class RegistroController {
 	}
 
 	public RegistroController() {
+		//System.out.println("Registro Controller");
 		registroDao = new RegistroDao();
 	}
 

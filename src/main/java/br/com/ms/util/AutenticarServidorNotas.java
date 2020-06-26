@@ -11,8 +11,11 @@ import jcifs.smb.SmbFile;
 
 public class AutenticarServidorNotas {
 	public static void buscarNotaEntrada(String nota) throws Exception {
+		String dominio = Seguranca.getConfig().getDominio();
+		String usuario = Seguranca.getConfig().getUsuario();
+		String senha = Seguranca.decrypt(Seguranca.getConfig().getSenhaServidor(), Seguranca.getConfig().getChaveEncrypt());
 		try {
-			NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication("croma", "administrador", "0566e7357");
+			NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication(dominio, usuario, senha);
 			SmbFile home = new SmbFile("smb://125.67.2.242/SUPERSMART/NFE/PDF/", authentication);
 			for (SmbFile file : home.listFiles()) {
 				SmbFile in = new SmbFile(file.toString() + "/NF" +nota+".pdf", authentication);

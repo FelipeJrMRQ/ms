@@ -9,7 +9,7 @@
 
 
 	<h3 class="text-success">Em atendimento</h3>
-	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!" >
+	<p:dataTable id="tbAtendimento" value="#{sharedListBean.atendimentoIniciado()}" var="atdm" paginator="true" rows="15" emptyMessage="Não há atendimentos iniciados!">
 
 		<p:column headerText="EMPRESA / NOME">
 			<h:panelGrid columns="1">
@@ -68,8 +68,8 @@
 						<hr />
 					</p:column>
 					<p:column>
-						<p:outputLabel value="RESPONSÁVEL: " styleClass="negrito"/>
-						<p:outputLabel value="#{atendimentoBean.atendimento.usuario_inicio.nome}"/>
+						<p:outputLabel value="RESPONSÁVEL: " styleClass="negrito" />
+						<p:outputLabel value="#{atendimentoBean.atendimento.usuario_inicio.nome}" />
 						<hr />
 					</p:column>
 
@@ -110,7 +110,8 @@
 		</div>
 		<div style="clear: both;"></div>
 		<br />
-		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.finalizarAtendimento()}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" />
+		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.finalizarAtendimento()}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" rendered="#{!atendimentoBean.config.ativarProgramador or !loginBean.usuarioLogado.permissoes.programador}"/>
+		<p:commandButton value="Finalizar BB" process="@this"  update=":mensagem :tbView:frmAtendimento:tbAtendimento" oncomplete="PF('dlgProgramadorFim').show()"  rendered="#{atendimentoBean.config.ativarProgramador and loginBean.usuarioLogado.permissoes.programador}" />
 		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limpar()}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
 	</div>
 </p:dialog>
@@ -120,5 +121,14 @@
 	<p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
 	<p:commandButton value="NÂO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 </p:confirmDialog>
+
+<p:dialog widgetVar="dlgProgramadorFim" width="450" appendTo="@(body)" modal="true" header="CÓDIGO DO PROGRAMADOR">
+	<h:form>
+		<p:outputLabel value="CÓDIGO: " />
+		<p:password value="#{atendimentoBean.codigoProg}" />
+		<p:separator />
+		<p:commandButton value="SALVAR" actionListener="#{atendimentoBean.finalizarAtendimento()}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgProgramadorFim').hide(), PF('dlgNotasLiberacao').hide()" />
+	</h:form>
+</p:dialog>
 
 </html>

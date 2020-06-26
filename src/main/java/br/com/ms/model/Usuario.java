@@ -32,6 +32,8 @@ public class Usuario implements Serializable {
 	
 	private String confirmaSenha;
 	
+	private String codigoProgramador;
+	
 	public Usuario() {
 	}
 
@@ -73,6 +75,14 @@ public class Usuario implements Serializable {
 
 	public void setConfirmaSenha(String confirmaSenha) {
 		this.confirmaSenha = confirmaSenha.toUpperCase();
+	}
+
+	public String getCodigoProgramador() {
+		return codigoProgramador;
+	}
+
+	public void setCodigoProgramador(String codigoProgramador) {
+		this.codigoProgramador = codigoProgramador;
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class Autenticacao implements PhaseListener {
 
 	@Override
 	public void beforePhase(PhaseEvent arg0) {
-
+		
 	}
 
 	@Override

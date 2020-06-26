@@ -163,7 +163,7 @@ public class MontaRegistroNfe {
 			mes = "04";
 			break;
 		case 5:
-			mes = "04";
+			mes = "05";
 			break;
 		case 6:
 			mes = "06";

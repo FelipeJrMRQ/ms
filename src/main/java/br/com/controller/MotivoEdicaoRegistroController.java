@@ -9,6 +9,7 @@ public class MotivoEdicaoRegistroController {
 	private MotivoEdicaoRegistro motivo;
 
 	public MotivoEdicaoRegistroController() {
+		//System.out.println("Motivo edição registro controller");
 		motivoEdicaoRegistroDao = new MotivoEdicaoRegistroDao();
 		motivo = new MotivoEdicaoRegistro();
 	}

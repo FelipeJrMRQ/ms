@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+
+		<p:growl id="mensagem" />
+
+		<div class="ui-fluid">
+
+			<h:panelGrid columns="6" styleClass="ui-md-10">
+
+				<div class="ui-md-4">
+					<h:form>
+						<p:panel>
+							<h:panelGrid columns="1">
+								<p:outputLabel value="ATUALIZAÇÃO DE NOTAS" />
+								<p:selectBooleanButton onLabel="ATIVADO" offLabel="DESATIVADO" value="#{configuracaoSistemaBean.config.atualizacaoNfe}">
+									<p:ajax listener="#{configuracaoSistemaBean.salvarConfiguracao()}" update="mensagem" />
+								</p:selectBooleanButton>
+							</h:panelGrid>
+						</p:panel>
+					</h:form>
+				</div>
+
+				<div class="ui-md-4">
+					<h:form>
+						<p:panel>
+							<h:panelGrid columns="1">
+								<p:outputLabel value="REGISTRO DE PROGRAMADOR" />
+								<p:selectBooleanButton onLabel="ATIVADO" offLabel="DESATIVADO" value="#{configuracaoSistemaBean.config.ativarProgramador}">
+									<p:ajax listener="#{configuracaoSistemaBean.salvarConfiguracao()}" update="mensagem" />
+								</p:selectBooleanButton>
+							</h:panelGrid>
+						</p:panel>
+					</h:form>
+				</div>
+
+				<div class="ui-md-4">
+					<p:panel>
+						<h:form>
+							<p:outputLabel value="CAMINHO CERTIFICADO" />
+							<h:panelGrid columns="2">
+
+								<p:inputText value="#{configuracaoSistemaBean.config.caminhoCertificado}" placeholder="Ex: C:\temp\certificado.pfx" />
+								<p:commandButton id="btnSalvar" icon="fa fa-save" update="mensagem" oncomplete="PF('dlsPassWord').show()" style="float:left">
+									<p:tooltip for="btnSalvar" value="Salvar local" />
+								</p:commandButton>
+							</h:panelGrid>
+						</h:form>
+					</p:panel>
+				</div>
+				
+				<div class="ui-md-4">
+					<p:panel>
+						<h:form>
+							<p:outputLabel value="CHAVE DE CRIPTOGRAFIA:" />
+							<h:panelGrid columns="2">
+
+								<p:inputText value="#{configuracaoSistemaBean.config.chaveEncrypt}" />
+								<p:commandButton id="btnSalvar" icon="fa fa-save" update="mensagem" actionListener="#{configuracaoSistemaBean.salvarConfiguracao()}" style="float:left">
+									<p:tooltip for="btnSalvar" value="Salvar chave" />
+								</p:commandButton>
+							</h:panelGrid>
+						</h:form>
+					</p:panel>
+				</div>
+				
+				<div class="ui-md-4">
+					<p:panel>
+						<h:form>
+							<p:outputLabel value="DOMÍNIO: " />
+							<h:panelGrid columns="2">
+
+								<p:inputText value="#{configuracaoSistemaBean.config.dominio}" />
+								<p:commandButton id="btnSalvar" icon="fa fa-save" update="mensagem" actionListener="#{configuracaoSistemaBean.salvarConfiguracao()}" style="float:left">
+									<p:tooltip for="btnSalvar" value="Salvar chave" />
+								</p:commandButton>
+							</h:panelGrid>
+						</h:form>
+					</p:panel>
+				</div>
+				
+				
+				<div class="ui-md-4">
+					<p:panel>
+						<h:form>
+							<p:outputLabel value="USUÁRIO: " />
+							<h:panelGrid columns="2">
+
+								<p:inputText value="#{configuracaoSistemaBean.config.usuario}" />
+								<p:commandButton id="btnSalvar" icon="fa fa-save" update="mensagem" actionListener="#{configuracaoSistemaBean.salvarConfiguracao()}" style="float:left">
+									<p:tooltip for="btnSalvar" value="Salvar chave" />
+								</p:commandButton>
+							</h:panelGrid>
+						</h:form>
+					</p:panel>
+				</div>
+				
+					<div class="ui-md-4">
+					<p:panel>
+						<h:form>
+							<p:outputLabel value="SENHA SERVIDOR:" />
+							<h:panelGrid columns="2">
+
+								<p:password value="#{configuracaoSistemaBean.config.senhaServidor}" />
+								<p:commandButton id="btnSalvar" icon="fa fa-save" update="mensagem" actionListener="#{configuracaoSistemaBean.salvarConfiguracao()}" style="float:left">
+									<p:tooltip for="btnSalvar" value="Salvar senha" />
+								</p:commandButton>
+							</h:panelGrid>
+						</h:form>
+					</p:panel>
+				</div>
+				
+			</h:panelGrid>
+		</div>
+
+		<p:dialog widgetVar="dlsPassWord" header="SENNHA DO CERTIFICADO">
+			<h:form>
+				<h:panelGrid>
+					<p:password value="#{configuracaoSistemaBean.config.senhaCertificado}" />
+					<p:commandButton value="SALVAR" actionListener="#{configuracaoSistemaBean.salvarConfiguracao()}" update="mensagem" oncomplete="PF('dlsPassWord').hide()" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -11,6 +11,7 @@ public class EmpresaController {
 	private EmpresaDao empresaDao;
 
 	public EmpresaController() {
+		//System.out.println("Controller");
 		empresaDao = new EmpresaDao();
 	}
 

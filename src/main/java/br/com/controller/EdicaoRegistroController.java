@@ -9,7 +9,7 @@ public class EdicaoRegistroController {
 
 
 	public EdicaoRegistroController() {
-	
+		//System.out.println("Edição registro Controller");
 	}
 	
 

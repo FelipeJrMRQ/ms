@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import br.com.ms.util.Seguranca;
 import br.com.swconsultoria.certificado.Certificado;
 import br.com.swconsultoria.certificado.CertificadoService;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
@@ -30,8 +31,8 @@ public class ConsultaNFeChaveDeAcesso {
 	}
 
 	private static Certificado certifidoA1Pfx() throws CertificadoException, FileNotFoundException {
-		String caminhoCertificado = "/temp/certificado.pfx";
-		String senha = "102030";
+		String caminhoCertificado = Seguranca.getConfig().getCaminhoCertificado();
+		String senha = Seguranca.decrypt(Seguranca.getConfig().getSenhaCertificado(), Seguranca.getConfig().getChaveEncrypt());
 		return CertificadoService.certificadoPfx(caminhoCertificado, senha);
 	}
 

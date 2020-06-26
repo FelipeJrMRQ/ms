@@ -1,9 +1,8 @@
-package br.com.ms.bean;
+package br.com.ms.util;
 
 import java.io.Serializable;
 
 import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -15,60 +14,50 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+
 import br.com.ms.agendador.Agendador;
 
-@ManagedBean
+
 @ApplicationScoped
-public class AgendadorDeTarefas implements Serializable {
+public class ScheduleUtil implements Serializable{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2153789129877554744L;
-	private boolean statusAtualizaNFE;
-	private SchedulerFactory schedulerFactory;
-	private  Scheduler scheduler;
-	private Trigger trigger;
+	private static final long serialVersionUID = -6711809756096409570L;
+	private static  SchedulerFactory schedulerFactory;
+	private static Scheduler scheduler;
+	private static Trigger trigger;
+	private static boolean status = true;
 
-
-	public AgendadorDeTarefas() throws SchedulerException {
+	
+	private static void createSchedule() {
 		try {
 			schedulerFactory = new StdSchedulerFactory();
 			scheduler = schedulerFactory.getScheduler();
 			JobDetail job = JobBuilder.newJob(Agendador.class).withIdentity("atualizaNFE", "g1").build();
 			trigger = TriggerBuilder.newTrigger().withIdentity("ValidadorTrigger", "g1").withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * * * ?")).build();
 			scheduler.scheduleJob(job, trigger);
+			status = false;
 		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public static void start() throws Exception {
+		try {
+			if(status) {
+				createSchedule();
+				scheduler.start();
+			}
+		} catch (Exception e) {
 			throw e;
 		}
 	}
 
-	public void inicarAtualizacaoNFE() throws Exception {
+	public static void pause() throws Exception {
 		try {
-			if (statusAtualizaNFE == true) {
-				scheduler.start();
-			} else {
-				scheduler.standby();
-			}
-		} catch (SchedulerException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void iniciarProcesso() {
-		try {
-			inicarAtualizacaoNFE();
+			scheduler.standby();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
-	}
-
-	public boolean isStatusAtualizaNFE() {
-		return statusAtualizaNFE;
-	}
-
-	public void setStatusAtualizaNFE(boolean statusAtualizaNFE) {
-		this.statusAtualizaNFE = statusAtualizaNFE;
 	}
 }

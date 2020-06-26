@@ -21,6 +21,7 @@ public class LiberacaoController {
 	private List<Liberacao> liberacoes;
 
 	public LiberacaoController() {
+		//System.out.println("Liberação controller");
 		registroDao = new RegistroDao();
 		liberacaoDao = new LiberacaoDao();
 		liberacoes = new ArrayList<>();

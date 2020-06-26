@@ -43,6 +43,7 @@ public class Registro implements Serializable {
 
 	@Column
 	private String status;
+	
 
 	@OneToMany(mappedBy = "registro", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)//Aqui foi alterada esta propriedade [fetch = FetchType.LAZY]
 	private List<NotaRegistro> notas;

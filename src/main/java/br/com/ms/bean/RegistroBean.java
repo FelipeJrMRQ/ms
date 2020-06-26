@@ -12,6 +12,7 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
+import br.com.controller.ConfiguracaoSistemaController;
 import br.com.controller.LiberacaoVisitanteController;
 import br.com.controller.MotivoEdicaoRegistroController;
 import br.com.controller.NotasFiscaisController;
@@ -62,15 +63,7 @@ public class RegistroBean implements Serializable {
 	private RegistroController registroController;
 	private MotivoEdicaoRegistroController motivoController;
 	private LiberacaoVisitanteController liberacaoVisitanteController;
-
-	@PostConstruct
-	private void iniciar() {
-		tipoDeConsulta = "NOME";
-		consultaUtimosRegistros();
-		SharedListBean.consultaLiberadosSaida();
-		calculaPessoasPresentes();
-		qtdNotas = "0";
-	}
+	private ConfiguracaoSistemaController configController;
 	
 	public RegistroBean() {
 		registro = new Registro();
@@ -83,15 +76,27 @@ public class RegistroBean implements Serializable {
 		quantidadeAtentimentos = new ArrayList<>();
 		quantidadeSaidas = new ArrayList<>();
 		quantidadePresentes = new ArrayList<>();
-		
 		visitanteController = new VisitanteController();
 		notasFiscaisController = new NotasFiscaisController();
 		registroController = new RegistroController();
 		notasFiscaisController = new NotasFiscaisController();
 		motivoController = new MotivoEdicaoRegistroController();
 		liberacaoVisitanteController = new LiberacaoVisitanteController();
+		configController = new ConfiguracaoSistemaController();
 		
 	}
+
+	@PostConstruct
+	private void iniciar() {
+		tipoDeConsulta = "NOME";
+		consultaUtimosRegistros();
+		SharedListBean.consultaLiberadosSaida();
+		calculaPessoasPresentes();
+		qtdNotas = "0";
+		configController.iniciarAtualizacaoDeNotas();
+	}
+	
+	
 
 	/**
 	 * Atualiza a tela principal do sistema mantendo as informações sobre Pessoas

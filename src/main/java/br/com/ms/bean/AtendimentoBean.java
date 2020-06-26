@@ -14,8 +14,10 @@ import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
 
 import br.com.controller.AtendimentoController;
+import br.com.controller.ConfiguracaoSistemaController;
 import br.com.controller.NotasFiscaisController;
 import br.com.ms.model.Atendimento;
+import br.com.ms.model.ConfiguracaoSistema;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 
@@ -27,7 +29,6 @@ public class AtendimentoBean implements Serializable {
 	private AtendimentoController atendimentoController;
 	private NotasFiscaisController notasFiscaisController;
 
-
 	private Atendimento atendimento;
 	private List<Atendimento> atendimentos;
 	private Date data;
@@ -37,6 +38,9 @@ public class AtendimentoBean implements Serializable {
 	private Registro registro;
 	private String duracao;
 	private String nomeEmpresa;
+	private String codigoProg;
+	private ConfiguracaoSistema config;
+	private ConfiguracaoSistemaController configController;
 
 	/**
 	 * Construtor
@@ -50,13 +54,15 @@ public class AtendimentoBean implements Serializable {
 		dataFim = Calendar.getInstance().getTime();
 		atendimentoController = new AtendimentoController();
 		notasFiscaisController = new NotasFiscaisController();
+		configController = new ConfiguracaoSistemaController();
+		config = new ConfiguracaoSistema();
+		config = configController.consultarConfiguracao();
 	}
-	
+
 	@PostConstruct
 	private void consultaInicial() {
 		atendimentoController.consultaTabelasCompartilhadas();
 	}
-
 
 	/**
 	 * Permite a inserção de notas fiscais
@@ -70,11 +76,13 @@ public class AtendimentoBean implements Serializable {
 				numeroNf = "";
 			}
 		}
-
 	}
 	
+	
+
 	/**
 	 * Realiza a remoção de notas fiscais inseridas
+	 * 
 	 * @param event
 	 */
 	public void removeNota(ActionEvent event) {
@@ -93,26 +101,28 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public synchronized void inicioAtendimento(Registro registro, String status) {
 		try {
-			atendimentoController.iniciarAtendimento(registro, status);
+			atendimentoController.iniciarAtendimento(registro, status, this.codigoProg);
 			Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
 			notasFiscaisController.limparListaDeNotas();
-			limpar();
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
+		}finally {
+			limpar();
 		}
 	}
-	
+
 	/**
 	 * Finaliza um atendimento em andamento
 	 */
 	public synchronized void finalizarAtendimento() {
 		try {
-			atendimentoController.finalizaAtendimento(atendimento, notas);
+			atendimentoController.finalizaAtendimento(atendimento, notas, this.codigoProg);
 			notasFiscaisController.limparListaDeNotas();
 			Messages.addGlobalInfo("Atendimento finalizado com sucesso!");
-			limpar();
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
+		}finally {
+			limpar();
 		}
 	}
 
@@ -123,12 +133,12 @@ public class AtendimentoBean implements Serializable {
 	 * @param event
 	 */
 	public synchronized void desfazerAtendimento(ActionEvent event) {
-		atendimento =(Atendimento) event.getComponent().getAttributes().get("atendimentoSelecionado");
+		atendimento = (Atendimento) event.getComponent().getAttributes().get("atendimentoSelecionado");
 		try {
 			atendimentoController.desfazerAtendimento(atendimento, atendimento.getRegistro());
 			Messages.addGlobalInfo("Atendimento desfeito com sucesso");
 			limpar();
-		}catch(Exception e) {
+		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
 		}
 	}
@@ -161,6 +171,7 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public void selecionado(ActionEvent event) {
 		atendimento = atendimentoController.atendimentoSelecionado((Atendimento) event.getComponent().getAttributes().get("registroSelecionado"));
+		config = configController.consultarConfiguracao();
 	}
 
 	public void consultarAtendimentoPorEmpresa() {
@@ -170,6 +181,7 @@ public class AtendimentoBean implements Serializable {
 			Messages.addGlobalError("Não foi possivel realizar esta consulta");
 		}
 	}
+	
 
 	/**
 	 * Este método será utilizado para atualizar informações de atendimentos que
@@ -192,9 +204,9 @@ public class AtendimentoBean implements Serializable {
 		atendimentos = new ArrayList<>();
 		registro = new Registro();
 		notas = new ArrayList<>();
+		codigoProg = "";
 	}
-	
-	
+
 	public String getNomeEmpresa() {
 		return nomeEmpresa;
 	}
@@ -265,6 +277,22 @@ public class AtendimentoBean implements Serializable {
 
 	public void setRegistro(Registro registro) {
 		this.registro = registro;
+	}
+
+	public String getCodigoProg() {
+		return codigoProg;
+	}
+
+	public void setCodigoProg(String codigoProg) {
+		this.codigoProg = codigoProg.toUpperCase();
+	}
+
+	public ConfiguracaoSistema getConfig() {
+		return config;
+	}
+
+	public void setConfig(ConfiguracaoSistema config) {
+		this.config = config;
 	}
 
 }

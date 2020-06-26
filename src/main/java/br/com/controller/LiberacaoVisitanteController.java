@@ -23,6 +23,7 @@ public class LiberacaoVisitanteController {
 	}
 	
 	public LiberacaoVisitanteController() {
+		//System.out.println("Liberacao Visitante Controller");
 		libDao = new LiberacaoVisitanteDao();
 	}
 	

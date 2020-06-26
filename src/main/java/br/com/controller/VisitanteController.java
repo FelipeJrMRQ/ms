@@ -29,6 +29,7 @@ public class VisitanteController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public VisitanteController() {
+		//System.out.println("Visitante Controller");
 		visitanteDao = new VisitanteDao();
 		visitante = new Visitante();
 		visitantes = new ArrayList<>();

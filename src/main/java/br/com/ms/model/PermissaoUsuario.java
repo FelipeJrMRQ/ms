@@ -22,6 +22,8 @@ public class PermissaoUsuario implements Serializable {
 	private boolean manutencaoAtendimento;
 	private boolean manutencaoVisitante;
 	private boolean edicaoRegistro;
+	private boolean configuaracaoSistema;
+	private boolean programador;
 
 	public PermissaoUsuario() {
 	}
@@ -88,6 +90,22 @@ public class PermissaoUsuario implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public boolean isConfiguaracaoSistema() {
+		return configuaracaoSistema;
+	}
+
+	public void setConfiguaracaoSistema(boolean configuaracaoSistema) {
+		this.configuaracaoSistema = configuaracaoSistema;
+	}
+
+	public boolean isProgramador() {
+		return programador;
+	}
+
+	public void setProgramador(boolean programador) {
+		this.programador = programador;
 	}
 
 	@Override

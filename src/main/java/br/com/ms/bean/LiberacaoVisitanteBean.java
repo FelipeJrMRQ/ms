@@ -33,6 +33,7 @@ public class LiberacaoVisitanteBean implements Serializable {
 		liberacoes = new ArrayList<>();
 		dataInicial = HoraDaInternet.getHora();
 		dataFinal = HoraDaInternet.getHora();
+		libVisController = new LiberacaoVisitanteController();
 	}
 
 	public void consultarLibercaoes() {

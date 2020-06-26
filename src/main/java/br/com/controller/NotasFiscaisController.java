@@ -12,6 +12,7 @@ public class NotasFiscaisController {
 	private List<String> listNfe;
 
 	public NotasFiscaisController() {
+		//System.out.println("Notas fiscais controller");
 		listNfe = new ArrayList<>();
 	}
 

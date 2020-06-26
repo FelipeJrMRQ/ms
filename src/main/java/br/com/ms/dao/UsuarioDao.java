@@ -67,6 +67,18 @@ public class UsuarioDao implements Serializable {
 			session.close();
 		}
 	}
+	
+	public Usuario buscarPorCodigoProgramador(String codigo) {
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Usuario.class);
+			return (Usuario) consulta.add(Restrictions.eq("codigoProgramador", codigo)).uniqueResult();
+		} catch (Exception err) {
+			throw err;
+		}finally {
+			session.close();
+		}
+	}
 
 	public Usuario autenticarUsuario(Usuario usuario) {
 		session = getSession();

@@ -35,8 +35,19 @@
 				</p:dataTable>
 			</h:panelGrid>
 			<p:separator />
-			<p:commandButton value="INICIAR ATENDIMENTO" process="@this" rendered="#{atendimentoBean.registro.tipo == 'ENTRADA'}" actionListener="#{atendimentoBean.inicioAtendimento(atendimentoBean.registro, 'INICIADO')}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgEditRegistroEntrada').hide()" />
+			<p:commandButton value="INICIAR ATENDIMENTO" process="@this" rendered="#{atendimentoBean.registro.tipo == 'ENTRADA' and atendimentoBean.config.ativarProgramador and loginBean.usuarioLogado.permissoes.programador}"  oncomplete="PF('dlgProgramadorInicio').show()" />
+			<p:commandButton value="INICIAR ATENDIMENTO" process="@this" rendered="#{atendimentoBean.registro.tipo == 'ENTRADA' and !atendimentoBean.config.ativarProgramador or !loginBean.usuarioLogado.permissoes.programador}" actionListener="#{atendimentoBean.inicioAtendimento(atendimentoBean.registro, 'INICIADO')}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgEditRegistroEntrada').hide()"/>
 		</h:form>
+	</p:dialog>
+	
+	
+	<p:dialog widgetVar="dlgProgramadorInicio" width="450" appendTo="@(body)" modal="true" header="CÓDIGO DO PROGRAMADOR">
+		<h:form>
+			<p:outputLabel value="CÓDIGO: "/>
+			<p:password value="#{atendimentoBean.codigoProg}"/>
+			<p:separator/>
+			<p:commandButton value="SALVAR" actionListener="#{atendimentoBean.inicioAtendimento(atendimentoBean.registro, 'INICIADO')}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgEditRegistroEntrada').hide(), PF('dlgProgramadorInicio').hide() "/>
+		</h:form>	
 	</p:dialog>
 </h:body>
 </html>
