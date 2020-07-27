@@ -323,4 +323,22 @@ public class LiberacaoDao {
 			session.close();
 		}
 	}
+	
+	
+
+	public Liberacao consultarPorIdDeEntrada(Long id) {
+		Liberacao lib = new Liberacao();
+		session = getSession();
+		try {
+			Criteria consulta = session.createCriteria(Liberacao.class);
+			consulta.createAlias("entrada", "e");
+			consulta.add(Restrictions.eq("e.id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			lib = (Liberacao) consulta.uniqueResult();
+			return lib;
+		} catch (Exception ex) {
+			throw ex;
+		} finally {
+			session.close();
+		}
+	}
 }

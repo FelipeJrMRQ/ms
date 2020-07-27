@@ -67,7 +67,7 @@ public class RegistroController {
 	 * 
 	 * @param registro
 	 */
-	public void recusarLiberacaoSaida(Registro registro) {
+	public synchronized void recusarLiberacaoSaida(Registro registro) {
 		Liberacao lib = getLiberacaoController().consultarPeloIdDeSaida(registro.getId());
 		Registro entrada = registroDao.consultaRegistroPeloId(lib.getEntrada().getId());
 		try {
@@ -80,7 +80,7 @@ public class RegistroController {
 		}
 	}
 
-	public void registrarSaida(Registro registro, List<NotaRegistro> notas, String placaVeiculo, String tipoRegistro) {
+	public synchronized void registrarSaida(Registro registro, List<NotaRegistro> notas, String placaVeiculo, String tipoRegistro) {
 		try {
 			registro.setData(HoraDaInternet.getHora());
 			registro.setUsuario(PermissoesUsuarios.getUsuario());
@@ -93,7 +93,7 @@ public class RegistroController {
 		}
 	}
 
-	public Registro geradorDeRegistro(String tipo, String status, List<NotaRegistro> notas, String placaVeiculo, Empresa empresa, Visitante visitante) {
+	public synchronized Registro geradorDeRegistro(String tipo, String status, List<NotaRegistro> notas, String placaVeiculo, Empresa empresa, Visitante visitante) {
 		try {
 			Registro r = new Registro();
 			r.setPlacaVeiculo(placaVeiculo);
@@ -164,12 +164,11 @@ public class RegistroController {
 			registro.setUsuario(PermissoesUsuarios.getUsuario());
 			Registro regLiberacao = new Registro();
 			regLiberacao = registroDao.salvar(registro);
-			if (getLiberacaoController().gerarRegistroDeLiberacao(atendimento, regLiberacao)) {
-				return true;
-			} else {
-				registroDao.excluir(regLiberacao);
-				return false;
-			}
+			/**
+			 * O Erro da liberação duplicada parti daqui
+			 */
+			getLiberacaoController().gerarRegistroDeLiberacao(atendimento, regLiberacao);
+			return true;
 		} catch (Exception ex) {
 			throw new Exception("Erro ao tentar gerar registro de saída!");
 		}

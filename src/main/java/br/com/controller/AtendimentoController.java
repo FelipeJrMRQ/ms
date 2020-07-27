@@ -15,6 +15,7 @@ import br.com.ms.model.Usuario;
 import br.com.ms.util.CalculaIntervadoDatas;
 import br.com.ms.util.HoraDaInternet;
 import br.com.ms.util.PermissoesUsuarios;
+import br.com.ms.util.Seguranca;
 
 public class AtendimentoController {
 
@@ -29,7 +30,6 @@ public class AtendimentoController {
 	private ConfiguracaoSistemaController configController;
 
 	public void consultaTabelasCompartilhadas() {
-		//System.out.println("AtendimentoController");
 		SharedListBean.consultaRegistrosAguardando();
 		SharedListBean.consultaAtendimentosIni();
 	}
@@ -95,7 +95,7 @@ public class AtendimentoController {
 		}
 	}
 
-	public void iniciarAtendimento(Registro registro, String status, String codigoProg) throws Exception {
+	public synchronized void iniciarAtendimento(Registro registro, String status, String codigoProg) throws Exception {
 		try {
 			atendimentoDao.consultarAtendimentoPorRegistro(registro.getId());
 			registro = registroDao.consultaRegistroPeloId(registro.getId());
@@ -116,6 +116,8 @@ public class AtendimentoController {
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			limpar();
 		}
 	}
 
@@ -132,7 +134,7 @@ public class AtendimentoController {
 			if (getRegistroControler().gerarRegistroSaida(at, notas)) {
 				at.setData_fim(HoraDaInternet.getHora());
 				at.setStatus(FINALIZADO);
-				if (configController.consultarConfiguracao().isAtivarProgramador()) {
+				if (Seguranca.getConfig().isAtivarProgramador()) {
 					if(PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
 						atendimento.setUsuario_inicio(consultarProgramadorPorCodigo(codigoProg));
 					}
@@ -145,10 +147,12 @@ public class AtendimentoController {
 			}
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
+		}finally {
+			limpar();
 		}
 	}
 
-	public void desfazerAtendimento(Atendimento atendimento, Registro registro) {
+	public synchronized void desfazerAtendimento(Atendimento atendimento, Registro registro) {
 		try {
 			atendimento = atendimentoDao.consultarAtentimentoPorId(atendimento.getId());
 			registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
@@ -158,15 +162,21 @@ public class AtendimentoController {
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;
+		}finally {
+			limpar();
 		}
 	}
 
-	public void alterarAtendimento(Atendimento atendimento) {
+	public synchronized void alterarAtendimento(Atendimento atendimento) {
 		try {
 			atendimentoDao.alterarAtendimento(atendimento);
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	public void limpar() {
+		atendimento = new Atendimento();
 	}
 
 }

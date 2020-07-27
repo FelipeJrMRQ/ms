@@ -157,7 +157,7 @@ public class RegistroBean implements Serializable {
 		try {
 			visitantesNome = visitanteController.consultaPorNome(this.nome);
 		} catch (Exception erro) {
-			Messages.addGlobalError(erro.getCause().getMessage());
+			Messages.addGlobalError(erro.getMessage());
 		}
 	}
 
@@ -172,7 +172,7 @@ public class RegistroBean implements Serializable {
 			Messages.addGlobalInfo("Saída registrada com sucesso!");
 			limpar();
 		} catch (Exception ex) {
-			Messages.addGlobalError(ex.getCause().getMessage());
+			Messages.addGlobalError(ex.getMessage());
 		}
 	}
 

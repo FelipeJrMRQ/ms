@@ -5,22 +5,21 @@ import br.com.ms.dao.ConfiguracaoSistemaDao;
 import br.com.ms.model.ConfiguracaoSistema;
 import br.com.ms.util.ScheduleUtil;
 
-
-
 public class ConfiguracaoSistemaController implements Serializable {
 
 	private static final long serialVersionUID = 145018023148714228L;
 	private ConfiguracaoSistemaDao configDao;
+	private static boolean status = true;
 
 	public ConfiguracaoSistemaController() {
-		System.out.println("Configuração Controller");
 		configDao = new ConfiguracaoSistemaDao();
 	}
-	
-	public void iniciarAtualizacaoDeNotas()  {
-		if(consultarConfiguracao().isAtivarProgramador()) {
+
+	public void iniciarAtualizacaoDeNotas() {
+		if (status) {
 			try {
 				ScheduleUtil.start();
+				status = false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

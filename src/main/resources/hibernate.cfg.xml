@@ -6,11 +6,11 @@
 
 		<!-- Confugurações de conexao com o banco de dadados -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.152:3306/bd_teste?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
+		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.152:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
 
 		<!-- ?useTimezone=true&amp;serverTimezone=GMT-3 -->
-		<property name="hibernate.connection.username"></property>
-		<property name="hibernate.connection.password"></property>
+		<property name="hibernate.connection.username">felipe</property>
+		<property name="hibernate.connection.password">*cromart2*</property>
 
 		<!-- JDBC connection pool (use the built-in) -->
 		<!-- <property name="hibernate.connection.pool_size">1</property> -->

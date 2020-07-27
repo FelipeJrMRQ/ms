@@ -23,9 +23,6 @@ public class VisitanteController implements Serializable {
 	
 	private List<Visitante> visitantes;
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public VisitanteController() {
@@ -59,8 +56,6 @@ public class VisitanteController implements Serializable {
 			throw ex;
 		}
 	}
-
-	
 
 	/**
 	 * Verifica se o prestador de serviço possuir permissão de acesso as

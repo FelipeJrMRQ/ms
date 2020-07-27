@@ -35,13 +35,14 @@ public class LiberacaoController {
 	 * @param r
 	 * @throws Exception
 	 */
-	public synchronized boolean gerarRegistroDeLiberacao(Atendimento atendimento, Registro saida) throws Exception {
+	public synchronized void gerarRegistroDeLiberacao(Atendimento atendimento, Registro saida) throws Exception {
 		try {
 			this.entrada = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 			this.saida = registroDao.consultaRegistroPeloId(saida.getId());
 			new LiberacaoRepository(this.entrada, this.saida, atendimento, PermissoesUsuarios.getUsuario());
-			return true;
 		} catch (Exception e) {
+			this.saida = registroDao.consultaRegistroPeloId(saida.getId());
+			registroDao.excluir(this.saida);
 			throw e;
 		}
 	}
