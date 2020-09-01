@@ -14,6 +14,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
+import br.com.controller.LiberacaoController;
+import br.com.ms.model.Atendimento;
 import br.com.ms.model.NotaRegistro;
 import br.com.ms.model.Registro;
 import br.com.ms.model.Visitante;
@@ -44,6 +46,25 @@ public class RegistroDao implements Serializable{
 			}
 			registro = (Registro) session.merge(registro);
 			transaction.commit();
+			return registro;
+		} catch (Exception erro) {
+			transaction.rollback();
+			throw erro;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Registro salvar(Registro registro, Atendimento atendimento) throws Exception {
+		session = getSession();
+		try {
+			transaction = session.beginTransaction();
+			for (NotaRegistro nfe : registro.getNotas()) {
+				nfe.setRegistro(registro);
+			}
+			registro = (Registro) session.merge(registro);
+			transaction.commit();
+			getLiberacaoController().gerarRegistroDeLiberacao(atendimento, registro);
 			return registro;
 		} catch (Exception erro) {
 			transaction.rollback();
@@ -403,5 +424,10 @@ public class RegistroDao implements Serializable{
 		} finally {
 			session.close();
 		}
+	}
+	
+	private LiberacaoController getLiberacaoController() {
+		LiberacaoController controller = new LiberacaoController();
+		return controller;
 	}
 }

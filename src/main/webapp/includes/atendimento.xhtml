@@ -111,8 +111,8 @@
 		<div style="clear: both;"></div>
 		<br />
 		<p:commandButton value="Finalizar" process="@this" actionListener="#{atendimentoBean.finalizarAtendimento()}" update=":mensagem :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgNotasLiberacao').hide()" rendered="#{!atendimentoBean.config.ativarProgramador or !loginBean.usuarioLogado.permissoes.programador}"/>
-		<p:commandButton value="Finalizar BB" process="@this"  update=":mensagem :tbView:frmAtendimento:tbAtendimento" oncomplete="PF('dlgProgramadorFim').show()"  rendered="#{atendimentoBean.config.ativarProgramador and loginBean.usuarioLogado.permissoes.programador}" />
-		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limpar()}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao" onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
+		<p:commandButton value="Finalizar" process="@this"  update=":mensagem :tbView:frmAtendimento:tbAtendimento :tbView:dlgProgramador" oncomplete="PF('dlgProgramadorFim').show()"  rendered="#{atendimentoBean.config.ativarProgramador and loginBean.usuarioLogado.permissoes.programador}" />
+		<p:commandButton value="Fechar" actionListener="#{atendimentoBean.limpar()}" update=":tbView:frmNotaLiberacao :tbView:tbNotasLiberacao :tbView:dlgProgramador " onclick="PF('dlgNotasLiberacao').hide()" style="margin-left:10px" />
 	</div>
 </p:dialog>
 
@@ -122,12 +122,12 @@
 	<p:commandButton value="NÂO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 </p:confirmDialog>
 
-<p:dialog widgetVar="dlgProgramadorFim" width="450" appendTo="@(body)" modal="true" header="CÓDIGO DO PROGRAMADOR">
+<p:dialog widgetVar="dlgProgramadorFim" width="450" appendTo="@(body)" modal="true" id="dlgProgramador" header="CÓDIGO DO PROGRAMADOR">
 	<h:form>
 		<p:outputLabel value="CÓDIGO: " />
 		<p:password value="#{atendimentoBean.codigoProg}" />
 		<p:separator />
-		<p:commandButton value="SALVAR" actionListener="#{atendimentoBean.finalizarAtendimento()}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento" onclick="PF('dlgProgramadorFim').hide(), PF('dlgNotasLiberacao').hide()" />
+		<p:commandButton value="SALVAR" actionListener="#{atendimentoBean.finalizarAtendimento()}" action="#{consultaRegistroBean.limpar}" update=":mensagem :tbView:tbRegistrosPrestadores :tbView:frmAtendimento:tbAtendimento :tbView:dlgProgramador" onclick="PF('dlgProgramadorFim').hide(), PF('dlgNotasLiberacao').hide()" />
 	</h:form>
 </p:dialog>
 

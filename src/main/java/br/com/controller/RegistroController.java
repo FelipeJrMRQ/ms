@@ -162,12 +162,7 @@ public class RegistroController {
 			registro.setStatus("FINALIZADO");
 			registro.setTipo("LIBERADO");
 			registro.setUsuario(PermissoesUsuarios.getUsuario());
-			Registro regLiberacao = new Registro();
-			regLiberacao = registroDao.salvar(registro);
-			/**
-			 * O Erro da liberação duplicada parti daqui
-			 */
-			getLiberacaoController().gerarRegistroDeLiberacao(atendimento, regLiberacao);
+			registroDao.salvar(registro, atendimento);
 			return true;
 		} catch (Exception ex) {
 			throw new Exception("Erro ao tentar gerar registro de saída!");

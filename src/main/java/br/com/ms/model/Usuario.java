@@ -82,7 +82,7 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCodigoProgramador(String codigoProgramador) {
-		this.codigoProgramador = codigoProgramador;
+		this.codigoProgramador = codigoProgramador.toUpperCase();
 	}
 
 	@Override

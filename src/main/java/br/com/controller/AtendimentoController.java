@@ -3,8 +3,6 @@ package br.com.controller;
 import java.util.Date;
 import java.util.List;
 
-import org.omnifaces.util.Messages;
-
 import br.com.ms.bean.SharedListBean;
 import br.com.ms.dao.AtendimentoDao;
 import br.com.ms.dao.RegistroDao;
@@ -104,19 +102,21 @@ public class AtendimentoController {
 			atendimento.setData_fim(null);
 			atendimento.setStatus(INICIADO);
 			atendimento.setRegistro(registro);
-				if (configController.consultarConfiguracao().isAtivarProgramador()) {
-					if(PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
-						atendimento.setUsuario_inicio(consultarProgramadorPorCodigo(codigoProg));
-					}
+			if (configController.consultarConfiguracao().isAtivarProgramador()) {
+				if (PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
+					atendimento.setUsuario_inicio(consultarProgramadorPorCodigo(codigoProg));
 				}else {
-					atendimento.setUsuario_fim(PermissoesUsuarios.getUsuario());
+					atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
 				}
+			} else {
+				atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
+			}
 			registro.setStatus(INICIADO);
 			atendimentoDao.salvarAtendimento(atendimento, registro);
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			limpar();
 		}
 	}
@@ -129,25 +129,28 @@ public class AtendimentoController {
 	 * @param event
 	 * @throws Exception
 	 */
-	public synchronized void finalizaAtendimento(Atendimento at, List<NotaRegistro> notas, String codigoProg) {
+	public synchronized void finalizaAtendimento(Atendimento at, List<NotaRegistro> notas, String codigoProg) throws Exception {
 		try {
+			if (Seguranca.getConfig().isAtivarProgramador()) {
+				if (PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
+					at.setUsuario_fim(consultarProgramadorPorCodigo(codigoProg));
+				}else {
+					at.setUsuario_fim(PermissoesUsuarios.getUsuario());
+				}
+			} else {
+				at.setUsuario_fim(PermissoesUsuarios.getUsuario());
+			}
 			if (getRegistroControler().gerarRegistroSaida(at, notas)) {
 				at.setData_fim(HoraDaInternet.getHora());
 				at.setStatus(FINALIZADO);
-				if (Seguranca.getConfig().isAtivarProgramador()) {
-					if(PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
-						atendimento.setUsuario_inicio(consultarProgramadorPorCodigo(codigoProg));
-					}
-				} else {
-					atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
-				}
 				atendimentoDao.alterarAtendimento(at, at.getRegistro());
-				SharedListBean.consultaLiberadosSaida();
-				consultaTabelasCompartilhadas();
 			}
+
+			SharedListBean.consultaLiberadosSaida();
+			consultaTabelasCompartilhadas();
 		} catch (Exception erro) {
-			Messages.addGlobalError(erro.getMessage());
-		}finally {
+			throw erro;
+		} finally {
 			limpar();
 		}
 	}
@@ -162,7 +165,7 @@ public class AtendimentoController {
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;
-		}finally {
+		} finally {
 			limpar();
 		}
 	}
@@ -174,7 +177,7 @@ public class AtendimentoController {
 			throw e;
 		}
 	}
-	
+
 	public void limpar() {
 		atendimento = new Atendimento();
 	}

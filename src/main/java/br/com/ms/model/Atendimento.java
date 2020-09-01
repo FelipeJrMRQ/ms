@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+
 public class Atendimento implements Serializable {
 
 	private static final long serialVersionUID = 3212929252039535118L;
@@ -43,7 +44,7 @@ public class Atendimento implements Serializable {
 
 	@ManyToOne
 	private Usuario usuario_inicio;
-	
+
 	@ManyToOne
 	private Usuario usuario_fim;
 

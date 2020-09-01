@@ -176,7 +176,7 @@ public class AtendimentoBean implements Serializable {
 
 	public void consultarAtendimentoPorEmpresa() {
 		try {
-			atendimentoController.consultarAtendimentoPorEmpresa(data, dataFim, nomeEmpresa);
+			atendimentos = atendimentoController.consultarAtendimentoPorEmpresa(data, dataFim, nomeEmpresa);
 		} catch (Exception e) {
 			Messages.addGlobalError("Não foi possivel realizar esta consulta");
 		}
@@ -189,7 +189,7 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public synchronized void consultaAtendimentosIni() {
 		try {
-			atendimentoController.consultarAtendimento("INICIADO");
+			 atendimentos = atendimentoController.consultarAtendimento("INICIADO");
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getCause().getMessage());
 		}
@@ -204,7 +204,7 @@ public class AtendimentoBean implements Serializable {
 		atendimentos = new ArrayList<>();
 		registro = new Registro();
 		notas = new ArrayList<>();
-		codigoProg = "";
+		this.codigoProg = "";
 	}
 
 	public String getNomeEmpresa() {
