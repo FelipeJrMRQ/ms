@@ -16,6 +16,7 @@ import br.com.controller.LiberacaoController;
 import br.com.ms.dao.MotivoEdicaoRegistroDao;
 import br.com.ms.model.Liberacao;
 import br.com.ms.model.MotivoEdicaoRegistro;
+import br.com.ms.model.Usuario;
 import br.com.ms.util.AutenticarServidorNotas;
 import br.com.ms.util.CalculaIntervadoDatas;
 import br.com.ms.util.HoraDaInternet;
@@ -37,6 +38,7 @@ public class LiberacaoBean implements Serializable {
 	String tempo;
 	String tempoAtendimento;
 	private boolean flag;
+	private Usuario user;
 	
 	private LiberacaoController liberacaoController;
 
@@ -50,7 +52,7 @@ public class LiberacaoBean implements Serializable {
 		liberacoes = new ArrayList<>();
 		tipoConsulta = "EMPRESA";
 		flag = true;
-		
+		user = new Usuario();
 		liberacaoController = new LiberacaoController();
 	}
 
@@ -129,6 +131,7 @@ public class LiberacaoBean implements Serializable {
 		Liberacao lib = new Liberacao();
 		lib = (Liberacao) event.getComponent().getAttributes().get("liberacaoSelecionada");
 		liberacao = liberacaoController.consultaPorId(lib.getId());
+		user = lib.getUsuario();
 		motivoEntrada = motivoDao.consultar(lib.getEntrada().getId());
 		motivoSaida = motivoDao.consultar(lib.getSaida().getId());
 		tempo = CalculaIntervadoDatas.intevalo(liberacao.getEntrada().getData(), liberacao.getSaida().getData());
@@ -228,4 +231,13 @@ public class LiberacaoBean implements Serializable {
 	public void setFlag(boolean flag) {
 		this.flag = flag;
 	}
+
+	public Usuario getUser() {
+		return user;
+	}
+
+	public void setUser(Usuario user) {
+		this.user = user;
+	}
+	
 }

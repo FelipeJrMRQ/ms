@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-//@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = -3279003996421078158L;
@@ -111,5 +110,7 @@ public class Usuario implements Serializable {
 	public String toString() {
 		return "Usuario [codigo=" + codigo + "]";
 	}
+
+
 
 }
