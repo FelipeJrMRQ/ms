@@ -39,7 +39,7 @@ public class Liberacao implements Serializable{
 	@ManyToOne(cascade ={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
 	private Atendimento atendimento;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Usuario usuario;
 
 	public long getId() {

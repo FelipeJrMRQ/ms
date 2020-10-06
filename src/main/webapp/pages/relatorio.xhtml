@@ -157,24 +157,24 @@
 					<f:facet name="header">
 						<p:outputLabel value="REGISTRO DE LIBERAÇÃO:  " />
 					</f:facet>
-					<p:column headerText="ID" width="50" styleClass="align">
+					<p:column headerText="ID" width="50" styleClass="align" sortBy="#{registro.id}">
 						<p:outputLabel value="#{registro.id}" />
 					</p:column>
-					<p:column headerText="NOME">
+					<p:column headerText="NOME" sortBy="#{registro.entrada.prestadorDeServico.nome}">
 						<p:outputLabel value="#{registro.entrada.prestadorDeServico.nome}" />
 					</p:column>
-					<p:column headerText="EMPRESA">
-						<p:outputLabel value="#{registro.entrada.empresa.nome}" />
+					<p:column headerText="EMPRESA" sortBy="#{registro.entrada.empresa.nome}">
+						<p:outputLabel value="#{registro.entrada.empresa.nome}"/>
 					</p:column>
 					<p:column headerText="PLACA VEÍCULO" width="70">
 						<p:outputLabel value="#{registro.entrada.placaVeiculo}" />
 					</p:column>
-					<p:column headerText="ENTRADA" width="100">
+					<p:column headerText="ENTRADA" width="100" sortBy="#{registro.entrada.data}">
 						<h:outputLabel value="#{registro.entrada.data}">
 							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
 						</h:outputLabel>
 					</p:column>
-					<p:column headerText="SAÍDA" width="100">
+					<p:column headerText="SAÍDA" width="100" sortBy="#{registro.saida.data}">
 						<h:outputLabel value="#{registro.saida.data}">
 							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
 						</h:outputLabel>
@@ -212,21 +212,21 @@
 					<f:facet name="header">
 						<p:outputLabel value="REGISTRO DE LIBERAÇÃO" />
 					</f:facet>
-					<p:column headerText="ID" width="20">
+					<p:column headerText="ID" width="20" sortBy="#{registro.id}">
 						<p:outputLabel value="#{registro.id}" />
 					</p:column>
-					<p:column headerText="NOME">
+					<p:column headerText="NOME" sortBy="#{registro.entrada.prestadorDeServico.nome}">
 						<p:outputLabel value="#{registro.entrada.prestadorDeServico.nome}" />
 					</p:column>
 					<p:column headerText="PLACA VEÍCULO" width="70">
 						<p:outputLabel value="#{registro.entrada.placaVeiculo}" />
 					</p:column>
-					<p:column headerText="ENTRADA" width="100">
+					<p:column headerText="ENTRADA" width="100" sortBy="#{registro.entrada.data}">
 						<h:outputLabel value="#{registro.entrada.data}">
 							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
 						</h:outputLabel>
 					</p:column>
-					<p:column headerText="SAIDA" width="100">
+					<p:column headerText="SAIDA" width="100" sortBy="#{registro.saida.data}">
 						<h:outputLabel value="#{registro.saida.data}">
 							<f:convertDateTime pattern="dd/MM/YY HH:mm" />
 						</h:outputLabel>

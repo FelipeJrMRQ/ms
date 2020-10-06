@@ -30,7 +30,7 @@ public class MotivoEdicaoRegistro  implements Serializable{
 
 	public MotivoEdicaoRegistro( String motivo, Registro registro, Usuario responsavel) {
 		super();
-		this.motivo = motivo;
+		this.motivo = motivo.toUpperCase();
 		this.registro = registro;
 		this.responsavel = responsavel;
 	}

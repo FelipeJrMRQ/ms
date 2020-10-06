@@ -29,7 +29,7 @@ public class LiberacaoVisitante implements Serializable {
 	@OneToOne(fetch = FetchType.EAGER)
 	private Registro saida;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	private Usuario usuario;
 
 	public LiberacaoVisitante() {

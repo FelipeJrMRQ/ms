@@ -145,17 +145,19 @@ public class EdicaoRegistroBean implements Serializable {
 	 * realiza o salvamento de um motivo de edição
 	 * 
 	 * @param registro
+	 * @throws Exception 
 	 */
-	private void salvarMotivo(Registro registro) {
+	private void salvarMotivo(Registro registro) throws Exception {
 		try {
-			if (motivo == null) {
-				motivo = new MotivoEdicaoRegistro(strMotivo, registro, PermissoesUsuarios.getUsuario());
-				motivoController.salvar(motivo);
-			} else {
-				motivo.setMotivo(strMotivo);
-				motivoController.salvar(motivo);
+			if(motivo == null) {
+				if(strMotivo.trim().isEmpty()) {
+					throw new Exception("O Motivo não pode estar em branco");
+				}else {
+					motivo = new MotivoEdicaoRegistro(strMotivo, registro, PermissoesUsuarios.getUsuario());
+					motivoController.salvar(motivo);
+				}
 			}
-		} catch (Exception e) {
+		}catch (Exception e) {
 			throw e;
 		}
 	}

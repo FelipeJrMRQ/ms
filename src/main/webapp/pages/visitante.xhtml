@@ -156,8 +156,8 @@
 					<p:selectBooleanButton value="#{visitanteBean.visitante.status}" onLabel="ATIVO" offLabel="INATIVO" onIcon="ui-icon-check" offIcon="ui-icon-close" />
 				</h:panelGrid>
 				<br />
-				<p:inputText size="50" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" />
-				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" update="dlgEditCadEmpresa" oncomplete="PF('dlgEditCadEmpresa').show()" />
+				<p:inputText size="50" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" placeholder="Consultar Empresa"/>
+				<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" update="dlgEditCadEmpresa" oncomplete="PF('dlgEditCadEmpresa').show()"/>
 					<p:selectOneRadio value="#{visitanteBean.tipo}">
 						<f:selectItem itemLabel="VISITANTE" itemValue="VISITANTE" />
 						<f:selectItem itemLabel="PRESTADOR" itemValue="PRESTADOR" />
