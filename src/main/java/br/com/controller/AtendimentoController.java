@@ -145,7 +145,6 @@ public class AtendimentoController {
 				at.setStatus(FINALIZADO);
 				atendimentoDao.alterarAtendimento(at, at.getRegistro());
 			}
-
 			SharedListBean.consultaLiberadosSaida();
 			consultaTabelasCompartilhadas();
 		} catch (Exception erro) {

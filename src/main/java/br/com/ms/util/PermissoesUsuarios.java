@@ -10,9 +10,13 @@ public class PermissoesUsuarios {
 	private static LoginBean loginBean;
 	
 	public static Usuario getUsuario() {
-		loginBean = Faces.getSessionAttribute("loginBean");
-		usuario = loginBean.getUsuarioLogado();
-		return usuario;
+		try {
+			loginBean = Faces.getSessionAttribute("loginBean");
+			usuario = loginBean.getUsuarioLogado();
+			return usuario;
+		}catch (Exception e) {
+			throw e;
+		}
 	}
 	
 }
