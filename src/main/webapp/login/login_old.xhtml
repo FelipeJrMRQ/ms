@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>MS</title>
+	<link rel="shortcut icon" href="favicon.ico" />
+		<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body>
+	<p:growl id="msgErro"/>
+	<div id="content-login" title="Login - Área restrita">
+			<p:dialog header="Login - Área restrita" id="dialog" minWidth="350" appendTo="@(body)" width="750" height="300" modal="true" closable="false" position="center" showEffect="slide" draggable="true" resizable="false" visible="true" style="font-size:13px">
+			<div>
+				<div class="content-panel-login">
+					<h:form>
+						<h:panelGrid columns="1">
+							<p:column>
+								<div class="ui-g-12 ui-md-4">
+									<div class="ui-inputgroup">
+										<span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
+										<h:inputText required="true" requiredMessage="Digite o nome" value="#{loginBean.usuario.nome}" label="felipe" style="text-transform:uppercase"/>
+									</div>
+								</div>
+							</p:column>
+							<p:column>
+								<div class="ui-g-12 ui-md-4">
+									<div class="ui-inputgroup">
+										<span class="ui-inputgroup-addon"><i class="fa fa-key"></i></span>
+										<h:inputSecret value="#{loginBean.usuario.senha}" required="true" requiredMessage="Digite a senha"/>
+									</div>
+								</div>
+							</p:column>
+							<p:column>
+								<p:commandButton value="Entrar" update="msgErro" actionListener="#{loginBean.autenticar}" style="width:210px;margin-left:7px;" />
+							</p:column>
+						</h:panelGrid>
+					</h:form>
+				</div>
+			</div>
+			<f:facet name="footer">
+				<div>
+					<div id="developer">
+						<p:outputLabel value="By Felipe Marques " />
+					</div>
+					<div id="version">
+						<p:outputLabel value="Versão 1.1.7" />
+					</div>
+				</div>
+				<div style="clear: both">
+				</div>
+			</f:facet>
+		</p:dialog>
+		</div>
+</h:body>
+</html>

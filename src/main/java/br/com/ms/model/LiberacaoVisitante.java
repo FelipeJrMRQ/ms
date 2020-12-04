@@ -9,10 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(uniqueConstraints = {
+	@UniqueConstraint(name = "entrada", columnNames = {"entrada_id"})
+})
 public class LiberacaoVisitante implements Serializable {
 
 	private static final long serialVersionUID = 8117259241395868712L;
@@ -23,9 +28,11 @@ public class LiberacaoVisitante implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataLiberacao;
 
+	
 	@OneToOne(fetch = FetchType.EAGER)
 	private Registro entrada;
 
+	
 	@OneToOne(fetch = FetchType.EAGER)
 	private Registro saida;
 

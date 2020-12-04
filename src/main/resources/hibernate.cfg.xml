@@ -40,7 +40,7 @@
 <!-- 		<property name="hibernate.format_sql">true</property> -->
 
 		<!-- Cria as tabelas no banco de dados -->
-<!-- 		<property name="hibernate.hbm2ddl.auto">update</property> -->
+		<property name="hibernate.hbm2ddl.auto">update</property>
 
 		<!-- <property name="hibernate.hbm2ddl.import_files">/WEB-INF/sql/usuario.sql</property> -->
 

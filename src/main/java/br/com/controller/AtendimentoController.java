@@ -148,6 +148,7 @@ public class AtendimentoController {
 			SharedListBean.consultaLiberadosSaida();
 			consultaTabelasCompartilhadas();
 		} catch (Exception erro) {
+			limpar();
 			throw erro;
 		} finally {
 			limpar();

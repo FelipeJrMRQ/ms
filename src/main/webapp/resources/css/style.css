@@ -16,17 +16,6 @@
 	float: left;
 }
 
-
-#dialog{
-	height: 610px;
-	background-image: url("./../img/fundo_login.jpg");
-	background-repeat:no-repeat;
-}
-
-#content-panel-login{
-	
-}
-
 body {
 	background-color: #eeeeee;
 	font-size: 12px
@@ -364,7 +353,6 @@ inputtext {
 	clear: both;
 }
 
-/* CONTAINER DE LOGIN */
 
 #developer {
 	float: left;

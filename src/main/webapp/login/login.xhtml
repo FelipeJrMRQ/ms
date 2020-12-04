@@ -5,53 +5,68 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 	<title>MS</title>
 	<link rel="shortcut icon" href="favicon.ico" />
-		<h:outputStylesheet library="css" name="style.css" />
+	<h:outputStylesheet library="css" name="bootstrap.css" />
+	<h:outputStylesheet library="css" name="sb-admin-2.min.css" />
+	<link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+
 </h:head>
 
-<h:body>
-	<p:growl id="msgErro"/>
-	<div id="content-login" title="Login - Área restrita">
-			<p:dialog header="Login - Área restrita" id="dialog" minWidth="350" appendTo="@(body)" width="750" height="300" modal="true" closable="false" position="center" showEffect="slide" draggable="true" resizable="false" visible="true" style="font-size:13px">
-			<div>
-				<div class="content-panel-login">
-					<h:form>
-						<h:panelGrid columns="1">
-							<p:column>
-								<div class="ui-g-12 ui-md-4">
-									<div class="ui-inputgroup">
-										<span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
-										<p:inputText required="true" requiredMessage="Digite o nome" value="#{loginBean.usuario.nome}" label="felipe" style="text-transform:uppercase"/>
+<p:growl id="msgErro"/>
+<h:body styleClass="bg-gradient-primary">
+	
+	<div class="container">
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+
+			<div class="col-xl-10 col-lg-12 col-md-9">
+				<div class="text-center mt-5 text-light">
+					<h1>&#174; My Security</h1>
+					<hr class="mb-0 p-0 bg-light"></hr>
+				</div>
+				<div class="card o-hidden border-0 shadow my-5">
+					<div class="card-body p-0 ">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+							<div class="col-lg-6 d-none d-lg-block bg-login-image "></div>
+
+							<div class="col-lg-6">
+								<div class="p-5">
+									<div class="text-center">
+										<h1 class="h4 text-gray-900 mb-4">Bem vindo!</h1>
 									</div>
+									<h:form styleClass="user">
+										<div class="form-group">
+											<h:inputText style="text-transform:uppercase" autocomplete="off" value="#{loginBean.usuario.nome}" styleClass="form-control form-control-user" id="exampleInputEmail" placeholder="Enter Email Address..." />
+										</div>
+										<div class="form-group">
+											<h:inputSecret value="#{loginBean.usuario.senha}" styleClass="form-control form-control-user" id="exampleInputPassword" placeholder="Password" />
+										</div>
+
+										<h:commandButton class="btn btn-dark btn-user btn-block" value="Login" actionListener="#{loginBean.autenticar()}" />
+									</h:form>
 								</div>
-							</p:column>
-							<p:column>
-								<div class="ui-g-12 ui-md-4">
-									<div class="ui-inputgroup">
-										<span class="ui-inputgroup-addon"><i class="fa fa-key"></i></span>
-										<p:password value="#{loginBean.usuario.senha}" required="true" requiredMessage="Digite a senha"/>
-									</div>
-								</div>
-							</p:column>
-							<p:column>
-								<p:commandButton value="Entrar" update="msgErro" actionListener="#{loginBean.autenticar}" style="width:210px;margin-left:7px;" />
-							</p:column>
-						</h:panelGrid>
-					</h:form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="bg-light"></hr>
+				<div class="footer text-center mt-1 p-0 text-light">
+					<i class="float-left"><a href="mailto:felipe_marquesjr@hotmail.com" class="text-light">By Felipe Marques</a></i><i class="float-right">Versão 1.0.8</i>
 				</div>
 			</div>
-			<f:facet name="footer">
-				<div>
-					<div id="developer">
-						<p:outputLabel value="By Felipe Marques " />
-					</div>
-					<div id="version">
-						<p:outputLabel value="Versão 1.1.7" />
-					</div>
-				</div>
-				<div style="clear: both">
-				</div>
-			</f:facet>
-		</p:dialog>
 		</div>
+
+	</div>
+
+
+	<!-- Bootstrap core JavaScript-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
+	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- Core plugin JavaScript-->
+	<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script src="sb-admin-2.min.js"></script>
 </h:body>
 </html>
