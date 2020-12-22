@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <ui:composition template="/template/template2.xhtml">
 	<ui:define name="conteudo">
@@ -7,17 +11,22 @@
 		<p:growl id="mensagem" showDetail="true" showSummary="false" />
 
 		<h:form>
-			<p:poll interval="5" update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" />
+			<p:poll interval="5"
+				update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" />
 		</h:form>
 
 		<h:form>
-			<p:poll interval="5" update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" listener="#{registroBean.calculaPessoasPresentes()}" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}" />
+			<p:poll interval="5"
+				update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante"
+				listener="#{registroBean.calculaPessoasPresentes()}"
+				rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}" />
 		</h:form>
 
 		<p:tabView id="tbView" style="border:0" activeIndex="0">
 
 			<!-- TAB RESPONSÁVEL PELOS REGISTROS DE ENTRADA E SAÍDA -->
-			<p:tab title="Entrada - Saída" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}">
+			<p:tab title="Entrada - Saída"
+				rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}">
 
 				<div>
 
@@ -25,165 +34,215 @@
 					<ui:include src="/includes/dashboard.xhtml" />
 
 					<div id="area1">
+							<!-- DEFINIÇÃO DO TIPO DE CONSULTA -->
+							<fieldset>
+								<legend>Tipo de Consulta</legend>
+								<h:form id="frmTipoDeConsulta">
+									<h:panelGrid>
+										<p:selectOneRadio value="#{registroBean.tipoDeConsulta}">
+											<f:selectItem itemLabel="NOME: " itemValue="NOME" />
+											<f:selectItem itemLabel="CÓDIGO" itemValue="ID" />
+											<f:selectItem itemLabel="CPF: " itemValue="CPF" />
+											<f:selectItem itemLabel="RG" itemValue="RG" />
+											<p:ajax listener="#{registroBean.tipoDeConsulta()}"
+												update=":tbView:frmConsultaPrestador :tbView:frmConsultaNome :tbView:frmConsultaRg :tbView:frmConsultaId :mensagem" />
+										</p:selectOneRadio>
+									</h:panelGrid>
+								</h:form>
 
-						<!-- DEFINIÇÃO DO TIPO DE CONSULTA -->
-						<fieldset>
-							<legend>Tipo de Consulta</legend>
-							<h:form id="frmTipoDeConsulta">
-								<h:panelGrid>
-									<p:selectOneRadio value="#{registroBean.tipoDeConsulta}">
-										<f:selectItem itemLabel="NOME: " itemValue="NOME" />
-										<f:selectItem itemLabel="CÓDIGO" itemValue="ID" />
-										<f:selectItem itemLabel="CPF: " itemValue="CPF" />
-										<f:selectItem itemLabel="RG" itemValue="RG" />
-										<p:ajax listener="#{registroBean.tipoDeConsulta()}" update=":tbView:frmConsultaPrestador :tbView:frmConsultaNome :tbView:frmConsultaRg :tbView:frmConsultaId :mensagem" />
-									</p:selectOneRadio>
-								</h:panelGrid>
-							</h:form>
+								<!-- CONSULTA POR CPF -->
+								<h:form id="frmConsultaPrestador">
+									<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'CPF'}">
+										<p:column>
+											<p:outputLabel value="CPF: " />
+										</p:column>
+										<p:column>
+											<p:inputMask mask="999.999.999-99"
+												value="#{registroBean.cpf}" size="10" required="true"
+												requiredMessage="Digite o CPF do prestador" />
+											<p:commandButton icon="ui-icon-search"
+												action="#{registroBean.consultarPrestadorPeloCpf()}"
+												update=":mensagem :tbView:frmCadResgistroEntrada :tbView:frmConsultaPrestador" />
+										</p:column>
+									</h:panelGrid>
+								</h:form>
 
-							<!-- CONSULTA POR CPF -->
-							<h:form id="frmConsultaPrestador">
-								<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'CPF'}">
-									<p:column>
-										<p:outputLabel value="CPF: " />
-									</p:column>
-									<p:column>
-										<p:inputMask mask="999.999.999-99" value="#{registroBean.cpf}" size="10" required="true" requiredMessage="Digite o CPF do prestador" />
-										<p:commandButton icon="ui-icon-search" action="#{registroBean.consultarPrestadorPeloCpf()}" update=":mensagem :tbView:frmCadResgistroEntrada :tbView:frmConsultaPrestador" />
-									</p:column>
-								</h:panelGrid>
-							</h:form>
+								<!-- CONSULTA POR PARTE DO NOME -->
+								<h:form id="frmConsultaNome">
+									<h:panelGrid
+										rendered="#{registroBean.tipoDeConsulta eq 'NOME'}">
+										<p:column>
+											<p:outputLabel value="NOME: " />
+										</p:column>
+										<p:column>
+											<p:inputText value="#{registroBean.nome}" size="50"
+												styleClass="upper-case" maxlength="70" required="true"
+												requiredMessage="Digite parte do nome consultado!" />
+											<p:commandButton icon="ui-icon-search"
+												oncomplete="PF('dlgVisitantePrestador').show()"
+												action="#{registroBean.consultaPrestadorPorNome}"
+												update=":mensagem :dlgVisiPrest" />
+										</p:column>
+									</h:panelGrid>
+								</h:form>
 
-							<!-- CONSULTA POR PARTE DO NOME -->
-							<h:form id="frmConsultaNome">
-								<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'NOME'}">
-									<p:column>
-										<p:outputLabel value="NOME: " />
-									</p:column>
-									<p:column>
-										<p:inputText value="#{registroBean.nome}" size="50" styleClass="upper-case" maxlength="70" required="true" requiredMessage="Digite parte do nome consultado!"/>
-										<p:commandButton icon="ui-icon-search" oncomplete="PF('dlgVisitantePrestador').show()" action="#{registroBean.consultaPrestadorPorNome}" update=":mensagem :dlgVisiPrest" />
-									</p:column>
-								</h:panelGrid>
-							</h:form>
+								<!-- CONSULTA POR PARTE DO RG -->
+								<h:form id="frmConsultaRg">
+									<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'RG'}">
+										<p:column>
+											<p:outputLabel value="RG: " />
+										</p:column>
+										<p:column>
+											<p:inputText value="#{registroBean.consulta}" size="10"
+												styleClass="upper-case" />
+											<p:commandButton icon="ui-icon-search"
+												oncomplete="PF('dlgVisitantePrestador').show()"
+												action="#{registroBean.consultaPrestadorPeloRg}"
+												update=":mensagem :dlgVisiPrest" />
+										</p:column>
+									</h:panelGrid>
+								</h:form>
 
-							<!-- CONSULTA POR PARTE DO RG -->
-							<h:form id="frmConsultaRg">
-								<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'RG'}">
-									<p:column>
-										<p:outputLabel value="RG: " />
-									</p:column>
-									<p:column>
-										<p:inputText value="#{registroBean.consulta}" size="10" styleClass="upper-case" />
-										<p:commandButton icon="ui-icon-search" oncomplete="PF('dlgVisitantePrestador').show()" action="#{registroBean.consultaPrestadorPeloRg}" update=":mensagem :dlgVisiPrest" />
-									</p:column>
-								</h:panelGrid>
-							</h:form>
+								<!-- CONSULTA PELO ID -->
+								<h:form id="frmConsultaId">
+									<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'ID'}">
+										<p:column>
+											<p:outputLabel value="CÓDIGO: " />
+										</p:column>
+										<p:column>
+											<p:inputNumber minValue="0" maxValue="999999999999"
+												value="#{registroBean.consulta}" size="6"
+												styleClass="upper-case" />
+											<p:commandButton icon="ui-icon-search"
+												action="#{registroBean.consultaPrestadorPorId}"
+												update=":mensagem :tbView:frmCadResgistroEntrada tbView:frmConsultaPrestador" />
+										</p:column>
+									</h:panelGrid>
+								</h:form>
 
-							<!-- CONSULTA PELO ID -->
-							<h:form id="frmConsultaId">
-								<h:panelGrid rendered="#{registroBean.tipoDeConsulta eq 'ID'}">
-									<p:column>
-										<p:outputLabel value="CÓDIGO: " />
-									</p:column>
-									<p:column>
-										<p:inputNumber minValue="0" maxValue="999999999999" value="#{registroBean.consulta}" size="6" styleClass="upper-case" />
-										<p:commandButton icon="ui-icon-search" action="#{registroBean.consultaPrestadorPorId}" update=":mensagem :tbView:frmCadResgistroEntrada tbView:frmConsultaPrestador" />
-									</p:column>
-								</h:panelGrid>
-							</h:form>
-
-						</fieldset>
-						<br />
-
-						<!-- FORMULARIO DO RESGISTRO DE ENTRADA -->
-						<h:form id="frmCadResgistroEntrada">
-							<h:panelGrid>
-								<p:column>
-									<p:outputLabel value="TIPO:  " />
-									<p:outputLabel value=" PRESTADOR DE SERVIÇO" style="color:red;" rendered="#{registroBean.prestadorDeServico.tipo =='PRESTADOR'}" />
-									<p:outputLabel value=" VISITANTE" style="color:red;" rendered="#{registroBean.prestadorDeServico.tipo =='VISITANTE'}" />
-								</p:column>
-								<p:column>
-									<p:inputText value="#{registroBean.prestadorDeServico.nome}" autocomplete="off" size="60" readonly="true" maxlength="70" />
-								</p:column>
-							</h:panelGrid>
-
-							<h:panelGrid>
-								<p:column>
-									<p:outputLabel value="VEÍCULO-PLACA" />
-								</p:column>
-								<p:column>
-									<p:inputMask mask="aaa-9*99" value="#{registroBean.registro.placaVeiculo}" size="15" styleClass="upper-case" />
-								</p:column>
-							</h:panelGrid>
-
-							<!-- ESCOLHA DE EMPRESA PARA PRESTADOR -->
-							<h:panelGrid rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR' and registroBean.empresas.size() eq 1}" id="panelEmpresaUm">
-								<p:outputLabel value="EMPRESA: " />
-								<p:selectOneMenu value="#{registroBean.registro.empresa}" converter="omnifaces.SelectItemsConverter" required="true" requiredMessage="Selecione uma empresa!">
-									<f:selectItems value="#{registroBean.empresas}" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-							<!-- ESCOLHA DE EMPRESA PARA PRESTADOR -->
-							<h:panelGrid rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR' and registroBean.empresas.size() >= 2}" id="panelEmpresa">
-								<p:outputLabel value="EMPRESA: " />
-								<p:selectOneMenu value="#{registroBean.registro.empresa}" converter="omnifaces.SelectItemsConverter" required="true" requiredMessage="Selecione uma empresa!">
-									<f:selectItem noSelectionOption="true" itemLabel="Selecione uma empresa" />
-									<f:selectItems value="#{registroBean.empresas}" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-							<!-- ADIÇÃO DE NOTAS FISCAIS -->
-							<h:panelGrid columns="1" id="panelNotas" rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR'}">
-								<!-- #{registroBean.prestadorDeServico.tipo == 'PRESTADOR'} -->
-								<p:outputLabel value="Notas Fiscais:" />
-								<p:dataTable value="#{registroBean.listNfe}" var="nota" style="width:300px" paginator="true" rows="5">
-									<f:facet name="header">
-										<p:commandButton icon="ui-icon-plus" value="Adicionar Notas Fiscais" oncomplete="PF('dglNotasFiscais').show()" />
-									</f:facet>
-									<p:column headerText="NFE" width="180">
-										<p:outputLabel value="#{nota.numeroNfe}" />
-									</p:column>
-									<p:column headerText="Opções" width="70" styleClass="align">
-										<p:commandButton icon="ui-icon-trash" actionListener="#{registroBean.removeNotasFiscais}" update=":tbView:frmCadResgistroEntrada:panelNotas :dlgNf">
-											<f:attribute name="notaSelecionada" value="#{nota}" />
-										</p:commandButton>
-									</p:column>
-								</p:dataTable>
-							</h:panelGrid>
+							</fieldset>
 							<br />
-							<p:commandButton value="Salvar" actionListener="#{registroBean.salvarRegistroEntrada()}" update=":mensagem :tbView:tbRegistroEntradaCadastradoVisitante :tbView:frmCadResgistroEntrada :tbView:frmConsultaPrestador :tbView:frmConsultaNome :tbView:tbRegistroLiberado :dlgNf" />
-						</h:form>
+
+							<!-- FORMULARIO DO RESGISTRO DE ENTRADA -->
+							<h:form id="frmCadResgistroEntrada">
+								<h:panelGrid>
+									<p:column>
+										<p:outputLabel value="TIPO:  " />
+										<p:outputLabel value=" PRESTADOR DE SERVIÇO"
+											style="color:red;"
+											rendered="#{registroBean.prestadorDeServico.tipo =='PRESTADOR'}" />
+										<p:outputLabel value=" VISITANTE" style="color:red;"
+											rendered="#{registroBean.prestadorDeServico.tipo =='VISITANTE'}" />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{registroBean.prestadorDeServico.nome}"
+											autocomplete="off" size="60" readonly="true" maxlength="70" />
+									</p:column>
+								</h:panelGrid>
+
+								<h:panelGrid>
+									<p:column>
+										<p:outputLabel value="VEÍCULO-PLACA" />
+									</p:column>
+									<p:column>
+										<p:inputMask mask="aaa-9*99"
+											value="#{registroBean.registro.placaVeiculo}" size="15"
+											styleClass="upper-case" />
+									</p:column>
+								</h:panelGrid>
+
+								<!-- ESCOLHA DE EMPRESA PARA PRESTADOR -->
+								<h:panelGrid
+									rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR' and registroBean.empresas.size() eq 1}"
+									id="panelEmpresaUm">
+									<p:outputLabel value="EMPRESA: " />
+									<p:selectOneMenu value="#{registroBean.registro.empresa}"
+										converter="omnifaces.SelectItemsConverter" required="true"
+										requiredMessage="Selecione uma empresa!">
+										<f:selectItems value="#{registroBean.empresas}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+
+								<!-- ESCOLHA DE EMPRESA PARA PRESTADOR -->
+								<h:panelGrid
+									rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR' and registroBean.empresas.size() >= 2}"
+									id="panelEmpresa">
+									<p:outputLabel value="EMPRESA: " />
+									<p:selectOneMenu value="#{registroBean.registro.empresa}"
+										converter="omnifaces.SelectItemsConverter" required="true"
+										requiredMessage="Selecione uma empresa!">
+										<f:selectItem noSelectionOption="true"
+											itemLabel="Selecione uma empresa" />
+										<f:selectItems value="#{registroBean.empresas}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+
+								<!-- ADIÇÃO DE NOTAS FISCAIS -->
+								<h:panelGrid columns="1" id="panelNotas"
+									rendered="#{registroBean.prestadorDeServico.tipo == 'PRESTADOR'}">
+									<!-- #{registroBean.prestadorDeServico.tipo == 'PRESTADOR'} -->
+									<p:outputLabel value="Notas Fiscais:" />
+									<p:dataTable value="#{registroBean.listNfe}" var="nota"
+										style="width:300px" paginator="true" rows="5">
+										<f:facet name="header">
+											<p:commandButton icon="ui-icon-plus"
+												value="Adicionar Notas Fiscais"
+												oncomplete="PF('dglNotasFiscais').show()" />
+										</f:facet>
+										<p:column headerText="NFE" width="180">
+											<p:outputLabel value="#{nota.numeroNfe}" />
+										</p:column>
+										<p:column headerText="Opções" width="70" styleClass="align">
+											<p:commandButton icon="ui-icon-trash"
+												actionListener="#{registroBean.removeNotasFiscais}"
+												update=":tbView:frmCadResgistroEntrada:panelNotas :dlgNf">
+												<f:attribute name="notaSelecionada" value="#{nota}" />
+											</p:commandButton>
+										</p:column>
+									</p:dataTable>
+								</h:panelGrid>
+								<br />
+								<p:commandButton value="Salvar"
+									actionListener="#{registroBean.salvarRegistroEntrada()}"
+									update=":mensagem :tbView:tbRegistroEntradaCadastradoVisitante :tbView:frmCadResgistroEntrada :tbView:frmConsultaPrestador :tbView:frmConsultaNome :tbView:tbRegistroLiberado :dlgNf" />
+							</h:form>
 					</div>
+
 
 					<!-- TABELA RESGITROS DE VISITANTES -->
 					<div class="area2">
-						<p:dataTable value="#{registroBean.registros}" var="registro" id="tbRegistroEntradaCadastradoVisitante" emptyMessage="Não há registro de entrada" paginator="true" rows="3">
+						<p:dataTable value="#{registroBean.registros}" var="registro"
+							id="tbRegistroEntradaCadastradoVisitante"
+							emptyMessage="Não há registro de entrada" paginator="true"
+							rows="3">
 							<f:facet name="header">
 								<p:outputLabel value="Histórico de entradas e saídas" />
 							</f:facet>
 							<p:column headerText="ID" width="40" styleClass="align">
-								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml" styleClass="link_lib">
+								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml"
+									styleClass="link_lib">
 									<f:param name="registroId" value="#{registro.id}" />
 								</p:link>
 							</p:column>
 							<p:column headerText="Nome">
 								<h:outputText value="#{registro.prestadorDeServico.nome}" />
-								<p:outputLabel rendered="#{(registro.tipo eq 'SAIDA' and registro.prestadorDeServico.tipo eq 'VISITANTE')}">
+								<p:outputLabel
+									rendered="#{(registro.tipo eq 'SAIDA' and registro.prestadorDeServico.tipo eq 'VISITANTE')}">
 									<i class="fas fa-user icon_saida" />
 									<i class="fas fa-sign-out-alt icon_saida" />
 								</p:outputLabel>
-								<p:outputLabel rendered="#{(registro.tipo eq 'ENTRADA' and registro.prestadorDeServico.tipo eq 'VISITANTE')}">
+								<p:outputLabel
+									rendered="#{(registro.tipo eq 'ENTRADA' and registro.prestadorDeServico.tipo eq 'VISITANTE')}">
 									<i class="fas fa-user icon_entrada" />
 									<i class="fas fa-sign-in-alt icon_entrada" />
 								</p:outputLabel>
-								<p:outputLabel rendered="#{(registro.tipo eq 'SAIDA' and registro.prestadorDeServico.tipo eq 'PRESTADOR')}">
+								<p:outputLabel
+									rendered="#{(registro.tipo eq 'SAIDA' and registro.prestadorDeServico.tipo eq 'PRESTADOR')}">
 									<i class="fas fa-shipping-fast icon_saida" />
 									<i class="fas fa-sign-out-alt icon_saida" />
 								</p:outputLabel>
-								<p:outputLabel rendered="#{(registro.tipo eq 'ENTRADA' and registro.prestadorDeServico.tipo eq 'PRESTADOR')}">
+								<p:outputLabel
+									rendered="#{(registro.tipo eq 'ENTRADA' and registro.prestadorDeServico.tipo eq 'PRESTADOR')}">
 									<i class="fas fa-shipping-fast icon_entrada" />
 									<i class="fas fa-sign-in-alt icon_entrada" />
 								</p:outputLabel>
@@ -199,11 +258,18 @@
 								</h:outputText>
 							</p:column>
 							<p:column headerText="Oções" width="70" styleClass="align">
-								<p:commandButton icon="ui-icon-pencil" oncomplete="PF('dlgAlterarRgistro').show()" actionListener="#{registroBean.registroSelecionado}" update="tbView:dlgAltRegistro">
+								<p:commandButton icon="ui-icon-pencil"
+									oncomplete="PF('dlgAlterarRgistro').show()"
+									actionListener="#{registroBean.registroSelecionado}"
+									update="tbView:dlgAltRegistro">
 									<f:attribute name="registroSelecionado" value="#{registro}" />
 								</p:commandButton>
-								<p:commandButton icon="ui-icon-trash" actionListener="#{registroBean.excluirRegistroVisitante(registro)}" update=":mensagem :tbView:tbRegistroEntradaCadastradoVisitante" rendered="#{registro.status eq 'ABERTO'}">
-									<p:confirm message="Deseja realmente excluir este registro?" header="Exclusão de registro" icon="ui-icon-alert" />
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{registroBean.excluirRegistroVisitante(registro)}"
+									update=":mensagem :tbView:tbRegistroEntradaCadastradoVisitante"
+									rendered="#{registro.status eq 'ABERTO'}">
+									<p:confirm message="Deseja realmente excluir este registro?"
+										header="Exclusão de registro" icon="ui-icon-alert" />
 								</p:commandButton>
 							</p:column>
 						</p:dataTable>
@@ -212,19 +278,23 @@
 
 					<!-- TABELA DE RIGISTROS LIBERADOS -->
 					<div class="area2">
-						<p:dataTable value="#{sharedListBean.liberadosSaida()}" var="registro" id="tbRegistroLiberado" paginator="true" rows="3">
+						<p:dataTable value="#{sharedListBean.liberadosSaida()}"
+							var="registro" id="tbRegistroLiberado" paginator="true" rows="3">
 							<f:facet name="header">
 								<p:outputLabel value="Saída Liberada" />
 							</f:facet>
 							<p:column headerText="ID" width="40" styleClass="align">
-								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml" styleClass="link_lib" id="editRegLink">
+								<p:link value="#{registro.id}" outcome="edicao_registro.xhtml"
+									styleClass="link_lib" id="editRegLink">
 									<f:param name="registroId" value="#{registro.id}" />
 								</p:link>
 							</p:column>
 							<p:column headerText="Nome">
 								<h:panelGrid columns="1">
-									<p:column rendered="#{registro.prestadorDeServico.tipo eq 'PRESTADOR'}">
-										<p:outputLabel value="#{registro.empresa.nome}" styleClass="text-primary" />
+									<p:column
+										rendered="#{registro.prestadorDeServico.tipo eq 'PRESTADOR'}">
+										<p:outputLabel value="#{registro.empresa.nome}"
+											styleClass="text-primary" />
 									</p:column>
 									<p:column>
 										<h:outputText value="#{registro.prestadorDeServico.nome}" />
@@ -235,8 +305,12 @@
 								</h:panelGrid>
 							</p:column>
 							<p:column headerText="Liberar" width="50" styleClass="align">
-								<p:commandButton icon="fa fa-sign-out" id="btnLiberar" oncomplete="PF('dlgAlterarRgistro').show()" actionListener="#{registroBean.registroSelecionado}" update="tbView:dlgAltRegistro">
-									<p:tooltip for="btnLiberar" value="Liberar saída" position="top" />
+								<p:commandButton icon="fa fa-sign-out" id="btnLiberar"
+									oncomplete="PF('dlgAlterarRgistro').show()"
+									actionListener="#{registroBean.registroSelecionado}"
+									update="tbView:dlgAltRegistro">
+									<p:tooltip for="btnLiberar" value="Liberar saída"
+										position="top" />
 									<f:attribute name="registroSelecionado" value="#{registro}" />
 								</p:commandButton>
 							</p:column>
@@ -248,7 +322,8 @@
 
 
 			<!-- TAB DE ATENDIMENTOS -->
-			<p:tab title="Atendimentos" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoAtendimento}">
+			<p:tab title="Atendimentos"
+				rendered="#{loginBean.usuarioLogado.permissoes.manutencaoAtendimento}">
 
 				<div id="content-atendimentos">
 
@@ -268,37 +343,51 @@
 		</p:tabView>
 
 		<!-- DIALOGO DE CONFIRMAÇÃO -->
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="center">
-			<p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-			<p:commandButton value="NÂO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+			styleClass="center">
+			<p:commandButton value="SIM" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="NÂO" type="button"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 		</p:confirmDialog>
 
 		<!-- DIALOGO DE CADASTRO DE NOTAS FISCAIS -->
-		<p:dialog widgetVar="dglNotasFiscais" header="Cadastrar notas fiscais" id="dlgNf" modal="true" appendTo="@(body)" width="400" resizable="false" hideEffect="explode" showEffect="slide">
+		<p:dialog widgetVar="dglNotasFiscais" header="Cadastrar notas fiscais"
+			id="dlgNf" modal="true" appendTo="@(body)" width="400"
+			resizable="false" hideEffect="explode" showEffect="slide">
 			<h:form id="frmAddNfe">
 				<h:panelGrid columns="1" id="panel">
 					<p:column>
 						<p:inputText value="#{registroBean.nfe}" maxlength="44" />
-						<p:commandButton icon="ui-icon-plus" actionListener="#{registroBean.addNotasFiscais}" update=":frmAddNfe :frmAddNfe:dtList :mensagem" />
+						<p:commandButton icon="ui-icon-plus"
+							actionListener="#{registroBean.addNotasFiscais}"
+							update=":frmAddNfe :frmAddNfe:dtList :mensagem" />
 					</p:column>
-					<p:dataTable value="#{registroBean.listNfe}" var="nfe" id="dtList" paginator="true" paginatorAlwaysVisible="false" rows="5">
+					<p:dataTable value="#{registroBean.listNfe}" var="nfe" id="dtList"
+						paginator="true" paginatorAlwaysVisible="false" rows="5">
 						<p:column headerText="Número NF" width="50">
 							<p:outputLabel value="#{nfe.numeroNfe}" />
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Quantidade de notas: "/>
-							<p:outputLabel value="#{registroBean.qtdNotas}"/>
+							<p:outputLabel value="Quantidade de notas: " />
+							<p:outputLabel value="#{registroBean.qtdNotas}" />
 						</f:facet>
 					</p:dataTable>
 				</h:panelGrid>
-				<p:commandButton value="Concluído" update=":tbView:frmCadResgistroEntrada:panelNotas" oncomplete="PF('dglNotasFiscais').hide()" />
+				<p:commandButton value="Concluído"
+					update=":tbView:frmCadResgistroEntrada:panelNotas"
+					oncomplete="PF('dglNotasFiscais').hide()" />
 			</h:form>
 		</p:dialog>
 
-		
-		<p:dialog widgetVar="dlgVisitantePrestador" header="Visitantes Cadastrados" id="dlgVisiPrest" width="800" modal="true" appendTo="@(body)" hideEffect="explode" showEffect="slide">
+
+		<p:dialog widgetVar="dlgVisitantePrestador"
+			header="Visitantes Cadastrados" id="dlgVisiPrest" width="800"
+			modal="true" appendTo="@(body)" hideEffect="explode"
+			showEffect="slide">
 			<h:form>
-				<p:dataTable paginator="true" rows="5" var="visitante" widgetVar="tbVisiPrest" value="#{registroBean.visitantesNome}">
+				<p:dataTable paginator="true" rows="5" var="visitante"
+					widgetVar="tbVisiPrest" value="#{registroBean.visitantesNome}">
 					<p:column headerText="ID" width="30">
 						<p:outputLabel value="#{visitante.id}" />
 					</p:column>
@@ -312,7 +401,10 @@
 						<p:outputLabel value="#{visitante.rg}" />
 					</p:column>
 					<p:column headerText="Selecionar" width="90">
-						<p:commandButton icon="fa fa-check" action="#{registroBean.prestadorSelecionado(visitante)}" update=":mensagem :tbView:frmCadResgistroEntrada tbView:frmConsultaPrestador" onclick="PF('dlgVisitantePrestador').hide()" />
+						<p:commandButton icon="fa fa-check"
+							action="#{registroBean.prestadorSelecionado(visitante)}"
+							update=":mensagem :tbView:frmCadResgistroEntrada tbView:frmConsultaPrestador"
+							onclick="PF('dlgVisitantePrestador').hide()" />
 					</p:column>
 				</p:dataTable>
 			</h:form>

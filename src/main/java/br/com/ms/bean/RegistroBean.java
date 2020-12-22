@@ -129,9 +129,9 @@ public class RegistroBean implements Serializable {
 	 */
 	public void consultarPrestadorPeloCpf() {
 		try {
-			visitanteController.consultaPorCPF(cpf);
+			visitante = visitanteController.consultaPorCPF(cpf);
 		} catch (Exception e) {
-			Messages.addGlobalWarn(e.getMessage());
+			Messages.addGlobalError("CPF não encontrado!");
 		}
 	}
 

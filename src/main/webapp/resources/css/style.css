@@ -52,10 +52,9 @@ inputtext {
 }
 
 #area1 {
-	padding: 10px;
+	padding: 0px;
 	width: auto;
 	float: left;
-	border: 1px solid black;
 	margin-right: 10px;
 	margin-bottom: 15px;
 }
