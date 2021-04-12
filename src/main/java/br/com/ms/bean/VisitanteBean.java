@@ -9,6 +9,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
+import org.primefaces.PrimeFaces;
 
 import br.com.controller.EmpresaController;
 import br.com.controller.VisitanteController;
@@ -105,6 +106,8 @@ public class VisitanteBean implements Serializable {
 		empresas = empresaController.consultarEmpresaPorNome(nomeEmpresa);
 		if (empresas.isEmpty()) {
 			Messages.addGlobalError("Empresa não encontrada!");
+		}else {
+			PrimeFaces.current().executeScript("PF('dlgCadastroEmpresa').show()");
 		}
 	}
 

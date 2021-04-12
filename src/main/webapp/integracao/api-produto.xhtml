@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pm="http://primefaces.org/mobile">
+<ui:composition template="/template/template2.xhtml">
+	<ui:define name="conteudo">
+
+		<p:growl id="mensagem" />
+
+		<h1>INTEGRAÇÃO SUPERSMART</h1>
+
+		<h:form id="frmIntegracao">
+			<h:panelGrid columns="2">
+				<p:column>
+					<p:outputLabel value="CÓDIGO" />
+					<br />
+					<p:inputText value="#{integracaoBean.integracao.id}" readonly="true" maxlength="2" />
+				</p:column>
+				<p:column>
+					<p:outputLabel value="PARÂMETROS CRON" />
+					<br />
+					<p:inputText value="#{integracaoBean.integracao.cronParametros}" />
+				</p:column>
+				<p:column>
+					<p:outputLabel value="SERVIDOR HTTP" />
+					<br />
+					<p:inputText value="#{integracaoBean.integracao.hostHttp}" />
+				</p:column>
+				<p:column>
+					<p:outputLabel value="LOCAL DO ARQUIVO:" />
+					<br />
+					<p:inputText value="#{integracaoBean.integracao.localArquivo}" size="60" />
+				</p:column>
+			</h:panelGrid>
+			<br />
+			
+				<hr />
+				<p:outputLabel value="STATUS DO SERVICO: " />
+				<p:selectBooleanButton onLabel="ATIVO" offLabel="DESATIVADO" value="#{integracaoBean.integracao.status}" />
+				<hr />
+			
+			<br />
+			<br />
+			<p:commandButton value="Integrar" actionListener="#{integracaoBean.executarIntegracao()}" />
+			<p:commandButton value="Salvar" actionListener="#{integracaoBean.ativar()}" update=":mensagem" />
+		</h:form>
+		<br />
+
+		<h:panelGrid width="450" id="panelTable">
+			<p:dataTable value="#{integracaoBean.status}" var="status" widgetVar="tb_viewer" id="tbStatus" paginator="true" rows="10">
+				<p:column headerText="Status" width="90">
+					<p:outputLabel value="#{status}" />
+				</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+
+	</ui:define>
+</ui:composition>
+</html>

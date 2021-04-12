@@ -8,15 +8,16 @@
 <ui:composition template="/template/template2.xhtml">
 	<ui:define name="conteudo">
 		<ui:include src="/dialog/dlg_aguard_atendimento.xhtml" />
+		
 		<p:growl id="mensagem" showDetail="true" showSummary="false" />
 
 		<h:form>
-			<p:poll interval="5"
+			<p:poll interval="15"
 				update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante" />
 		</h:form>
 
 		<h:form>
-			<p:poll interval="5"
+			<p:poll interval="15"
 				update=":tbView:tbRegistroLiberado :tbView:frmDashboardInformations :tbView:tbRegistroEntradaCadastradoVisitante"
 				listener="#{registroBean.calculaPessoasPresentes()}"
 				rendered="#{loginBean.usuarioLogado.permissoes.manutencaoRegistroEntrada}" />
@@ -79,7 +80,6 @@
 												styleClass="upper-case" maxlength="70" required="true"
 												requiredMessage="Digite parte do nome consultado!" />
 											<p:commandButton icon="ui-icon-search"
-												oncomplete="PF('dlgVisitantePrestador').show()"
 												action="#{registroBean.consultaPrestadorPorNome}"
 												update=":mensagem :dlgVisiPrest" />
 										</p:column>
@@ -380,7 +380,7 @@
 			</h:form>
 		</p:dialog>
 
-
+		<!-- Dialogo de consulta do Prestador de serviço ou visitante -->
 		<p:dialog widgetVar="dlgVisitantePrestador"
 			header="Visitantes Cadastrados" id="dlgVisiPrest" width="800"
 			modal="true" appendTo="@(body)" hideEffect="explode"

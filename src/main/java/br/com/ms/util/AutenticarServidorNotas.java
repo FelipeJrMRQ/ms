@@ -1,6 +1,5 @@
 package br.com.ms.util;
 
-
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +17,8 @@ public class AutenticarServidorNotas {
 			NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication(dominio, usuario, senha);
 			SmbFile home = new SmbFile("smb://125.67.2.242/SUPERSMART/NFE/PDF/", authentication);
 			for (SmbFile file : home.listFiles()) {
-				SmbFile in = new SmbFile(file.toString() + "/NF" +nota+".pdf", authentication);
-				if(in.exists()) {
+				SmbFile in = new SmbFile(file.toString() + "/NF" + nota + ".pdf", authentication);
+				if (in.exists()) {
 					HttpServletResponse res = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 					res.setContentType("application/pdf");
 					res.setHeader("Content-disposition", "inline;filename=arquivo.pdf");

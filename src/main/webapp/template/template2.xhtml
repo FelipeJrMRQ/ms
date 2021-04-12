@@ -5,7 +5,7 @@
 	<h:outputScript library="js" name="jquery.maskedinput" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Meu Sistema</title>
-	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="shortcut icon" href="/template/favicon.ico" />
 	<h:outputStylesheet library="css" name="style.css" />
 	<h:outputScript library="js" name="javascript.js" />
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"></link>
@@ -25,24 +25,25 @@
 	<div align="center">
 		<p:layout style="min-width:95%;max-width:95%;min-height:1000px">
 			<p:layoutUnit position="north" size="121" style="text-align:center;">
-				<h:graphicImage value="logo.png" width="300" height="60" style="padding-top: 10px;" />
+				<h:graphicImage value="/template/logo.png" width="300" height="60" style="padding-top: 10px;" />
 				<h:form>
 					<p:menubar style="border:0">
-						<p:menuitem outcome="registro.xhtml" icon="fa fa-home" value="PRINCIPAL" />
+						<p:menuitem outcome="/pages/registro.xhtml" icon="fa fa-home" value="PRINCIPAL" />
 						<p:submenu label="CADASTROS" icon="fa fa-database">
-							<p:menuitem value=" EMPRESA" outcome="empresa.xhtml" icon="fa fa-institution" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoEmpresa}" />
-							<p:menuitem value=" VISITANTE" outcome="visitante.xhtml" icon="fa fa-group" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoVisitante}" />
-							<p:menuitem value=" USUÁRIO" outcome="usuario.xhtml" icon="fa fa-user" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
+							<p:menuitem value=" EMPRESA" outcome="/pages/empresa.xhtml" icon="fa fa-institution" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoEmpresa}" />
+							<p:menuitem value=" VISITANTE" outcome="/pages/visitante.xhtml" icon="fa fa-group" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoVisitante}" />
+							<p:menuitem value=" USUÁRIO" outcome="/pages/usuario.xhtml" icon="fa fa-user" rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
 						</p:submenu>
-						<p:menuitem icon="fa fa-dashcube" value="DASHBOARD" outcome="dashboard.xhtml" rendered="false" />
+						<p:menuitem icon="fa fa-dashcube" value="DASHBOARD" outcome="/pages/dashboard.xhtml" rendered="false" />
 						<p:submenu label="RELATÓRIOS" icon="fa fa-clipboard">
-							<p:menuitem value="CONSULTA" outcome="relatorio.xhtml" icon="ui-icon-search" />
+							<p:menuitem value="CONSULTA" outcome="/pages/relatorio.xhtml" icon="ui-icon-search" />
 						</p:submenu>
 						<p:submenu label="CONFIGURAÇÕES" icon="fa fa-wrench">
-							<p:menuitem value="ALTERAR SENHA" outcome="alterar_senha.xhtml" icon="fa fa-key" />
-							<p:menuitem value="EDITAR REGISTROS" outcome="edicao_registro.xhtml" icon="fa fa-cog" rendered="#{loginBean.usuarioLogado.permissoes.edicaoRegistro}" />
-							<p:menuitem value="ATUALIZAR NFE" outcome="atualizacao_nfe.xhtml" icon="fa fa-download"  rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
-							<p:menuitem value="SISTEMA" outcome="config_sistema.xhtml" icon="fa fa-wrench"  rendered="#{loginBean.usuarioLogado.permissoes.configuaracaoSistema}"/>
+							<p:menuitem value="ALTERAR SENHA" outcome="/pages/alterar_senha.xhtml" icon="fa fa-key" />
+							<p:menuitem value="EDITAR REGISTROS" outcome="/pages/edicao_registro.xhtml" icon="fa fa-cog" rendered="#{loginBean.usuarioLogado.permissoes.edicaoRegistro}" />
+							<p:menuitem value="ATUALIZAR NFE" outcome="/pages/atualizacao_nfe.xhtml" icon="fa fa-download"  rendered="#{loginBean.usuarioLogado.permissoes.manutencaoUsuario}" />
+							<p:menuitem value="SISTEMA" outcome="/pages/config_sistema.xhtml" icon="fa fa-wrench"  rendered="#{loginBean.usuarioLogado.permissoes.configuaracaoSistema}"/>
+							<p:menuitem value="INTEGRACAO" outcome="/integracao/api-produto.xhtml" icon="fas fa-bezier-curve"  rendered="#{loginBean.usuarioLogado.permissoes.configuaracaoSistema}"/>
 						</p:submenu>
 						<f:facet name="options">
 							<p:commandButton value="Sair" icon="ui-icon-extlink" actionListener="#{loginBean.logout}" id="btnSair">

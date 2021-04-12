@@ -3,6 +3,7 @@
 
 <ui:composition template="/template/template2.xhtml">
 	<ui:define name="conteudo">
+		
 		<p:growl id="mensagem" />
 
 		<f:facet name="header">
@@ -57,7 +58,7 @@
 									<p:outputLabel value="EMPRESA:" />
 									<br />
 									<p:inputText size="76" placeholder="Buscar empresa cadastrada" value="#{visitanteBean.nomeEmpresa}" styleClass="upper-case" />
-									<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" oncomplete="PF('dlgCadastroEmpresa').show()" update=":dlgCadEmpresa :mensagem" />
+									<p:commandButton icon="ui-icon-search" action="#{visitanteBean.consultarEmpresa}" update=":dlgCadEmpresa :mensagem" />
 								</div>
 							</p:column>
 							<p:column>

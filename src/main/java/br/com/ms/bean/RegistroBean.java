@@ -11,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
+import org.primefaces.PrimeFaces;
 
 import br.com.controller.ConfiguracaoSistemaController;
 import br.com.controller.LiberacaoVisitanteController;
@@ -83,7 +84,6 @@ public class RegistroBean implements Serializable {
 		motivoController = new MotivoEdicaoRegistroController();
 		liberacaoVisitanteController = new LiberacaoVisitanteController();
 		configController = new ConfiguracaoSistemaController();
-		
 	}
 
 	@PostConstruct
@@ -93,7 +93,7 @@ public class RegistroBean implements Serializable {
 		SharedListBean.consultaLiberadosSaida();
 		calculaPessoasPresentes();
 		qtdNotas = "0";
-		configController.iniciarAtualizacaoDeNotas();
+		configController.iniciarAgendamentos();
 	}
 	
 	
@@ -107,6 +107,10 @@ public class RegistroBean implements Serializable {
 		calculaPessoasPresentes();
 	}
 
+	public void abrirModal() {
+		System.out.println("executei");
+		
+	}
 	/**
 	 * Realiza a consulta e mantem as informações carregadas para atualização de
 	 * tela. Isso permite que o usuário tenha uma visão clara da movimentação de
@@ -156,6 +160,7 @@ public class RegistroBean implements Serializable {
 	public void consultaPrestadorPorNome() {
 		try {
 			visitantesNome = visitanteController.consultaPorNome(this.nome);
+			PrimeFaces.current().executeScript("PF('dlgVisitantePrestador').show()");
 		} catch (Exception erro) {
 			Messages.addGlobalError(erro.getMessage());
 		}

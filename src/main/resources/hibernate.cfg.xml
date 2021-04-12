@@ -6,11 +6,11 @@
 
 		<!-- Confugurações de conexao com o banco de dadados -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/bd_croma?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
+		<property name="hibernate.connection.url">jdbc:mysql://125.67.2.152:3306/bd_teste?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
 
 		<!-- ?useTimezone=true&amp;serverTimezone=GMT-3 -->
-		<property name="hibernate.connection.username"></property>
-		<property name="hibernate.connection.password"></property>
+		<property name="hibernate.connection.username">felipe</property>
+		<property name="hibernate.connection.password">*cromart2*</property>
 
 		<!-- JDBC connection pool (use the built-in) -->
 		<!-- <property name="hibernate.connection.pool_size">1</property> -->
@@ -20,18 +20,19 @@
 		<property name="hibernate.c3p0.timeout">2800</property>
 		<property name="hibernate.c3p0.idle_test_period">2800</property>
 		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.setMaxIdleTime">900</property>
 
 		<!-- SQL dialect -->
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-		
-<!-- 		<property name="hibernate.dialect">org.hibernate.dialect.MariaDB53Dialect</property> -->
-		
-		
+
+		<!-- <property name="hibernate.dialect">org.hibernate.dialect.MariaDB53Dialect</property> -->
+
+
 		<!-- Enable Hibernate's automatic session context management -->
-<!-- 		<property name="hibernate.current_session_context_class">thread</property> -->
+		<!-- <property name="hibernate.current_session_context_class">thread</property> -->
 
 		<!-- Disable the second-level cache -->
-<!-- 		<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property> -->
+		<!-- <property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property> -->
 
 		<!-- Mostra os comandos SQL no console -->
 <!-- 		<property name="hibernate.show_sql">true</property> -->
@@ -56,13 +57,21 @@
 		<mapping class="br.com.ms.model.LiberacaoDeUso" />
 		<mapping class="br.com.ms.model.MotivoEdicaoRegistro" />
 		<mapping class="br.com.ms.model.ConfiguracaoSistema" />
-		
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-insert" />  -->
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-update" /> -->
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-delete" />  -->
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="pre-collection-update" />  -->
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="pre-collection-remove" />  -->
-<!-- 		<listener class="org.hibernate.envers.event.AuditEventListener" type="post-collection-recreate" /> -->
+		<mapping class="br.com.ms.model.Integracao" />
+		<mapping class="br.com.ms.model.LogIntegracao" />
+
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="post-insert" 
+			/> -->
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="post-update" 
+			/> -->
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="post-delete" 
+			/> -->
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="pre-collection-update" 
+			/> -->
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="pre-collection-remove" 
+			/> -->
+		<!-- <listener class="org.hibernate.envers.event.AuditEventListener" type="post-collection-recreate" 
+			/> -->
 
 	</session-factory>
 </hibernate-configuration>
