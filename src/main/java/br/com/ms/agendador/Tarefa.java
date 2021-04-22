@@ -20,7 +20,15 @@ import br.com.ms.nfe.MontaRegistroNfe;
 import br.com.swconsultoria.certificado.exception.CertificadoException;
 import br.com.swconsultoria.nfe.exception.NfeException;
 
-public class Agendador implements Job {
+/**
+ * 
+ * @author admin
+ * 
+ * Com esta classe é possível definir as terefas que serão executadas periodicamento
+ * Para isso basta incluir as funções desejadas no metodos execute()
+ *
+ */
+public class Tarefa implements Job {
 
 	Date instanteAtual;
 	private List<NotaRegistro> notas;
@@ -30,7 +38,7 @@ public class Agendador implements Job {
 	private static final String SAIDA = "SAIDA";
 	private static final String ENTRADA = "ENTRADA";
 
-	public Agendador() {
+	public Tarefa() {
 		notas = new ArrayList<NotaRegistro>();
 		nDao = new NotaResgitroDao();
 		novaNota = new NotaRegistro();

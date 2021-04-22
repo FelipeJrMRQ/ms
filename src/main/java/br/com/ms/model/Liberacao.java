@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
+@Entity(name = "liberacao")
 public class Liberacao implements Serializable{
 
 	private static final long serialVersionUID = 6842914312803503814L;

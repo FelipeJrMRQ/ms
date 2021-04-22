@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity(name = "Registro")
+@Entity(name = "registro")
 public class Registro implements Serializable {
 
 	private static final long serialVersionUID = 5634188710473732871L;

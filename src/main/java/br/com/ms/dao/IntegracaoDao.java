@@ -49,7 +49,7 @@ public class IntegracaoDao {
 		session = getSession();
 		try {
 			transaction = session.beginTransaction();
-			session.merge(log);
+			session.save(log);
 			transaction.commit();
 		} catch (Exception erro) {
 			throw erro;

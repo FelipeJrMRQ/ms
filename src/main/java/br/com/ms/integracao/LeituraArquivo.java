@@ -21,6 +21,7 @@ import br.com.ms.model.LogIntegracao;
 
 /**
  * Classe reponsavel por realizar a abertura e leitura do arquivo txt
+ * 
  * @author admin
  *
  */
@@ -31,8 +32,7 @@ public class LeituraArquivo implements Job {
 	private IntegracaoDao dao;
 	private List<String> status;
 	private LogIntegracao logIntegracao;
-	
-	
+
 	public LeituraArquivo() {
 		status = new ArrayList<>();
 		integracao = new Integracao();
@@ -40,37 +40,50 @@ public class LeituraArquivo implements Job {
 		integracao = dao.consultaParametros(1);
 		logIntegracao = new LogIntegracao();
 	}
-	
-	public List<String> ler(String localArquivo){
+
+	/**
+	 * Recebe o caminho onde o arquivo se encontra no servidor verifica se o arquivo
+	 * existe em caso de verdadeiro e retonada uma lista com todos os dados contidos
+	 * no arquivo TXT
+	 * 
+	 * Em caso de erro o sistema fará o registro de uma bad request com status 500
+	 * no banco de dados na tabela de logintegração
+	 * 
+	 * @param localArquivo
+	 * @return
+	 */
+	public List<String> ler(String localArquivo) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date data = Calendar.getInstance().getTime();
-		String nomeArquivo = "EXP"+sdf.format(data).replaceAll("-","")+".TXT";
+		String nomeArquivo = "EXP" + sdf.format(data).replaceAll("-", "") + ".TXT";
 		linhas = new ArrayList<>();
 		/*
-		 * Realiza a leitura do arquivo TXT linha a linha e adiciona esta linha a uma lista de string	
+		 * Realiza a leitura do arquivo TXT linha a linha e adiciona esta linha a uma
+		 * lista de string
 		 */
-		try (Stream<String> stream = Files.lines(Paths.get(localArquivo+nomeArquivo), StandardCharsets.ISO_8859_1)) {
+		try (Stream<String> stream = Files.lines(Paths.get(localArquivo + nomeArquivo), StandardCharsets.ISO_8859_1)) {
 			stream.forEach((String line) -> {
 				this.linhas.add(line);
 			});
 		} catch (IOException e) {
 			logIntegracao.setLog(e.getMessage());
-			logIntegracao.setStatushttp("HTTP/1.1 500 BAD REQUEST" );
+			logIntegracao.setStatushttp("HTTP/1.1 500 BAD REQUEST");
 			logIntegracao.setData(Calendar.getInstance().getTime());
 			dao.salvarLog(logIntegracao);
 		}
-		
 		return this.linhas;
 	}
 
-
-
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		System.out.println("Teste");
 		lerArquivo();
 	}
-	
+
+	/**
+	 * Metodo utilizado para integração forçada via interface do sistema na aba
+	 * Configurações/integração
+	 * 
+	 */
 	public void lerArquivo() {
 		this.status = new ArrayList<>();
 		List<String> dados = ler(integracao.getLocalArquivo());
@@ -97,33 +110,41 @@ public class LeituraArquivo implements Job {
 			}
 		}
 	}
-	
+
 	public void adicionarAlista(String status, String[] obj) {
 		this.status.add(status);
 		salvarLog(obj, status);
 	}
 	
+	/**
+	 * Mantem uma tabela no banco de dados com o status das requisições sendo elas:
+	 * SUCESSO = 200 OK
+	 * FALHA = 500 BAD REQUEST
+	 * 
+	 * @param obj
+	 * @param httpStatus
+	 */
 	private void salvarLog(String[] obj, String httpStatus) {
 		try {
-			if(obj[0].equals("01")) {
-				logIntegracao.setLog("CLIENTE COD: "+obj[3]+ " NOME: "+obj[4].replaceAll("\"", ""));
+			if (obj[0].equals("01")) {
+				logIntegracao.setLog("CLIENTE COD: " + obj[3] + " NOME: " + obj[4].replaceAll("\"", ""));
 				logIntegracao.setStatushttp(httpStatus);
 				logIntegracao.setData(Calendar.getInstance().getTime());
 				dao.salvarLog(logIntegracao);
 			}
-			if(obj[0].equals("02")) {
-				logIntegracao.setLog("BENEFICIAMENTO COD: "+obj[3]+ " NOME: "+obj[4].replaceAll("\"", ""));
+			if (obj[0].equals("02")) {
+				logIntegracao.setLog("BENEFICIAMENTO COD: " + obj[3] + " NOME: " + obj[4].replaceAll("\"", ""));
 				logIntegracao.setStatushttp(httpStatus);
 				logIntegracao.setData(Calendar.getInstance().getTime());
 				dao.salvarLog(logIntegracao);
 			}
-			if(obj[0].equals("03")) {
-				logIntegracao.setLog("PRODUTO COD: "+obj[3]+ " NOME: "+obj[7].replaceAll("\"", ""));
+			if (obj[0].equals("03")) {
+				logIntegracao.setLog("PRODUTO COD: " + obj[3] + " NOME: " + obj[7].replaceAll("\"", ""));
 				logIntegracao.setStatushttp(httpStatus);
 				logIntegracao.setData(Calendar.getInstance().getTime());
 				dao.salvarLog(logIntegracao);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

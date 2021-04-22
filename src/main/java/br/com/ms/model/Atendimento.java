@@ -11,8 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
-
+@Entity(name = "atendimento")
 public class Atendimento implements Serializable {
 
 	private static final long serialVersionUID = 3212929252039535118L;

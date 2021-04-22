@@ -1,16 +1,14 @@
 package br.com.ms.model;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
 
-@Entity
+@Entity(name = "logintegracao")
 public class LogIntegracao implements Serializable {
 	
 	/**

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
+@Entity(name = "empresa")
 //@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Empresa implements Serializable {
 

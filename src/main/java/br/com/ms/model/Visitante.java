@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-@Entity
+@Entity(name = "visitante")
 //@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 public class Visitante implements Serializable {
 

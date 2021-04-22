@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 import br.com.ms.util.Seguranca;
 
-@Entity
+@Entity(name = "configuracaosistema")
 public class ConfiguracaoSistema implements Serializable {
 
 	private static final long serialVersionUID = -4221641655119962898L;

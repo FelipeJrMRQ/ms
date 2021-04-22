@@ -14,7 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-@Entity
+@Entity(name = "liberacaovisitante")
 @Table(uniqueConstraints = {
 	@UniqueConstraint(name = "entrada", columnNames = {"entrada_id"})
 })

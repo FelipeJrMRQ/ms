@@ -36,7 +36,6 @@ public class RegistroController {
 	}
 
 	public RegistroController() {
-		//System.out.println("Registro Controller");
 		registroDao = new RegistroDao();
 	}
 
