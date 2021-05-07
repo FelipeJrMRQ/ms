@@ -44,7 +44,7 @@ public class ConfiguracaoSistemaController implements Serializable {
 				ScheduleUtil.start(jb, "0 0/30 * * * ?", "g1", "triggerNfe");
 
 				JobDetail jb1 = JobBuilder.newJob(LeituraArquivo.class).withDescription("integracao").build();
-				ScheduleUtil.start(jb1, params.getCronParametros(), "g2", "triggerInteg");
+				ScheduleUtil.start(jb1,params.getCronParametros() , "g2", "triggerInteg");
 				status = false;
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -80,40 +80,109 @@ public class LeituraArquivo implements Job {
 	}
 
 	/**
-	 * Metodo utilizado para integração forçada via interface do sistema na aba
-	 * Configurações/integração
+	 * Executa e leitura do arquivo TXT localizado na pasta do sistema
+	 * Separa os objetos de acordo com o código contido na posição [0] do array
 	 * 
+	 * Os códigos representam as seguintes categorias
+	 * 
+	 * [01] - CLIENTE
+	 * [02] - BENEFICIAMENTO
+	 * [03] - PRODUTO
 	 */
 	public void lerArquivo() {
-		this.status = new ArrayList<>();
-		List<String> dados = ler(integracao.getLocalArquivo());
+		LeituraArquivo la = new LeituraArquivo();
+		List<String> lista = la.ler(integracao.getLocalArquivo());
+		List<String[]> clientes = new ArrayList<>();
+		List<String[]> produtos = new ArrayList<>();
+		List<String[]> beneficiamentos = new ArrayList<>();
 		/**
 		 * Realiza a l
 		 */
-		for (String string : dados) {
+		for (String string : lista) {
 			try {
 				String[] obj = string.split(";");
 				if (obj[0].equals("03")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertProduto(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					//Codigo 3 representa o Produto
+					produtos.add(obj);
 				}
 				if (obj[0].equals("01")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertCliente(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					clientes.add(obj);
 				}
 				if (obj[0].equals("02")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertBeneficiamento(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					beneficiamentos.add(obj);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		verificaListagem(clientes, produtos, beneficiamentos);
 	}
 
+	
+	/**
+	 * Realiza e verificação da listagem e faz a chamada dos métodos de integração.
+	 *  
+	 * @param clientes
+	 * @param produtos
+	 * @param beneficiamentos
+	 */
+	private void verificaListagem(List<String[]> clientes,List<String[]> produtos,List<String[]> beneficiamentos) {
+		if(!clientes.isEmpty()) {
+			postCliente(clientes);
+		}
+		if(!produtos.isEmpty()) {
+			postProduto(produtos);
+		}
+		if(!beneficiamentos.isEmpty()) {
+			postBeneficiamento(beneficiamentos);
+		}
+	}
+	
+	/**
+	 * Salva o status do processamento no banco de dados para 
+	 * futuras consultas.
+	 * 
+	 * @param status
+	 * @param obj
+	 */
 	public void adicionarAlista(String status, String[] obj) {
 		this.status.add(status);
 		salvarLog(obj, status);
+	}
+	
+	/**
+	 * Transmite os dados do cliente para integração;
+	 * 
+	 * @param clientes
+	 */
+	private void postCliente(List<String[]> clientes) {
+		for(String[] cliente: clientes) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertCliente(cliente, integracao.getHostHttp()).getStatusLine().toString(), cliente);
+		}
+	}
+	
+	/**
+	 * Transmite os dados do produto para integração
+	 * @param produtos
+	 */
+	private void postProduto(List<String[]> produtos) {
+		for(String[] produto: produtos) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertProduto(produto, integracao.getHostHttp()).getStatusLine().toString(), produto);
+		}
+	}
+	
+	/**
+	 * Transmite os dados beneficiamento para integrção
+	 * 
+	 * @param beneficiamentos
+	 */
+	private void postBeneficiamento(List<String[]> beneficiamentos) {
+		for(String[] beneficiamento: beneficiamentos) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertBeneficiamento(beneficiamento, integracao.getHostHttp()).getStatusLine().toString(), beneficiamento);
+		}
 	}
 	
 	/**

@@ -11,21 +11,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
 
 
-
-//System.out.println(obj[0]); // Tipo de item [03] Produto [02] Beneficiamento [01] Cliente 
-//System.out.println("Código: "+obj[3]); // Código do produto
-//System.out.println("Cliente: "+obj[4]); // Codigo Receita
-//System.out.println("Benef: "+obj[5]);
-//System.out.println("Receita: "+obj[6]);
-//System.out.println("Nome: "+obj[7].replaceAll("\"", ""));
-//System.out.println("Preço: "+obj[8].replaceAll(",", "."));
-//System.out.println("Camada Min: "+obj[9].replaceAll(",", "."));
-//System.out.println("Camada Máx: "+obj[10].replaceAll(",", "."));
-//System.out.println("Peso: "+obj[11].replaceAll(",", "."));
-//System.out.println("Area: "+obj[12].replaceAll(",", "."));
-//System.out.println("Tipo: "+ obj[13]);
-//System.out.println("-----------------------------------------------------------------");
-
 /**
  * Classe utilizada para integração Supesmart/Bitqualy 
  * Servidor de destino http://www.cromart.bitqualy.tech/*
@@ -51,7 +36,7 @@ public class HttpPostApi {
 	public HttpResponse insertProduto(String[] produtos,String host) {
 		try {
 			byte[] b = produtos[7].replaceAll("\"", "").getBytes("ISO-8859-1");
-			String p =  new String(b, "UTF-8");
+			String p =  new String(b, "ISO-8859-1");
 			uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("cromart.bitqualy.tech")
@@ -83,7 +68,7 @@ public class HttpPostApi {
 	public HttpResponse insertCliente(String[] clientes,String host) {
 		try {
 			byte[] b = clientes[4].replaceAll("\"", "").getBytes("ISO-8859-1");
-			String t =  new String(b, "UTF-8");
+			String t =  new String(b, "ISO-8859-1");
 			uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("cromart.bitqualy.tech")
@@ -110,7 +95,7 @@ public class HttpPostApi {
 	public HttpResponse insertBeneficiamento(String[] beneficiamento,String host) {
 		try {
 			byte[] b = beneficiamento[4].replaceAll("\"", "").getBytes("ISO-8859-1");
-			String t =  new String(b, "UTF-8");
+			String t =  new String(b, "ISO-8859-1");
 			uri = new URIBuilder()
 					.setScheme("http")
 					.setHost("cromart.bitqualy.tech")

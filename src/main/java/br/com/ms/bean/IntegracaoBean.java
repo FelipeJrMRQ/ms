@@ -67,33 +67,70 @@ public class IntegracaoBean implements Serializable {
 	}
 
 	public void executarIntegracao() {
-		this.status = new ArrayList<>();
 		LeituraArquivo la = new LeituraArquivo();
+		List<String> lista = la.ler("\\\\125.67.2.242\\supersmart\\supervisorio\\");
+		List<String[]> clientes = new ArrayList<>();
+		List<String[]> produtos = new ArrayList<>();
+		List<String[]> beneficiamentos = new ArrayList<>();
 		/**
 		 * Realiza a l
 		 */
-		for (String string : la.ler(integracao.getLocalArquivo())) {
+		for (String string : lista) {
 			try {
 				String[] obj = string.split(";");
 				if (obj[0].equals("03")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertProduto(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					//Codigo 3 representa o Produto
+					produtos.add(obj);
 				}
 				if (obj[0].equals("01")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertCliente(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					clientes.add(obj);
 				}
 				if (obj[0].equals("02")) {
-					HttpPostApi pos = new HttpPostApi();
-					adicionarAlista(pos.insertBeneficiamento(obj, integracao.getHostHttp()).getStatusLine().toString(), obj);
+					beneficiamentos.add(obj);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		verificaListagem(clientes, produtos, beneficiamentos);
+	}
+	
+	private void verificaListagem(List<String[]> clientes,List<String[]> produtos,List<String[]> beneficiamentos) {
+		if(!clientes.isEmpty()) {
+			postCliente(clientes);
+		}
+		if(!produtos.isEmpty()) {
+			postProduto(produtos);
+		}
+		if(!beneficiamentos.isEmpty()) {
+			postBeneficiamento(beneficiamentos);
+		}
+		
+	}
+	
+	private void postCliente(List<String[]> clientes) {
+		for(String[] cliente: clientes) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertCliente(cliente, integracao.getHostHttp()).getStatusLine().toString(), cliente);
+		}
+	}
+	
+	private void postProduto(List<String[]> produtos) {
+		for(String[] produto: produtos) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertProduto(produto, integracao.getHostHttp()).getStatusLine().toString(), produto);
+		}
+	}
+	
+	private void postBeneficiamento(List<String[]> beneficiamentos) {
+		for(String[] beneficiamento: beneficiamentos) {
+			HttpPostApi pos = new HttpPostApi();
+			adicionarAlista(pos.insertBeneficiamento(beneficiamento, integracao.getHostHttp()).getStatusLine().toString(), beneficiamento);
+		}
 	}
 
 	public void adicionarAlista(String status, String[] obj) {
+		this.status = new ArrayList<>();
 		this.status.add(status);
 		salvarLog(obj, status);
 		PrimeFaces.current().ajax().update(":tbStatus");
@@ -122,11 +159,6 @@ public class IntegracaoBean implements Serializable {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void teste() {
-		Messages.addGlobalError("Teste");
-		PrimeFaces.current().ajax().update(":mensagem");
 	}
 	
 	public void openModal() {
