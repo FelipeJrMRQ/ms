@@ -54,4 +54,12 @@ public class ScheduleUtil implements Serializable {
 			throw e;
 		}
 	}
+	
+	public static void shutdown() {
+		try {
+			scheduler.shutdown();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }

@@ -65,7 +65,7 @@ public class RegistroBean implements Serializable {
 	private MotivoEdicaoRegistroController motivoController;
 	private LiberacaoVisitanteController liberacaoVisitanteController;
 	private ConfiguracaoSistemaController configController;
-	
+
 	public RegistroBean() {
 		registro = new Registro();
 		visitante = new Visitante();
@@ -95,8 +95,6 @@ public class RegistroBean implements Serializable {
 		qtdNotas = "0";
 		configController.iniciarAgendamentos();
 	}
-	
-	
 
 	/**
 	 * Atualiza a tela principal do sistema mantendo as informações sobre Pessoas
@@ -109,8 +107,9 @@ public class RegistroBean implements Serializable {
 
 	public void abrirModal() {
 		System.out.println("executei");
-		
+
 	}
+
 	/**
 	 * Realiza a consulta e mantem as informações carregadas para atualização de
 	 * tela. Isso permite que o usuário tenha uma visão clara da movimentação de
@@ -133,7 +132,8 @@ public class RegistroBean implements Serializable {
 	 */
 	public void consultarPrestadorPeloCpf() {
 		try {
-			visitante = visitanteController.consultaPorCPF(cpf);
+			visitante = visitanteController.consultaPorCPF(cpf).get();
+			this.empresas = visitante.getEmpresas();
 		} catch (Exception e) {
 			Messages.addGlobalError("CPF não encontrado!");
 		}
@@ -142,11 +142,12 @@ public class RegistroBean implements Serializable {
 	public void consultaPrestadorPorId() {
 		try {
 			Long id = Long.parseLong(consulta);
-			visitante = visitanteController.consultaPorId(id);
-			empresas = visitante.getEmpresas();
-		} catch (Exception ex) {
-			Messages.addGlobalError(ex.getMessage());
+			this.visitante = visitanteController.consultaPorId(id).get();
+			this.empresas = visitante.getEmpresas();
+		}catch (Exception e) {
+			Messages.addGlobalError("Visitante não encontrado!");
 		}
+		
 	}
 
 	public void consultaPrestadorPeloRg() {
@@ -221,11 +222,10 @@ public class RegistroBean implements Serializable {
 			qtdNotas = String.valueOf(listNfe.size());
 		} catch (Exception e) {
 			Messages.addGlobalError(e.getMessage());
-		}finally {
+		} finally {
 			nfe = "";
 		}
 	}
-
 
 	public void removeNotasFiscais(ActionEvent event) {
 		NotaRegistro nfe = (NotaRegistro) event.getComponent().getAttributes().get("notaSelecionada");
@@ -278,7 +278,6 @@ public class RegistroBean implements Serializable {
 			Messages.addGlobalError("Falha ao desfazer saida! ");
 		}
 	}
-
 
 	public void registroSelecionado(ActionEvent event) {
 		registro = (Registro) event.getComponent().getAttributes().get("registroSelecionado");
@@ -391,7 +390,6 @@ public class RegistroBean implements Serializable {
 		nome = "";
 		placa = "";
 	}
-	
 
 	/**
 	 * Utilizado exclusivamente para visitantes e não para prestadores de serviço
@@ -435,7 +433,6 @@ public class RegistroBean implements Serializable {
 		}
 	}
 
-	
 	private void salvarRegistroPrestador() {
 		try {
 			registroController.salvarRegistro(registroController.geradorDeRegistro(ENTRADA, ABERTO, listNfe, registro.getPlacaVeiculo(), registro.getEmpresa(), visitante));
@@ -508,8 +505,6 @@ public class RegistroBean implements Serializable {
 	public void setCpf(String cpf) {
 		this.cpf = cpf.replaceAll("[.-]", "");
 	}
-
-
 
 	public List<Empresa> getEmpresas() {
 		return empresas;

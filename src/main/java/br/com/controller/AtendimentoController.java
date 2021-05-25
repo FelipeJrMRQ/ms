@@ -19,13 +19,13 @@ public class AtendimentoController {
 
 	private static final String INICIADO = "INICIADO";
 	private static final String ABERTO = "ABERTO";
-	private static final String FINALIZADO = "FINALIZADO";
-	// private static final String LIBERADO = "LIBERADO";
+	private static final String FINALIZADO = "FINALIZADO";//private static final String LIBERADO = "LIBERADO";
 	private AtendimentoDao atendimentoDao;
 	private RegistroDao registroDao;
 	private Atendimento atendimento;
 	private UsuarioController usuarioController;
 	private ConfiguracaoSistemaController configController;
+	private Registro registro;
 
 	public void consultaTabelasCompartilhadas() {
 		SharedListBean.consultaRegistrosAguardando();
@@ -38,6 +38,7 @@ public class AtendimentoController {
 		registroDao = new RegistroDao();
 		usuarioController = new UsuarioController();
 		configController = new ConfiguracaoSistemaController();
+		registro = new Registro();
 	}
 
 	private Usuario consultarProgramadorPorCodigo(String codigoProg) throws Exception {
@@ -93,15 +94,15 @@ public class AtendimentoController {
 		}
 	}
 
-	public synchronized void iniciarAtendimento(Registro registro, String status, String codigoProg) throws Exception {
+	public synchronized void iniciarAtendimento(Long idRegistro, String status, String codigoProg) throws Exception {
 		try {
-			atendimentoDao.consultarAtendimentoPorRegistro(registro.getId());
-			registro = registroDao.consultaRegistroPeloId(registro.getId());
-			atendimento.setRegistro(registro);
+			atendimentoDao.consultarAtendimentoPorRegistro(idRegistro);
+			this.registro = registroDao.consultaRegistroPeloId(idRegistro);
+			atendimento.setRegistro(this.registro);
 			atendimento.setData_inicio(HoraDaInternet.getHora());
 			atendimento.setData_fim(null);
 			atendimento.setStatus(INICIADO);
-			atendimento.setRegistro(registro);
+			atendimento.setRegistro(this.registro);
 			if (configController.consultarConfiguracao().isAtivarProgramador()) {
 				if (PermissoesUsuarios.getUsuario().getPermissoes().isProgramador()) {
 					atendimento.setUsuario_inicio(consultarProgramadorPorCodigo(codigoProg));
@@ -112,7 +113,7 @@ public class AtendimentoController {
 				atendimento.setUsuario_inicio(PermissoesUsuarios.getUsuario());
 			}
 			registro.setStatus(INICIADO);
-			atendimentoDao.salvarAtendimento(atendimento, registro);
+			atendimentoDao.salvarAtendimento(atendimento, this.registro);
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;
@@ -158,10 +159,10 @@ public class AtendimentoController {
 	public synchronized void desfazerAtendimento(Atendimento atendimento, Registro registro) {
 		try {
 			atendimento = atendimentoDao.consultarAtentimentoPorId(atendimento.getId());
-			registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
+			this.registro = registroDao.consultaRegistroPeloId(atendimento.getRegistro().getId());
 			atendimentoDao.excluirAtendimento(atendimento);
-			registro.setStatus(ABERTO);
-			getRegistroControler().salvarRegistro(registro);
+			this.registro.setStatus(ABERTO);
+			getRegistroControler().salvarRegistro(this.registro);
 			consultaTabelasCompartilhadas();
 		} catch (Exception e) {
 			throw e;

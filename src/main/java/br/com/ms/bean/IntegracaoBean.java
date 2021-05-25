@@ -11,11 +11,13 @@ import javax.faces.bean.ViewScoped;
 import org.omnifaces.util.Messages;
 import org.primefaces.PrimeFaces;
 
+import br.com.controller.ConfiguracaoSistemaController;
 import br.com.ms.dao.IntegracaoDao;
 import br.com.ms.integracao.HttpPostApi;
 import br.com.ms.integracao.LeituraArquivo;
 import br.com.ms.model.Integracao;
 import br.com.ms.model.LogIntegracao;
+import br.com.ms.util.ScheduleUtil;
 
 @ManagedBean
 @ViewScoped
@@ -31,20 +33,8 @@ public class IntegracaoBean implements Serializable {
 	private Integracao integracao;
 	private IntegracaoDao dao;
 	private LogIntegracao logIntegracao;
-
+	private ConfiguracaoSistemaController config;
 	
-//	private void iniciaAgendamento(String cron) {
-//		try {
-//			if (controle == 0) {
-//				JobDetail jb = JobBuilder.newJob(LeituraArquivo.class).withIdentity("Integracao").build();
-//				ScheduleUtil.start(jb, cron , "g2", "Integra");
-//			}
-//			IntegracaoBean.controle = 1;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
 	public IntegracaoBean() {
 		logIntegracao = new LogIntegracao();
 		integracao = new Integracao();
@@ -52,10 +42,18 @@ public class IntegracaoBean implements Serializable {
 		integracao = dao.consultaParametros(1);
 	}
 	
+	
+	public void shutdownCron() {
+		if(!integracao.isStatus()) {
+			ScheduleUtil.shutdown();
+		}else {
+			config.iniciarAgendamentos();
+		}
+	}
+	
 	public void ativar() {
 		try {
 			dao.ativarIntegracao(integracao);
-			//iniciaAgendamento(integracao.getCronParametros());
 			Messages.addGlobalInfo("Serviço ativado com sucesso!");
 		}catch (Exception e) {
 			Messages.addGlobalError("Falha ao salvar dados de integração!");

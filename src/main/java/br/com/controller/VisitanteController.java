@@ -3,6 +3,7 @@ package br.com.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,13 +21,13 @@ public class VisitanteController implements Serializable {
 
 	@Autowired
 	private Visitante visitante;
-	
+
 	private List<Visitante> visitantes;
 
 	private static final long serialVersionUID = 1L;
 
 	public VisitanteController() {
-		//System.out.println("Visitante Controller");
+		// System.out.println("Visitante Controller");
 		visitanteDao = new VisitanteDao();
 		visitante = new Visitante();
 		visitantes = new ArrayList<>();
@@ -80,15 +81,14 @@ public class VisitanteController implements Serializable {
 	 * @param cpf
 	 * @return
 	 */
-	public Visitante consultaPorCPF(String cpf) {
-		this.visitante = visitanteDao.consultaVisitantePeloCpf(cpf);
-		return verificaPermissaoDeAcesso(visitante);
+	public Optional<Visitante> consultaPorCPF(String cpf) {
+		return Optional.ofNullable(verificaPermissaoDeAcesso(visitanteDao.consultaVisitantePeloCpf(cpf)));
 	}
-	
+
 	public List<Visitante> consultaPorNome(String nomeVisitante) throws Exception {
 		try {
 			visitantes = visitanteDao.consultaVisitantePeloNome(nomeVisitante);
-			if(visitantes.isEmpty()) {
+			if (visitantes.isEmpty()) {
 				throw new Exception("Nome não encontrado!");
 			}
 			return visitantes;
@@ -96,24 +96,15 @@ public class VisitanteController implements Serializable {
 			throw ex;
 		}
 	}
-	
-	public Visitante consultaPorId(Long id) throws Exception {
-		try {
-			this.visitante = visitanteDao.consultaVisitantePorId(id);
-			if(visitante == null) {
-				throw new Exception("Código não encontrado!");
-			}
-			return visitante;
-		} catch (Exception e) {
-			throw e;
-		}
+
+	public Optional<Visitante> consultaPorId(Long id) {
+		return Optional.ofNullable(visitanteDao.consultaVisitantePorId(id));
 	}
-	
-	
+
 	public List<Visitante> consultaPorRg(String Rg) throws Exception {
 		try {
 			visitantes = visitanteDao.consultaVisitantePeloRg(Rg);
-			if(visitantes.isEmpty()) {
+			if (visitantes.isEmpty()) {
 				throw new Exception("Númemro de RG não encontrado!");
 			}
 			return visitantes;
@@ -121,15 +112,10 @@ public class VisitanteController implements Serializable {
 			throw ex;
 		}
 	}
-	
-	
-	
-	public List<Visitante> consultaPeloRg(String consulta)  {
+
+	public List<Visitante> consultaPeloRg(String consulta) {
 		return visitantes;
 	}
-	
-	
-	
 
 	private void verificaTipo(Visitante visitante, List<Empresa> empresasEscolhidas, String tipoVisitante) throws Exception {
 		try {
@@ -157,7 +143,8 @@ public class VisitanteController implements Serializable {
 	}
 
 	/**
-	 * Salva um simples visitante 
+	 * Salva um simples visitante
+	 * 
 	 * @param visitante
 	 * @param empresasEscolhidas
 	 * @throws Exception

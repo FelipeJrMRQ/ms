@@ -3,6 +3,7 @@ package br.com.ms.dao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -126,9 +127,14 @@ public class VisitanteDao implements Serializable {
 		try {
 			Criteria consulta = session.createCriteria(Visitante.class);
 			consulta.add(Restrictions.eq("id", id)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-			this.visitante = (Visitante) consulta.uniqueResult();
-			visitante.getEmpresas().size();
-			return visitante;
+			Optional<Visitante>opt = Optional.ofNullable((Visitante) consulta.uniqueResult());
+			if(opt.isPresent()) {
+				this.visitante = opt.get();
+				this.visitante.getEmpresas().size();
+			}else {
+				this.visitante = null;
+			}
+			return this.visitante;
 		} catch (RuntimeException erro) {
 			throw erro;
 		}finally {

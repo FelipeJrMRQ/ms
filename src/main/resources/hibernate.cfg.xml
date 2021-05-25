@@ -6,7 +6,7 @@
 
 		<!-- Confugurações de conexao com o banco de dadados -->
 		<property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-		<property name="hibernate.connection.url">?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
+		<property name="hibernate.connection.url">jdbc:mysql:?useTimezone=true&amp;serverTimezone=GMT-3&amp;autoReconnect=true&amp;useSSL=FALSE</property>
 
 		<!-- ?useTimezone=true&amp;serverTimezone=GMT-3 -->
 		<property name="hibernate.connection.username"></property>

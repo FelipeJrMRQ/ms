@@ -79,7 +79,6 @@ public class AtendimentoBean implements Serializable {
 	}
 	
 	
-
 	/**
 	 * Realiza a remoção de notas fiscais inseridas
 	 * 
@@ -101,7 +100,7 @@ public class AtendimentoBean implements Serializable {
 	 */
 	public synchronized void inicioAtendimento(Registro registro, String status) {
 		try {
-			atendimentoController.iniciarAtendimento(registro, status, this.codigoProg);
+			atendimentoController.iniciarAtendimento(registro.getId(), status, this.codigoProg);
 			Messages.addGlobalInfo("Atendimento iniciado com sucesso!");
 			notasFiscaisController.limparListaDeNotas();
 		} catch (Exception erro) {
